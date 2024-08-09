@@ -289,27 +289,35 @@ async function getDiscussions(access_token: string) {
       },
     },
   } = await window.getDiscussions(access_token);
-  return nodes.map((e) => ({
-    ...e,
-    author: {
-      ...e.author,
-      login: xss(e.author.login),
-    },
-    title: xss(e.title),
-    bodyHTML: xss(e.bodyHTML),
-    bodyText: xss(e.bodyText),
-    commentUrl: e.url + "#new_comment_form",
-    comments: {
-      nodes: e.comments.nodes.map((e) => ({
-        ...e,
-        author: {
-          ...e.author,
-          login: xss(e.author.login),
-        },
-        bodyHTML: xss(e.bodyHTML),
-      })),
-    },
-  }));
+  return nodes
+    .map((e) => {
+      try {
+        return {
+          ...e,
+          author: {
+            ...e.author,
+            login: xss(e.author.login),
+          },
+          title: xss(e.title),
+          bodyHTML: xss(e.bodyHTML),
+          bodyText: xss(e.bodyText),
+          commentUrl: e.url + "#new_comment_form",
+          comments: {
+            nodes: e.comments.nodes.map((e) => ({
+              ...e,
+              author: {
+                ...e.author,
+                login: xss(e.author.login),
+              },
+              bodyHTML: xss(e.bodyHTML),
+            })),
+          },
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter((e) => e !== null);
 }
 
 /** 不含最大值，含最小值 */
