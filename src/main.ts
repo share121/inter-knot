@@ -313,7 +313,8 @@ async function getDiscussions(access_token: string) {
             })),
           },
         };
-      } catch {
+      } catch (e) {
+        console.error(e);
         return null;
       }
     })
