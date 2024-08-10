@@ -1,4 +1,5 @@
 <template>
+  <NuxtPwaManifest />
   <header-bar />
   <main-container />
   <write-btn />

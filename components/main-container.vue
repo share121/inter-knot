@@ -1,8 +1,13 @@
 <template>
   <main>
-    <div class="center" v-if="!canVisitInterKnot">
+    <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请安装/更新“绳网小助手”
+        请更新“绳网小助手”，最新版本为 1.1.0
+      </a>
+    </div>
+    <div class="center" v-else-if="needInstall">
+      <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
+        请安装“绳网小助手”
       </a>
     </div>
     <div class="center" v-else-if="!isLogin">
@@ -37,7 +42,8 @@ import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 
-const canVisitInterKnot = ref(true);
+const needUpdata = ref(false);
+const needInstall = ref(false);
 const isLogin = ref(true);
 const isLoading = ref(true);
 const showPopup = ref(false);
@@ -54,12 +60,19 @@ onMounted(async () => {
   setTimeout(() => {
     // @ts-ignore
     if (typeof window.getUserInfo !== "function") {
-      canVisitInterKnot.value = false;
+      needInstall.value = true;
+      return;
+    }
+    // @ts-ignore
+    if (window.version !== "1.1.0") {
+      needUpdata.value = true;
       return;
     }
   }, 2000);
   // @ts-ignore
-  window.run = async () => {
+  if (typeof window.run === "undefined") window.run = [];
+  // @ts-ignore
+  window.run.push(async () => {
     const access_token = localStorage.getItem("access_token");
     if (!access_token || !access_token.startsWith("ghu_")) {
       isLogin.value = false;
@@ -101,7 +114,7 @@ onMounted(async () => {
       console.error(e);
       isLogin.value = false;
     }
-  };
+  });
 });
 </script>
 

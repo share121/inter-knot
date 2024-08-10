@@ -36,7 +36,9 @@ const href = computed(() => author.value?.url ?? getLoginHref());
 
 onMounted(async () => {
   // @ts-ignore
-  window.run = async () => {
+  if (typeof window.run === "undefined") window.run = [];
+  // @ts-ignore
+  window.run.push(async () => {
     const access_token = localStorage.getItem("access_token");
     if (!access_token || !access_token.startsWith("ghu_")) return;
     try {
@@ -44,7 +46,7 @@ onMounted(async () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  });
 });
 </script>
 
