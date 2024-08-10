@@ -79,6 +79,7 @@ interface Article {
   bodyText: string;
   cover: string;
   comments: MyComment[];
+  number: number;
 }
 
 interface MyComment {

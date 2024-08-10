@@ -87,59 +87,82 @@ export async function tryGet(fn: (access_token: string) => Promise<any>) {
   }
 }
 
-export async function getDiscussions(access_token: string): Promise<
-  {
+export async function getDiscussions(
+  access_token: string,
+  endCursor: string | null
+): Promise<{
+  discussions: {
     author: {
       login: string;
       avatarUrl: string;
       url: string;
     };
+    number: number;
     title: string;
     bodyHTML: string;
     bodyText: string;
-    comments: {
-      nodes: {
-        author: {
-          login: string;
-          avatarUrl: string;
-          url: string;
-        };
-        bodyHTML: string;
-      }[];
-    };
     url: string;
-  }[]
-> {
+  }[];
+  endCursor: string;
+  hasNextPage: boolean;
+}> {
   const {
     data: {
       repository: {
-        discussions: { nodes },
+        discussions: {
+          nodes,
+          pageInfo: { hasNextPage, endCursor: newEndCursor },
+        },
       },
     },
     // @ts-ignore
-  } = await window.getDiscussions(access_token);
-  return (
-    nodes
-      // @ts-ignore
-      .map((e) => {
+  } = await window.getDiscussions(access_token, endCursor);
+  return {
+    discussions: nodes
+      .map((e: any) => {
         try {
           return {
             ...e,
             bodyHTML: xss(e.bodyHTML),
-            comments: {
-              nodes: e.comments.nodes.map((e: any) => ({
-                ...e,
-                bodyHTML: xss(e.bodyHTML),
-              })),
-            },
           };
         } catch (e) {
           console.error(e);
           return null;
         }
       })
-      .filter((e: any) => e !== null)
-  );
+      .filter((e: any) => e !== null),
+    hasNextPage,
+    endCursor: newEndCursor,
+  };
+}
+
+export async function getComments(
+  access_token: string,
+  number: number
+): Promise<MyComment[]> {
+  const {
+    data: {
+      repository: {
+        discussion: {
+          comments: { nodes },
+        },
+      },
+    },
+    // @ts-ignore
+  } = await window.getComments(access_token, number);
+  return nodes
+    .map((e: any) => {
+      try {
+        return {
+          ...e,
+          bodyHTML: xss(e.bodyHTML),
+        };
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    })
+    .filter((e: any) => e !== null);
 }
 
 /** 不含最大值，含最小值 */
@@ -153,4 +176,18 @@ export function html2dom(html: string) {
   let template = document.createElement("template");
   template.innerHTML = html;
   return template;
+}
+
+export function removeDuplicateArticle(arr: Article[]) {
+  let len = arr.length;
+  for (let i = 0; i < len; i++) {
+    for (let j = i + 1; j < len; j++) {
+      if (arr[i].number === arr[j].number) {
+        arr.splice(j, 1);
+        len--;
+        j--;
+      }
+    }
+  }
+  return arr;
 }

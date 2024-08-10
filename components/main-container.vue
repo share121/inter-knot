@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="center" v-else-if="!isLogin">
-      <a :href="getLoginHref()" class="link">请登录后查看</a>
+      <a :href="href" class="link">请登录后查看</a>
     </div>
     <div class="center" v-else-if="isLoading">加载中……</div>
     <ClientOnly v-else>
@@ -48,13 +48,14 @@ import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 
+const store = useConfigStore();
+const { data } = storeToRefs(store);
 const needUpdata = ref(false);
 const needInstall = ref(false);
 const isLogin = ref(true);
 const isLoading = ref(true);
 const showPopup = ref(false);
 const curArticle = ref<Article>();
-const data = ref<Article[]>([]);
 const list = computed(() =>
   data.value.map((e) => ({
     src: e.cover,
@@ -62,6 +63,7 @@ const list = computed(() =>
   }))
 );
 const waterfall = ref();
+const href = ref(getLoginHref());
 
 onMounted(async () => {
   setTimeout(() => {
@@ -71,7 +73,7 @@ onMounted(async () => {
       return;
     }
     // @ts-ignore
-    if (window.version !== "1.1.0") {
+    if (window.version !== "1.2.0") {
       needUpdata.value = true;
       return;
     }
@@ -96,9 +98,12 @@ onMounted(async () => {
       }
     }
     handleErr(async () => {
-      const res = await getDiscussions(access_token!);
+      const access_token = localStorage.getItem("access_token");
+      const res = await getDiscussions(access_token!, store.endCursor);
+      store.hasNextPage = res.hasNextPage;
+      store.endCursor = res.endCursor;
       data.value.push(
-        ...res.map((e) => {
+        ...res.discussions.map((e) => {
           const dom = html2dom(e.bodyHTML);
           const firstImg = dom.content?.querySelector("img");
           const cover = firstImg?.src ?? defaultCover;
@@ -119,18 +124,61 @@ onMounted(async () => {
               repositoriesCount: undefined,
             },
             bodyHTML: dom.innerHTML,
-            comments: e.comments.nodes.map((e) => ({
-              ...e,
-              author: {
-                ...e.author,
-                repositoriesCount: undefined,
-              },
-            })),
+            comments: [],
           };
         })
       );
+      removeDuplicateArticle(data.value);
       isLoading.value = false;
     });
+    let flag = false;
+    useInfiniteScroll(
+      window,
+      async () => {
+        if (flag) return;
+        console.log("scroll");
+        flag = true;
+        try {
+          const res = await getDiscussions(access_token!, store.endCursor);
+          store.hasNextPage = res.hasNextPage;
+          store.endCursor = res.endCursor;
+          data.value.push(
+            ...res.discussions.map((e) => {
+              const dom = html2dom(e.bodyHTML);
+              const firstImg = dom.content?.querySelector("img");
+              const cover = firstImg?.src ?? defaultCover;
+              let parent = firstImg?.parentElement;
+              firstImg?.remove();
+              while (
+                parent instanceof HTMLElement &&
+                parent.children.length == 0
+              ) {
+                parent?.remove();
+                parent = parent.parentElement;
+              }
+              dom.content
+                .querySelectorAll("a")
+                .forEach((e) => (e.target = "_blank"));
+              return {
+                ...e,
+                cover,
+                author: {
+                  ...e.author,
+                  repositoriesCount: undefined,
+                },
+                bodyHTML: dom.innerHTML,
+                comments: [],
+              };
+            })
+          );
+          removeDuplicateArticle(data.value);
+        } catch (e) {
+          console.error(e);
+        }
+        flag = false;
+      },
+      { distance: 50 }
+    );
   });
 });
 </script>

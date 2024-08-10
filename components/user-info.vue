@@ -26,8 +26,12 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import defaultAvatarUrl from "~/assets/svg/profile-photo.svg?url";
-const author = ref<Actor>();
+import { useConfigStore } from "~/stores/config";
+
+const store = useConfigStore();
+const { author } = storeToRefs(store);
 const curExp = ref(6850);
 const totalExp = ref(10000);
 const cover = computed(() => author.value?.avatarUrl ?? defaultAvatarUrl);

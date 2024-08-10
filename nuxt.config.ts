@@ -60,7 +60,16 @@ export default defineNuxtConfig({
     },
   },
   css: ["~/assets/css/main.less"],
-  modules: ["@vite-pwa/nuxt", "@vueuse/nuxt"],
+  modules: [
+    "@vite-pwa/nuxt",
+    "@vueuse/nuxt",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+      },
+    ],
+  ],
   pwa: {
     strategies: sw ? "injectManifest" : "generateSW",
     srcDir: sw ? "service-worker" : undefined,

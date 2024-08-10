@@ -96,6 +96,19 @@ const props = defineProps<{
   article?: Article;
 }>();
 const { show, article } = toRefs(props);
+const store = useConfigStore();
+watch(article, async () => {
+  isCoverErr.value = false;
+  const access_token = localStorage.getItem("access_token");
+  if (access_token && article.value?.number) {
+    const discussion = store.data.find(
+      (e) => e.number === article.value?.number
+    );
+    if (!discussion || discussion.comments.length > 0) return;
+    const res = await getComments(access_token, article.value?.number);
+    discussion.comments = res;
+  }
+});
 defineEmits(["close"]);
 const isCoverErr = ref(false);
 const cover = computed(() =>
@@ -203,24 +216,20 @@ const cover = computed(() =>
         }
 
         .text {
-          > :first-child {
+          :deep(> :first-child) {
             margin-top: 0 !important;
           }
 
-          > :last-child {
+          :deep(> :last-child) {
             margin-bottom: 0 !important;
           }
 
-          img {
+          :deep(img) {
             width: 100% !important;
           }
 
-          video {
+          :depp(video) {
             width: 100% !important;
-          }
-
-          a {
-            color: #66ccff;
           }
         }
 
