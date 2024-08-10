@@ -135,7 +135,7 @@ onMounted(async () => {
     useInfiniteScroll(
       window,
       async () => {
-        if (flag) return;
+        if (flag || store.hasNextPage === false) return;
         console.log("scroll");
         flag = true;
         try {
