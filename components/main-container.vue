@@ -35,7 +35,11 @@
         </template>
       </Waterfall>
     </ClientOnly>
-    <Popup @close="showPopup = false" :show="showPopup" :article="curArticle" />
+    <popup-article
+      @close="showPopup = false"
+      :show="showPopup"
+      :article="curArticle"
+    />
   </main>
 </template>
 
