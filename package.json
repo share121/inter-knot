@@ -2,6 +2,7 @@
   "name": "inter-knot",
   "private": true,
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
