@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   devServer: {
     port: 5173,
   },
+  nitro: {
+    compressPublicAssets: true,
+  },
   postcss: {
     plugins: {
       "postcss-preset-env": {},
