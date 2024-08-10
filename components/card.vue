@@ -3,11 +3,15 @@
     <div class="card">
       <section class="cover-container">
         <div class="cover-wrapper">
-          <LazyImg
+          <img
             class="cover"
             alt="封面"
-            :url="article.cover"
-            @error="article.cover = defaultCover"
+            :src="isCoverErr ? defaultCover : article.cover"
+            loading="lazy"
+            :style="{ minHeight: isCoverLoaded || isCoverErr ? '0' : '60px' }"
+            @error="isCoverErr = true"
+            @load="isCoverLoaded = true"
+            ref="cover"
           />
         </div>
         <div class="visited">
@@ -43,11 +47,21 @@
 </template>
 
 <script lang="ts" setup>
-import { LazyImg } from "vue-waterfall-plugin-next";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 
 const props = defineProps<{ article: Article }>();
+const emits = defineEmits(["resize"]);
 const { article } = toRefs(props);
+const isCoverErr = ref(false);
+const isCoverLoaded = ref(false);
+const cover = ref<HTMLImageElement | undefined>();
+const { width, height } = useElementSize(cover);
+watch(
+  () => [width.value, height.value],
+  () => {
+    emits("resize");
+  }
+);
 </script>
 
 <style scoped lang="less">
@@ -84,6 +98,7 @@ const { article } = toRefs(props);
       .cover {
         width: 100%;
         max-height: 300px;
+        min-height: 200px;
       }
 
       .visited {

@@ -20,6 +20,7 @@
         background-color="transparent"
         :width="256"
         img-selector="img"
+        ref="waterfall"
       >
         <template #item="{ item }">
           <Card
@@ -29,6 +30,7 @@
               curArticle = item.article;
               showPopup = true;
             "
+            @resize="waterfall.renderer()"
           />
         </template>
       </Waterfall>
@@ -55,6 +57,7 @@ const list = computed(() =>
     article: e,
   }))
 );
+const waterfall = ref();
 
 onMounted(async () => {
   setTimeout(() => {
@@ -75,11 +78,21 @@ onMounted(async () => {
   window.run.push(async () => {
     const access_token = localStorage.getItem("access_token");
     if (!access_token || !access_token.startsWith("ghu_")) {
-      isLogin.value = false;
-      return;
+      if (new URL(location.href).searchParams.has("code")) {
+        try {
+          await getAccessToken(
+            new URL(location.href).searchParams.get("code")!
+          );
+        } catch {
+          getCode();
+        }
+      } else {
+        isLogin.value = false;
+        return;
+      }
     }
     try {
-      const res = await getDiscussions(access_token);
+      const res = await getDiscussions(access_token!);
       data.value.push(
         ...res.map((e) => {
           const dom = html2dom(e.bodyHTML);

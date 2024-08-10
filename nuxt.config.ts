@@ -62,5 +62,5 @@ export default defineNuxtConfig({
   },
 
   css: ["~/assets/css/main.less"],
-  modules: ["@vite-pwa/nuxt"]
+  modules: ["@vite-pwa/nuxt", "@vueuse/nuxt"],
 });
