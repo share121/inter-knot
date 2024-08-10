@@ -108,6 +108,9 @@ onMounted(async () => {
             parent?.remove();
             parent = parent.parentElement;
           }
+          dom.content
+            .querySelectorAll("a")
+            .forEach((e) => (e.target = "_blank"));
           return {
             ...e,
             cover,
