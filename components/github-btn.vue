@@ -9,6 +9,18 @@
 </template>
 
 <style scoped lang="less">
+// 媒体查询
+@media (max-width: 1150px) {
+  a {
+    margin-left: auto;
+  }
+}
+@media (max-width: 605px) {
+  a {
+    display: none;
+  }
+}
+
 svg {
   height: 48px;
   width: 48px;

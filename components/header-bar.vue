@@ -7,6 +7,18 @@
 </template>
 
 <style scoped lang="less">
+// 媒体查询
+@media (max-width: 605px) {
+  header {
+    padding: 22px;
+  }
+}
+@media (max-width: 418px) {
+  header {
+    justify-content: center;
+  }
+}
+
 header {
   z-index: 5;
   position: fixed;

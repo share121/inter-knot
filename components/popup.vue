@@ -16,6 +16,7 @@
               :src="article?.author.avatarUrl ?? defaultAvatarUrl"
               alt="头像"
               loading="lazy"
+              @error=""
             />
           </a>
           <div>
@@ -41,11 +42,7 @@
         </header>
         <main>
           <div class="cover">
-            <img
-              :src="article?.cover ?? defaultCover"
-              alt="封面"
-              loading="lazy"
-            />
+            <img :src="cover" alt="封面" loading="lazy" />
           </div>
           <div class="content">
             <div class="title">{{ article?.title ?? "未知" }}</div>
@@ -96,6 +93,10 @@ const props = defineProps<{
 }>();
 const { show, article } = toRefs(props);
 defineEmits(["close"]);
+const isCoverErr = ref(false);
+const cover = computed(() =>
+  isCoverErr ? defaultCover : article.value?.author.avatarUrl ?? defaultCover
+);
 </script>
 
 <style scoped lang="less">
@@ -207,7 +208,11 @@ defineEmits(["close"]);
           }
 
           img {
-            width: 100%;
+            width: 100% !important;
+          }
+
+          video {
+            width: 100% !important;
           }
 
           a {
@@ -258,14 +263,6 @@ defineEmits(["close"]);
 
             .text {
               color: #888888;
-
-              > :first-child {
-                margin-top: 0 !important;
-              }
-
-              > :last-child {
-                margin-bottom: 0 !important;
-              }
             }
           }
         }

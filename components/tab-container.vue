@@ -17,6 +17,13 @@ const index = ref(0);
 </script>
 
 <style scoped lang="less">
+// 媒体查询
+@media (max-width: 1150px) {
+  .tab-container {
+    display: none !important;
+  }
+}
+
 .tab-container {
   display: flex;
   align-items: center;

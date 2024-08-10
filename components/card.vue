@@ -3,7 +3,12 @@
     <div class="card">
       <section class="cover-container">
         <div class="cover-wrapper">
-          <LazyImg class="cover" alt="封面" :url="article.cover" />
+          <LazyImg
+            class="cover"
+            alt="封面"
+            :url="article.cover"
+            @error="article.cover = defaultCover"
+          />
         </div>
         <div class="visited">
           <svg
@@ -39,6 +44,7 @@
 
 <script lang="ts" setup>
 import { LazyImg } from "vue-waterfall-plugin-next";
+import defaultCover from "~/assets/svg/default-cover.svg?url";
 
 const props = defineProps<{ article: Article }>();
 const { article } = toRefs(props);
