@@ -33,6 +33,7 @@
   height: 48px;
   box-shadow: inset 0 2px 2px #313431, inset 0 -2px 2px #181818,
     0 2px 20px #313431;
+  z-index: 100;
 
   svg {
     height: 100%;
