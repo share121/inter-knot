@@ -16,7 +16,6 @@
               :src="article?.author.avatarUrl ?? defaultAvatarUrl"
               alt="头像"
               loading="lazy"
-              @error=""
             />
           </a>
           <div>
@@ -42,7 +41,12 @@
         </header>
         <main>
           <div class="cover">
-            <img :src="cover" alt="封面" loading="lazy" />
+            <img
+              :src="cover"
+              alt="封面"
+              loading="lazy"
+              @error="isCoverErr = true"
+            />
           </div>
           <div class="content">
             <div class="title">{{ article?.title ?? "未知" }}</div>
@@ -95,7 +99,7 @@ const { show, article } = toRefs(props);
 defineEmits(["close"]);
 const isCoverErr = ref(false);
 const cover = computed(() =>
-  isCoverErr ? defaultCover : article.value?.author.avatarUrl ?? defaultCover
+  isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover
 );
 </script>
 
