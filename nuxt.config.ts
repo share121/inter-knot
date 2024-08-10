@@ -2,17 +2,21 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
+
   devServer: {
     port: 5173,
   },
+
   nitro: {
     compressPublicAssets: true,
   },
+
   postcss: {
     plugins: {
       "postcss-preset-env": {},
     },
   },
+
   vite: {
     esbuild: {
       drop: ["debugger", "console"],
@@ -25,6 +29,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   app: {
     baseURL: "/inter-knot/",
     head: {
@@ -55,5 +60,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   css: ["~/assets/css/main.less"],
+  modules: ["@vite-pwa/nuxt"]
 });

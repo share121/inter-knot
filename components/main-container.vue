@@ -51,52 +51,57 @@ const list = computed(() =>
 );
 
 onMounted(async () => {
+  setTimeout(() => {
+    // @ts-ignore
+    if (typeof window.getUserInfo !== "function") {
+      canVisitInterKnot.value = false;
+      return;
+    }
+  }, 2000);
   // @ts-ignore
-  if (typeof window.getUserInfo !== "function") {
-    canVisitInterKnot.value = false;
-    return;
-  }
-  const access_token = localStorage.getItem("access_token");
-  if (!access_token || !access_token.startsWith("ghu_")) {
-    isLogin.value = false;
-    return;
-  }
-  try {
-    const res = await getDiscussions(access_token);
-    data.value.push(
-      ...res.map((e) => {
-        const dom = html2dom(e.bodyHTML);
-        const firstImg = dom.content?.querySelector("img");
-        const cover = firstImg?.src ?? defaultCover;
-        let parent = firstImg?.parentElement;
-        firstImg?.remove();
-        while (parent instanceof HTMLElement && parent.children.length == 0) {
-          parent?.remove();
-          parent = parent.parentElement;
-        }
-        return {
-          ...e,
-          cover,
-          author: {
-            ...e.author,
-            repositoriesCount: undefined,
-          },
-          bodyHTML: dom.innerHTML,
-          comments: e.comments.nodes.map((e) => ({
+  window.run = async () => {
+    const access_token = localStorage.getItem("access_token");
+    if (!access_token || !access_token.startsWith("ghu_")) {
+      isLogin.value = false;
+      return;
+    }
+    try {
+      const res = await getDiscussions(access_token);
+      data.value.push(
+        ...res.map((e) => {
+          const dom = html2dom(e.bodyHTML);
+          const firstImg = dom.content?.querySelector("img");
+          const cover = firstImg?.src ?? defaultCover;
+          let parent = firstImg?.parentElement;
+          firstImg?.remove();
+          while (parent instanceof HTMLElement && parent.children.length == 0) {
+            parent?.remove();
+            parent = parent.parentElement;
+          }
+          return {
             ...e,
+            cover,
             author: {
               ...e.author,
               repositoriesCount: undefined,
             },
-          })),
-        };
-      })
-    );
-    isLoading.value = false;
-  } catch (e) {
-    console.error(e);
-    isLogin.value = false;
-  }
+            bodyHTML: dom.innerHTML,
+            comments: e.comments.nodes.map((e) => ({
+              ...e,
+              author: {
+                ...e.author,
+                repositoriesCount: undefined,
+              },
+            })),
+          };
+        })
+      );
+      isLoading.value = false;
+    } catch (e) {
+      console.error(e);
+      isLogin.value = false;
+    }
+  };
 });
 </script>
 

@@ -36,14 +36,15 @@ const href = computed(() => author.value?.url ?? getLoginHref());
 
 onMounted(async () => {
   // @ts-ignore
-  if (typeof window.getUserInfo !== "function") return;
-  const access_token = localStorage.getItem("access_token");
-  if (!access_token || !access_token.startsWith("ghu_")) return;
-  try {
-    author.value = await getUserInfo(access_token);
-  } catch (e) {
-    console.error(e);
-  }
+  window.run = async () => {
+    const access_token = localStorage.getItem("access_token");
+    if (!access_token || !access_token.startsWith("ghu_")) return;
+    try {
+      author.value = await getUserInfo(access_token);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 });
 </script>
 
