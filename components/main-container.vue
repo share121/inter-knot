@@ -1,6 +1,14 @@
 <template>
   <main>
-    <div class="loading" v-if="isLoading">加载中……</div>
+    <div class="center" v-if="!canVisitInterKnot">
+      <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
+        请安装/更新“绳网小助手”
+      </a>
+    </div>
+    <div class="center" v-else-if="!isLogin">
+      <a :href="getLoginHref()" class="link">请登录后查看</a>
+    </div>
+    <div class="center" v-else-if="isLoading">加载中……</div>
     <ClientOnly v-else>
       <Waterfall
         :list="list"
@@ -8,7 +16,7 @@
         :width="256"
         img-selector="img"
       >
-        <template #item="{ item, url, index }">
+        <template #item="{ item }">
           <Card
             :key="item.article.url"
             :article="item.article"
@@ -29,6 +37,8 @@ import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 
+const canVisitInterKnot = ref(true);
+const isLogin = ref(true);
 const isLoading = ref(true);
 const showPopup = ref(false);
 const curArticle = ref<Article>();
@@ -40,8 +50,18 @@ const list = computed(() =>
   }))
 );
 
-onMounted(() => {
-  tryGet(async (access_token) => {
+onMounted(async () => {
+  // @ts-ignore
+  if (typeof window.getUserInfo !== "function") {
+    canVisitInterKnot.value = false;
+    return;
+  }
+  const access_token = localStorage.getItem("access_token");
+  if (!access_token || !access_token.startsWith("ghu_")) {
+    isLogin.value = false;
+    return;
+  }
+  try {
     const res = await getDiscussions(access_token);
     data.value.push(
       ...res.map((e) => {
@@ -73,7 +93,10 @@ onMounted(() => {
       })
     );
     isLoading.value = false;
-  });
+  } catch (e) {
+    console.error(e);
+    isLogin.value = false;
+  }
 });
 </script>
 
@@ -87,7 +110,11 @@ main {
   margin-left: auto;
   margin-right: auto;
 
-  .loading {
+  .link {
+    color: #66ccff;
+  }
+
+  .center {
     position: absolute;
     top: 50%;
     left: 50%;

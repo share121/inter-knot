@@ -16,9 +16,12 @@ export async function handleErr(fn: Function) {
 }
 
 export function getLoginHref() {
-  return location.hostname === "localhost"
-    ? "https://github.com/login/oauth/authorize?client_id=Iv23li8gf1MxGAgvw5lU&redirect_uri=http://localhost:5173/inter-knot/"
-    : "https://github.com/login/oauth/authorize?client_id=Iv23li8gf1MxGAgvw5lU";
+  if (import.meta.browser) {
+    return location.hostname === "localhost"
+      ? "https://github.com/login/oauth/authorize?client_id=Iv23li8gf1MxGAgvw5lU&redirect_uri=http://localhost:5173/inter-knot/"
+      : "https://github.com/login/oauth/authorize?client_id=Iv23li8gf1MxGAgvw5lU";
+  }
+  return "https://github.com/login/oauth/authorize?client_id=Iv23li8gf1MxGAgvw5lU";
 }
 
 export function xss(html: string) {

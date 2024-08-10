@@ -5,6 +5,11 @@ export default defineNuxtConfig({
   devServer: {
     port: 5173,
   },
+  postcss: {
+    plugins: {
+      "postcss-preset-env": {},
+    },
+  },
   vite: {
     esbuild: {
       drop: ["debugger", "console"],

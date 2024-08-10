@@ -1,8 +1,16 @@
 <template>
-  <a class="user-info" :href="href" :target="author?.url ? '_blank' : '_self'">
-    <img class="profile-photo" :src="cover" alt="我的头像" />
+  <div class="user-info">
+    <ClientOnly>
+      <a :href="href" :target="author?.url ? '_blank' : '_self'">
+        <img class="profile-photo" :src="cover" alt="我的头像" />
+      </a>
+    </ClientOnly>
     <div class="user-info-text">
-      <div class="username">{{ author?.login ?? "佚名" }}</div>
+      <ClientOnly>
+        <a :href="href" :target="author?.url ? '_blank' : '_self'">
+          <div class="username">{{ author?.login ?? "佚名" }}</div>
+        </a>
+      </ClientOnly>
       <div class="experience">
         <div class="bar" :style="{ width }">
           <span class="curExp">{{ curExp }}</span> /
@@ -14,7 +22,7 @@
       <div class="level-num">{{ author?.repositoriesCount ?? 0 }}</div>
       <div class="level-text">LEVEL</div>
     </div>
-  </a>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -27,10 +35,15 @@ const width = computed(() => `${(curExp.value / totalExp.value) * 100}%`);
 const href = computed(() => author.value?.url ?? getLoginHref());
 
 onMounted(async () => {
-  tryGet(async (access_token) => {
-    const res = await getUserInfo(access_token);
-    author.value = res;
-  });
+  // @ts-ignore
+  if (typeof window.getUserInfo !== "function") return;
+  const access_token = localStorage.getItem("access_token");
+  if (!access_token || !access_token.startsWith("ghu_")) return;
+  try {
+    author.value = await getUserInfo(access_token);
+  } catch (e) {
+    console.error(e);
+  }
 });
 </script>
 
@@ -52,11 +65,15 @@ onMounted(async () => {
   transform-origin: left center;
   font-weight: bold;
 
-  .profile-photo {
-    border-radius: 50%;
+  a {
     height: 100%;
-    aspect-ratio: 1 / 1;
-    background: #121212;
+
+    .profile-photo {
+      border-radius: 50%;
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      background: #121212;
+    }
   }
 
   .user-info-text {

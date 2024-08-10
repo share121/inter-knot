@@ -1,46 +1,58 @@
-name: Deploy to GitHub Pages
+name: Deploy
+
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: corepack enable
 
-      - uses: pnpm/action-setup@v3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 8
           run_install: false
 
-      - uses: actions/setup-node@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: pnpm
 
-      - run: pnpm i
-      - run: npx nuxt build --preset github_pages
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm generate
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v4
         with:
-          path: ./.output/public
+          name: production-files
+          path: .output/public
 
   deploy:
+    name: Deploy
     needs: build
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github_pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: production-files
+          path: .output/public
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .output/public
