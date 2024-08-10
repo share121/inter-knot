@@ -36,7 +36,6 @@ const index = ref(0);
   line-height: 1;
   background: url("~/assets/svg/bg-point-tab.svg") 0 0 / 7px;
   margin-left: auto;
-  font-weight: bold;
 
   .tab {
     display: flex;

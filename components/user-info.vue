@@ -72,7 +72,6 @@ onMounted(async () => {
   box-shadow: inset 0 2px 2px #313431, inset 0 -2px 2px #181818;
   transform: scale(1.3);
   transform-origin: left center;
-  font-weight: bold;
 
   a {
     height: 100%;

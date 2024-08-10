@@ -140,7 +140,6 @@ const cover = computed(() =>
       gap: 12px;
       color: #808080;
       align-items: center;
-      font-weight: bold;
 
       .profile-photo {
         border-radius: 50%;
@@ -199,7 +198,6 @@ const cover = computed(() =>
           color: #ededed;
           font-size: 18px;
           margin-bottom: 16px;
-          font-weight: bold;
         }
 
         .text {

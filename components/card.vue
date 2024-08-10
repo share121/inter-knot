@@ -108,7 +108,6 @@ watch(
         left: 16px;
         align-items: center;
         gap: 4px;
-        font-weight: bold;
 
         svg {
           width: 28px;
@@ -144,7 +143,6 @@ watch(
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          font-weight: bold;
         }
       }
 
@@ -155,7 +153,6 @@ watch(
         overflow: hidden;
         margin-top: 4px;
         font-size: 18px;
-        font-weight: bold;
       }
 
       .content {
