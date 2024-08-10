@@ -1,0 +1,27 @@
+{
+  "name": "inter-knot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "dompurify": "^3.1.6",
+    "github-markdown-css": "^5.6.1",
+    "macy": "^2.5.1",
+    "normalize.css": "^8.0.1",
+    "nuxt": "^3.12.4",
+    "pinia": "^2.2.1",
+    "vue": "latest",
+    "vue-waterfall-plugin-next": "^2.4.3"
+  },
+  "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
+  "devDependencies": {
+    "@types/dompurify": "^3.0.5",
+    "less": "^4.2.0"
+  }
+}
