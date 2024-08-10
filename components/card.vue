@@ -8,7 +8,9 @@
             alt="封面"
             :src="isCoverErr ? defaultCover : article.cover"
             loading="lazy"
-            :style="{ minHeight: isCoverLoaded || isCoverErr ? '0' : '60px' }"
+            :style="{
+              height: isCoverLoaded || isCoverErr ? 'unset' : '200px',
+            }"
             @error="isCoverErr = true"
             @load="isCoverLoaded = true"
             ref="cover"
@@ -97,8 +99,6 @@ watch(
 
       .cover {
         width: 100%;
-        max-height: 300px;
-        min-height: 200px;
       }
 
       .visited {

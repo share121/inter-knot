@@ -76,7 +76,6 @@ onMounted(async () => {
   if (typeof window.run === "undefined") window.run = [];
   // @ts-ignore
   window.run.push(async () => {
-    debugger;
     const access_token = localStorage.getItem("access_token");
     if (!access_token || !access_token.startsWith("ghu_")) {
       if (new URL(location.href).searchParams.has("code")) {
