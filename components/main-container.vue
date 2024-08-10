@@ -76,6 +76,7 @@ onMounted(async () => {
   if (typeof window.run === "undefined") window.run = [];
   // @ts-ignore
   window.run.push(async () => {
+    debugger;
     const access_token = localStorage.getItem("access_token");
     if (!access_token || !access_token.startsWith("ghu_")) {
       if (new URL(location.href).searchParams.has("code")) {
@@ -91,7 +92,7 @@ onMounted(async () => {
         return;
       }
     }
-    try {
+    handleErr(async () => {
       const res = await getDiscussions(access_token!);
       data.value.push(
         ...res.map((e) => {
@@ -123,10 +124,7 @@ onMounted(async () => {
         })
       );
       isLoading.value = false;
-    } catch (e) {
-      console.error(e);
-      isLogin.value = false;
-    }
+    });
   });
 });
 </script>
