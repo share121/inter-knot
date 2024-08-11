@@ -303,6 +303,10 @@ const cover = computed(() =>
           :depp(video) {
             width: 100% !important;
           }
+
+          :deep(.footnotes > ol) {
+            margin: 8px;
+          }
         }
 
         .comments {
