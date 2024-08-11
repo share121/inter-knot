@@ -180,7 +180,7 @@ const cover = computed(() =>
 .popup-container {
   position: fixed;
   inset: 0;
-  background: url("~/assets/svg/bg-point-tab.svg") 0 0 / 7px, rgba(0, 0, 0, 0.5);
+  background: url("~/assets/svg/bg-lines.svg") 0 0 / 12px, rgba(43, 43, 43, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
