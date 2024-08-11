@@ -63,7 +63,8 @@ onMounted(async () => {
   setTimeout(() => {
     if (typeof window.getUserInfo !== "function") {
       needInstall.value = true;
-      return;
+    } else if (window.version !== "1.4.0") {
+      needUpdata.value = true;
     }
   }, 2000);
   if (typeof window.run === "undefined") window.run = [];
