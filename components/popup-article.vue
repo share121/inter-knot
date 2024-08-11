@@ -21,6 +21,7 @@
           <div>
             <a target="_blank" :href="article?.author.url ?? '#'">
               {{ article?.author.login ?? "佚名" }}
+              <level-tag :author="article?.author" />
               <span
                 class="identity-tag"
                 v-if="article?.author.login === 'share121'"
@@ -84,6 +85,7 @@
                   <div class="name">
                     <a target="_blank" :href="comment.author.url">
                       {{ comment.author.login }}
+                      <level-tag :author="comment.author" />
                       <span
                         v-if="comment?.author.login === store.author?.login"
                         class="identity-tag"
@@ -175,10 +177,6 @@ const cover = computed(() =>
 </script>
 
 <style scoped lang="less">
-.identity-tag {
-  color: #ffa500;
-}
-
 .popup-container {
   position: fixed;
   inset: 0;
@@ -189,6 +187,18 @@ const cover = computed(() =>
   z-index: 99;
   backdrop-filter: blur(10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
+
+  .identity-tag {
+    display: inline-block;
+    color: #070707;
+    background: #60605e;
+    padding: 2px 8px;
+    font-size: 12px;
+    border-radius: @max-radius;
+    margin-right: 8px;
+    margin-left: 8px;
+    vertical-align: top;
+  }
 
   &.closed {
     opacity: 0;

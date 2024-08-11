@@ -62,7 +62,9 @@ export async function getDiscussions(endCursor: string | null) {
           parent?.remove();
           parent = parent.parentElement;
         }
-        dom.content.querySelectorAll("a").forEach((e) => (e.target = "_blank"));
+        dom.content
+          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+          .forEach((e) => (e.target = "_blank"));
         return {
           ...e,
           cover,
@@ -116,7 +118,9 @@ export async function getComments(number: number, endCursor: string | null) {
       .filter((e) => e !== null)
       .map((e) => {
         const dom = html2dom(e.bodyHTML);
-        dom.content.querySelectorAll("a").forEach((e) => (e.target = "_blank"));
+        dom.content
+          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+          .forEach((e) => (e.target = "_blank"));
         return {
           ...e,
           bodyHTML: dom.innerHTML,
@@ -125,6 +129,19 @@ export async function getComments(number: number, endCursor: string | null) {
     hasNextPage,
     endCursor: newEndCursor,
   };
+}
+
+export async function getRepositoriesCount(login: string) {
+  const {
+    response: {
+      data: {
+        user: {
+          repositories: { totalCount },
+        },
+      },
+    },
+  } = await window.getRepositoriesCount(login);
+  return totalCount;
 }
 
 /** 不含最大值，含最小值 */

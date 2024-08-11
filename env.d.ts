@@ -62,6 +62,17 @@ export declare global {
         };
       };
     }>;
+    getRepositoriesCount(login: string): Promise<{
+      response: {
+        data: {
+          user: {
+            repositories: {
+              totalCount: number;
+            };
+          };
+        };
+      };
+    }>;
   }
 
   declare module "*?url";
