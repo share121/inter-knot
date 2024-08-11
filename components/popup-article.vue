@@ -115,6 +115,11 @@ defineEmits(["close"]);
 const { show, article } = toRefs(props);
 const store = useConfigStore();
 
+const isLocked = useScrollLock(window);
+watch(show, (show) => {
+  isLocked.value = show;
+});
+
 watch(article, async () => {
   isCoverErr.value = false;
   if (article.value?.number) {
