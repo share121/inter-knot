@@ -2,7 +2,7 @@
   <main>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请更新“绳网小助手”，最新版本为 1.3.0
+        请更新“绳网小助手”，最新版本为 1.4.0
       </a>
     </div>
     <div class="center" v-else-if="needInstall">
@@ -68,7 +68,7 @@ onMounted(async () => {
   }, 2000);
   if (typeof window.run === "undefined") window.run = [];
   window.run.push(async () => {
-    if (window.version !== "1.3.0") {
+    if (window.version !== "1.4.0") {
       needUpdata.value = true;
       return;
     }
