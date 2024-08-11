@@ -1,16 +1,12 @@
 <template>
   <div class="user-info">
-    <ClientOnly>
-      <a :href="href" :target="author?.url ? '_blank' : '_self'">
-        <img class="profile-photo" :src="cover" alt="我的头像" />
-      </a>
-    </ClientOnly>
+    <a :href="author?.url" target="_blank">
+      <img class="profile-photo" :src="cover" alt="我的头像" />
+    </a>
     <div class="user-info-text">
-      <ClientOnly>
-        <a :href="href" :target="author?.url ? '_blank' : '_self'">
-          <div class="username">{{ author?.login ?? "佚名" }}</div>
-        </a>
-      </ClientOnly>
+      <a :href="author?.url" target="_blank">
+        <div class="username">{{ author?.login ?? "佚名" }}</div>
+      </a>
       <div class="experience">
         <div class="bar" :style="{ width }">
           <span class="curExp">{{ curExp }}</span> /
@@ -26,7 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-import { storeToRefs } from "pinia";
 import defaultAvatarUrl from "~/assets/svg/profile-photo.svg?url";
 import { useConfigStore } from "~/stores/config";
 
@@ -36,20 +31,11 @@ const curExp = ref(6850);
 const totalExp = ref(10000);
 const cover = computed(() => author.value?.avatarUrl ?? defaultAvatarUrl);
 const width = computed(() => `${(curExp.value / totalExp.value) * 100}%`);
-const href = computed(() => author.value?.url ?? getLoginHref());
 
 onMounted(async () => {
-  // @ts-ignore
   if (typeof window.run === "undefined") window.run = [];
-  // @ts-ignore
   window.run.push(async () => {
-    const access_token = localStorage.getItem("access_token");
-    if (!access_token || !access_token.startsWith("ghu_")) return;
-    try {
-      author.value = await getUserInfo(access_token);
-    } catch (e) {
-      console.error(e);
-    }
+    author.value = await getUserInfo();
   });
 });
 </script>

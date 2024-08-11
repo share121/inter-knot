@@ -2,16 +2,13 @@
   <main>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请更新“绳网小助手”，最新版本为 1.2.0
+        请更新“绳网小助手”，最新版本为 1.3.0
       </a>
     </div>
     <div class="center" v-else-if="needInstall">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
         请安装“绳网小助手”
       </a>
-    </div>
-    <div class="center" v-else-if="!isLogin">
-      <a :href="href" class="link">请登录后查看</a>
     </div>
     <div class="center" v-else-if="isLoading">加载中……</div>
     <ClientOnly v-else>
@@ -46,13 +43,11 @@
 <script setup lang="ts">
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-import defaultCover from "~/assets/svg/default-cover.svg?url";
 
 const store = useConfigStore();
 const { data } = storeToRefs(store);
 const needUpdata = ref(false);
 const needInstall = ref(false);
-const isLogin = ref(true);
 const isLoading = ref(true);
 const showPopup = ref(false);
 const curArticle = ref<Article>();
@@ -63,74 +58,26 @@ const list = computed(() =>
   }))
 );
 const waterfall = ref();
-const href = ref(getLoginHref());
 
 onMounted(async () => {
   setTimeout(() => {
-    // @ts-ignore
     if (typeof window.getUserInfo !== "function") {
       needInstall.value = true;
       return;
     }
-    // @ts-ignore
-    if (window.version !== "1.2.0") {
+  }, 2000);
+  if (typeof window.run === "undefined") window.run = [];
+  window.run.push(async () => {
+    if (window.version !== "1.3.0") {
       needUpdata.value = true;
       return;
     }
-  }, 2000);
-  // @ts-ignore
-  if (typeof window.run === "undefined") window.run = [];
-  // @ts-ignore
-  window.run.push(async () => {
-    const access_token = localStorage.getItem("access_token");
-    if (!access_token || !access_token.startsWith("ghu_")) {
-      if (new URL(location.href).searchParams.has("code")) {
-        try {
-          await getAccessToken(
-            new URL(location.href).searchParams.get("code")!
-          );
-        } catch {
-          getCode();
-        }
-      } else {
-        isLogin.value = false;
-        return;
-      }
-    }
-    handleErr(async () => {
-      const access_token = localStorage.getItem("access_token");
-      const res = await getDiscussions(access_token!, store.endCursor);
-      store.hasNextPage = res.hasNextPage;
-      store.endCursor = res.endCursor;
-      data.value.push(
-        ...res.discussions.map((e) => {
-          const dom = html2dom(e.bodyHTML);
-          const firstImg = dom.content?.querySelector("img");
-          const cover = firstImg?.src ?? defaultCover;
-          let parent = firstImg?.parentElement;
-          firstImg?.remove();
-          while (parent instanceof HTMLElement && parent.children.length == 0) {
-            parent?.remove();
-            parent = parent.parentElement;
-          }
-          dom.content
-            .querySelectorAll("a")
-            .forEach((e) => (e.target = "_blank"));
-          return {
-            ...e,
-            cover,
-            author: {
-              ...e.author,
-              repositoriesCount: undefined,
-            },
-            bodyHTML: dom.innerHTML,
-            comments: [],
-          };
-        })
-      );
-      removeDuplicateArticle(data.value);
-      isLoading.value = false;
-    });
+    const res = await getDiscussions(store.endCursor);
+    store.hasNextPage = res.hasNextPage;
+    store.endCursor = res.endCursor;
+    data.value.push(...res.discussions);
+    removeDuplicateArticle(data.value);
+    isLoading.value = false;
     let flag = false;
     useInfiniteScroll(
       window,
@@ -139,45 +86,17 @@ onMounted(async () => {
         console.log("scroll");
         flag = true;
         try {
-          const res = await getDiscussions(access_token!, store.endCursor);
+          const res = await getDiscussions(store.endCursor);
           store.hasNextPage = res.hasNextPage;
           store.endCursor = res.endCursor;
-          data.value.push(
-            ...res.discussions.map((e) => {
-              const dom = html2dom(e.bodyHTML);
-              const firstImg = dom.content?.querySelector("img");
-              const cover = firstImg?.src ?? defaultCover;
-              let parent = firstImg?.parentElement;
-              firstImg?.remove();
-              while (
-                parent instanceof HTMLElement &&
-                parent.children.length == 0
-              ) {
-                parent?.remove();
-                parent = parent.parentElement;
-              }
-              dom.content
-                .querySelectorAll("a")
-                .forEach((e) => (e.target = "_blank"));
-              return {
-                ...e,
-                cover,
-                author: {
-                  ...e.author,
-                  repositoriesCount: undefined,
-                },
-                bodyHTML: dom.innerHTML,
-                comments: [],
-              };
-            })
-          );
+          data.value.push(...res.discussions);
           removeDuplicateArticle(data.value);
         } catch (e) {
           console.error(e);
         }
         flag = false;
       },
-      { distance: 50 }
+      { distance: 1000 }
     );
   });
 });
@@ -202,6 +121,7 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: 24px;
   }
 }
 </style>

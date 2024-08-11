@@ -34,7 +34,7 @@
                   d="M1.182 12C2.122 6.88 6.608 3 12 3s9.878 3.88 10.819 9c-.94 5.12-5.427 9-10.819 9s-9.878-3.88-10.818-9M12 17a5 5 0 1 0 0-10a5 5 0 0 0 0 10m0-2a3 3 0 1 1 0-6a3 3 0 0 1 0 6"
                 ></path>
               </svg>
-              592
+              114514
             </div>
           </div>
           <close-btn @click="$emit('close')" />
@@ -91,25 +91,34 @@
 <script lang="ts" setup>
 import defaultAvatarUrl from "~/assets/svg/profile-photo.svg?url";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
+
 const props = defineProps<{
   show: boolean;
   article?: Article;
 }>();
+defineEmits(["close"]);
+
 const { show, article } = toRefs(props);
 const store = useConfigStore();
+
 watch(article, async () => {
   isCoverErr.value = false;
-  const access_token = localStorage.getItem("access_token");
-  if (access_token && article.value?.number) {
+  if (article.value?.number) {
     const discussion = store.data.find(
       (e) => e.number === article.value?.number
     );
-    if (!discussion || discussion.comments.length > 0) return;
-    const res = await getComments(access_token, article.value?.number);
-    discussion.comments = res;
+    if (discussion === undefined) return;
+    const res = await getComments(article.value?.number, null);
+    discussion.comments = res.comments.map((e) => {
+      const dom = html2dom(e.bodyHTML);
+      dom.content.querySelectorAll("a").forEach((e) => (e.target = "_blank"));
+      return {
+        ...e,
+        bodyHTML: dom.innerHTML,
+      };
+    });
   }
 });
-defineEmits(["close"]);
 const isCoverErr = ref(false);
 const cover = computed(() =>
   isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover
