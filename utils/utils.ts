@@ -72,6 +72,8 @@ export async function getDiscussions(endCursor: string | null) {
           },
           bodyHTML: dom.innerHTML,
           comments: [],
+          hasNextPage: true,
+          endCursor: null,
         };
       }),
     hasNextPage,
@@ -111,7 +113,15 @@ export async function getComments(number: number, endCursor: string | null) {
           return null;
         }
       })
-      .filter((e) => e !== null),
+      .filter((e) => e !== null)
+      .map((e) => {
+        const dom = html2dom(e.bodyHTML);
+        dom.content.querySelectorAll("a").forEach((e) => (e.target = "_blank"));
+        return {
+          ...e,
+          bodyHTML: dom.innerHTML,
+        };
+      }),
     hasNextPage,
     endCursor: newEndCursor,
   };

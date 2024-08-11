@@ -73,29 +73,21 @@ onMounted(async () => {
       needUpdata.value = true;
       return;
     }
-    const res = await getDiscussions(store.endCursor);
-    store.hasNextPage = res.hasNextPage;
-    store.endCursor = res.endCursor;
-    data.value.push(...res.discussions);
-    removeDuplicateArticle(data.value);
-    isLoading.value = false;
-    let flag = false;
     useInfiniteScroll(
       window,
       async () => {
-        if (flag || store.hasNextPage === false) return;
+        if (store.hasNextPage === false) return;
         console.log("scroll");
-        flag = true;
         try {
           const res = await getDiscussions(store.endCursor);
           store.hasNextPage = res.hasNextPage;
           store.endCursor = res.endCursor;
           data.value.push(...res.discussions);
           removeDuplicateArticle(data.value);
+          isLoading.value = false;
         } catch (e) {
           console.error(e);
         }
-        flag = false;
       },
       { distance: 1000 }
     );
