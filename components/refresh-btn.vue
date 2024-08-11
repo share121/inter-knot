@@ -1,9 +1,10 @@
 <template>
   <Teleport to="body">
-    <a
-      class="write"
+    <div
+      class="refresh"
       target="_blank"
-      title="写文章"
+      title="刷新"
+      @click="$emit('click')"
       href="https://github.com/share121/inter-knot/discussions/new?category=general"
     >
       <svg
@@ -14,17 +15,17 @@
       >
         <path
           fill="currentColor"
-          d="M9.243 18.997H21v2H3v-4.243l9.9-9.9l4.242 4.243zm5.07-13.557l2.122-2.121a1 1 0 0 1 1.414 0l2.829 2.828a1 1 0 0 1 0 1.415l-2.122 2.121z"
+          d="M5.463 4.433A9.96 9.96 0 0 1 12 2c5.523 0 10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3A8 8 0 0 0 6.46 6.228zm13.074 15.134A9.96 9.96 0 0 1 12 22C6.477 22 2 17.523 2 12c0-2.136.67-4.116 1.81-5.74L7 12H4a8 8 0 0 0 13.54 5.772z"
         />
       </svg>
-    </a>
+    </div>
   </Teleport>
 </template>
 
 <style scoped lang="less">
-.write {
+.refresh {
   position: fixed;
-  bottom: 40px;
+  bottom: 100px;
   right: 40px;
   color: unset;
   background: #222222;
@@ -38,5 +39,6 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
+  cursor: pointer;
 }
 </style>
