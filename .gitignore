@@ -6,6 +6,9 @@
 .cache
 dist
 
+# IDEs
+.VSCodeCounter
+
 # Node dependencies
 node_modules
 

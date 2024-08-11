@@ -21,6 +21,18 @@
           <div>
             <a target="_blank" :href="article?.author.url ?? '#'">
               {{ article?.author.login ?? "佚名" }}
+              <span
+                class="identity-tag"
+                v-if="article?.author.login === 'share121'"
+              >
+                绳网创始人
+              </span>
+              <span
+                class="identity-tag"
+                v-else-if="article?.author.login === 'VacuolePaoo'"
+              >
+                绳网管理员
+              </span>
             </a>
             <div class="visited">
               <svg
@@ -86,6 +98,18 @@
                       >
                         楼主
                       </span>
+                      <span
+                        class="identity-tag"
+                        v-if="comment?.author.login === 'share121'"
+                      >
+                        绳网创始人
+                      </span>
+                      <span
+                        class="identity-tag"
+                        v-else-if="comment?.author.login === 'VacuolePaoo'"
+                      >
+                        绳网管理员
+                      </span>
                     </a>
                   </div>
                   <div
@@ -138,7 +162,7 @@ useInfiniteScroll(
       article.value.endCursor = res.endCursor;
     }
   },
-  { distance: 100 }
+  { distance: 1000 }
 );
 
 watch(article, async () => {
