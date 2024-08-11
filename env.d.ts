@@ -55,7 +55,7 @@ export declare global {
                   };
                   bodyHTML: string;
                 }[];
-                pageInfo: { hasNextPage; endCursor: newEndCursor };
+                pageInfo: { hasNextPage: boolean; endCursor: string };
               };
             };
           };
@@ -82,6 +82,8 @@ export declare global {
     cover: string;
     comments: MyComment[];
     number: number;
+    hasNextPage: boolean;
+    endCursor: string | null;
   }
 
   interface MyComment {

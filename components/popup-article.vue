@@ -48,7 +48,7 @@
               @error="isCoverErr = true"
             />
           </div>
-          <div class="content">
+          <div class="content" ref="content">
             <div class="title">{{ article?.title ?? "未知" }}</div>
             <div
               class="text markdown-body"
@@ -115,23 +115,34 @@ defineEmits(["close"]);
 const { show, article } = toRefs(props);
 const store = useConfigStore();
 
+const content = ref<HTMLDivElement>();
+
+const isLocked = useScrollLock(window);
+watch(show, (show) => {
+  isLocked.value = show;
+});
+
+useInfiniteScroll(
+  content,
+  async () => {
+    if (show.value === false) return;
+    if (!article.value) return;
+    if (article.value.hasNextPage) {
+      console.log("my");
+      const res = await getComments(
+        article.value.number,
+        article.value.endCursor
+      );
+      article.value.comments.push(...res.comments);
+      article.value.hasNextPage = res.hasNextPage;
+      article.value.endCursor = res.endCursor;
+    }
+  },
+  { distance: 100 }
+);
+
 watch(article, async () => {
   isCoverErr.value = false;
-  if (article.value?.number) {
-    const discussion = store.data.find(
-      (e) => e.number === article.value?.number
-    );
-    if (discussion === undefined) return;
-    const res = await getComments(article.value?.number, null);
-    discussion.comments = res.comments.map((e) => {
-      const dom = html2dom(e.bodyHTML);
-      dom.content.querySelectorAll("a").forEach((e) => (e.target = "_blank"));
-      return {
-        ...e,
-        bodyHTML: dom.innerHTML,
-      };
-    });
-  }
 });
 const isCoverErr = ref(false);
 const cover = computed(() =>
