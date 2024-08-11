@@ -3,7 +3,7 @@
   <header-bar />
   <main-container />
   <write-btn />
-  <refresh-btn @click="refresh" />
+  <refresh-btn @refresh="refresh" />
 </template>
 
 <script setup lang="ts">
@@ -27,7 +27,7 @@ onMounted(() => {
     id: "3J6dEY8wQU3ZxACy",
     ck: "3J6dEY8wQU3ZxACy",
     autoTrack: true,
-    prefix: `${config.baseUrl}event`,
+    prefix: `${config.public.baseUrl ?? location.pathname}event`,
   });
 });
 </script>

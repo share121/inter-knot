@@ -300,7 +300,7 @@ const cover = computed(() =>
             width: 100% !important;
           }
 
-          :depp(video) {
+          :deep(video) {
             width: 100% !important;
           }
 

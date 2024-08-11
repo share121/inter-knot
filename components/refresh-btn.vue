@@ -4,7 +4,7 @@
       class="refresh"
       target="_blank"
       title="刷新"
-      @click="$emit('click')"
+      @click="$emit('refresh')"
       href="https://github.com/share121/inter-knot/discussions/new?category=general"
     >
       <svg
@@ -21,6 +21,10 @@
     </div>
   </Teleport>
 </template>
+
+<script setup lang="ts">
+defineEmits(["refresh"]);
+</script>
 
 <style scoped lang="less">
 .refresh {

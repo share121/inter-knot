@@ -11,7 +11,9 @@ export default defineNuxtConfig({
     port: 5173,
   },
   runtimeConfig: {
-    baseUrl,
+    public: {
+      baseUrl,
+    },
   },
   nitro: {
     compressPublicAssets: true,
