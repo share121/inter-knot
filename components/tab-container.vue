@@ -127,7 +127,7 @@ const index = ref(0);
       &::before,
       &::after {
         animation: tab-color 1s linear infinite alternate,
-          tab-size 0.3s cubic-bezier(0.35, 0.7, 0, 0.8) infinite alternate;
+          tab-size 0.6s cubic-bezier(0.35, 0.7, 0, 0.8) infinite alternate;
       }
     }
   }

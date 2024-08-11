@@ -20,7 +20,7 @@
           </a>
           <div>
             <a target="_blank" :href="article?.author.url ?? '#'">
-              {{ article?.author.login ?? "佚名" }}
+              {{ article?.author.login ?? "传奇绳匠" }}
               <level-tag :author="article?.author" />
               <span
                 class="identity-tag"

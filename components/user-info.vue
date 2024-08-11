@@ -5,7 +5,7 @@
     </a>
     <div class="user-info-text">
       <a :href="author?.url" target="_blank">
-        <div class="username">{{ author?.login ?? "佚名" }}</div>
+        <div class="username">{{ author?.login ?? "传奇绳匠" }}</div>
       </a>
       <div class="experience">
         <div class="bar" :style="{ width }">
