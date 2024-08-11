@@ -175,6 +175,10 @@ const cover = computed(() =>
 </script>
 
 <style scoped lang="less">
+.identity-tag {
+  color: #ffa500;
+}
+
 .popup-container {
   position: fixed;
   inset: 0;
@@ -330,10 +334,6 @@ const cover = computed(() =>
             .name {
               color: #cccccc;
               margin-bottom: 8px;
-
-              .identity-tag {
-                color: #ffa500;
-              }
             }
 
             .text {
