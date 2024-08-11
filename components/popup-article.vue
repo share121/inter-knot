@@ -72,6 +72,20 @@
                   <div class="name">
                     <a target="_blank" :href="comment.author.url">
                       {{ comment.author.login }}
+                      <span
+                        v-if="comment?.author.login === store.author?.login"
+                        class="identity-tag"
+                      >
+                        自己
+                      </span>
+                      <span
+                        v-else-if="
+                          comment.author.login === article?.author.login
+                        "
+                        class="identity-tag"
+                      >
+                        楼主
+                      </span>
                     </a>
                   </div>
                   <div
@@ -281,6 +295,10 @@ const cover = computed(() =>
             .name {
               color: #cccccc;
               margin-bottom: 8px;
+
+              .identity-tag {
+                color: #ffa500;
+              }
             }
 
             .text {
