@@ -6,13 +6,15 @@
 </template>
 
 <script setup lang="ts">
+const config = useRuntimeConfig();
+
 onMounted(() => {
   // @ts-ignore
   LA.init({
     id: "3J6dEY8wQU3ZxACy",
     ck: "3J6dEY8wQU3ZxACy",
     autoTrack: true,
-    prefix: "inter-knot/event",
+    prefix: `${config.baseUrl}/event`,
   });
 });
 </script>

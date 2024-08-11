@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "generate-root": "cross-env NUXT_APP_BASE_URL=/ nuxt generate",
+    "generate-root": "cross-env BASE_URL=/ nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },

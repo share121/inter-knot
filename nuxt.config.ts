@@ -1,6 +1,7 @@
 import process from "node:process";
 
 const sw = process.env.SW === "true";
+const baseUrl = process.env.BASE_URL ?? "/inter-knot/";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -8,6 +9,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
     port: 5173,
+  },
+  runtimeConfig: {
+    baseUrl,
   },
   nitro: {
     compressPublicAssets: true,
@@ -30,7 +34,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    baseURL: "/inter-knot/",
+    baseURL: baseUrl,
     head: {
       title: "绳网",
       meta: [
@@ -45,7 +49,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          src: "/inter-knot/plugins/js-sdk-pro.min.js",
+          src: `${baseUrl}plugins/js-sdk-pro.min.js`,
           id: "LA_COLLECT",
           defer: true,
         },
@@ -54,7 +58,7 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/svg+xml",
-          href: "/inter-knot/icon.svg",
+          href: `${baseUrl}icon.svg`,
         },
       ],
     },
