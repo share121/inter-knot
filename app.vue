@@ -14,7 +14,7 @@ onMounted(() => {
     id: "3J6dEY8wQU3ZxACy",
     ck: "3J6dEY8wQU3ZxACy",
     autoTrack: true,
-    prefix: `${config.baseUrl}/event`,
+    prefix: `${config.baseUrl}event`,
   });
 });
 </script>
