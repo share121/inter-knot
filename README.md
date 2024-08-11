@@ -1,10 +1,8 @@
 ![Banner](banner.svg)
 
-<center><h1>绳网 Inter-Knot</h1></center>
-
 ## 公告栏
 
-- **反馈问题请在 [Issues](https://github.com/share121/inter-knot/issues)**
+- **反馈问题请在 [议题](https://github.com/share121/inter-knot/issues)**
 - **请遵守 [GitHub 可接受使用政策 - GitHub 文档](https://docs.github.com/zh/site-policy/acceptable-use-policies/github-acceptable-use-policies) 和当地法律法规，违规内容将会被删除**
 - *请勿冒充绳网工作人员*
 
