@@ -26,6 +26,7 @@ export declare global {
                   login: string;
                   url: string;
                 };
+                id: string;
                 bodyHTML: string;
                 bodyText: string;
                 title: string;
@@ -53,6 +54,7 @@ export declare global {
                     login: string;
                     url: string;
                   };
+                  id: string;
                   bodyHTML: string;
                   bodyText: string;
                   title: string;
@@ -93,12 +95,35 @@ export declare global {
         };
       };
     }>;
+    addDiscussionComment(
+      id: string,
+      body: string
+    ): Promise<{
+      response: {
+        data: {
+          addDiscussionComment: {
+            clientMutationId: string | null;
+          };
+        };
+      };
+    }>;
     getRepositoriesCount(login: string): Promise<{
       response: {
         data: {
           user: {
             repositories: {
               totalCount: number;
+            };
+          };
+        };
+      };
+    }>;
+    getDiscussionId(number: number): Promise<{
+      response: {
+        data: {
+          repository: {
+            discussion: {
+              id: string;
             };
           };
         };
@@ -128,6 +153,7 @@ export declare global {
     number: number;
     hasNextPage: boolean;
     endCursor: string | null;
+    id: string;
   }
 
   interface MyComment {

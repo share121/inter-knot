@@ -35,7 +35,12 @@ const width = computed(() => `${(curExp.value / totalExp.value) * 100}%`);
 onMounted(async () => {
   if (typeof window.run === "undefined") window.run = [];
   window.run.push(async () => {
-    author.value = await getUserInfo();
+    try {
+      author.value = await getUserInfo();
+    } catch (e) {
+      console.error(e);
+      useNuxtApp().$toast.error("获取用户信息失败");
+    }
   });
 });
 </script>

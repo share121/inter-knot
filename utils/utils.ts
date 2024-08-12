@@ -264,3 +264,27 @@ export async function getAllDiscussions(reset = false) {
     hasNextPage: !done,
   };
 }
+
+export async function addDiscussionComment(id: string, body: string) {
+  const {
+    response: {
+      data: {
+        addDiscussionComment: { clientMutationId },
+      },
+    },
+  } = await window.addDiscussionComment(id, body);
+  return clientMutationId;
+}
+
+export async function getDiscussionId(number: number) {
+  const {
+    response: {
+      data: {
+        repository: {
+          discussion: { id },
+        },
+      },
+    },
+  } = await window.getDiscussionId(number);
+  return id;
+}

@@ -11,17 +11,27 @@ const { author } = toRefs(props);
 watch(author, async () => {
   if (author.value === undefined) return;
   if (typeof author.value.repositoriesCount === "number") return;
-  author.value.repositoriesCount = await getRepositoriesCount(
-    author.value.login
-  );
+  try {
+    author.value.repositoriesCount = await getRepositoriesCount(
+      author.value.login
+    );
+  } catch (e) {
+    console.error(e);
+    useNuxtApp().$toast.error("获取公开仓库数失败");
+  }
 });
 
 onMounted(async () => {
   if (author.value === undefined) return;
   if (typeof author.value.repositoriesCount === "number") return;
-  author.value.repositoriesCount = await getRepositoriesCount(
-    author.value.login
-  );
+  try {
+    author.value.repositoriesCount = await getRepositoriesCount(
+      author.value.login
+    );
+  } catch (e) {
+    console.error(e);
+    useNuxtApp().$toast.error("获取公开仓库数失败");
+  }
 });
 </script>
 

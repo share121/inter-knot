@@ -23,7 +23,6 @@ const props = defineProps<{
 
 <style scoped lang="less">
 .reply {
-  margin: 16px 0;
   color: unset;
   text-decoration: none;
   padding: 8px;
@@ -34,6 +33,7 @@ const props = defineProps<{
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
 
   svg {
     height: 24px;

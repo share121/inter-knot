@@ -41,6 +41,9 @@ importers:
       vue-waterfall-plugin-next:
         specifier: ^2.4.3
         version: 2.4.3(@types/lodash-es@4.17.12)(vue@3.4.37)
+      vue3-toastify:
+        specifier: ^0.2.2
+        version: 0.2.2(vue@3.4.37)
     devDependencies:
       '@types/dompurify':
         specifier: ^3.0.5
@@ -4707,6 +4710,15 @@ packages:
 
   vue-waterfall-plugin-next@2.4.3:
     resolution: {integrity: sha512-L2mH8wOn+ZuddPhaYHKljfukNM0iQd3vhjesvBK4ck+D5swS8c34VdlOED2w53QZvUrXQpEg9ASDHzLlLkzztg==}
+
+  vue3-toastify@0.2.2:
+    resolution: {integrity: sha512-D8pmIp2UeU8MU1OY7GktA70HviZ38b1RagN82P7tFu3abUD86w+PjfmbdRch4QVtjVxK+eqKLvi5cXJRndwJfw==}
+    engines: {node: '>=18.18.0', npm: '>=9.0.0'}
+    peerDependencies:
+      vue: '>=3.2.0'
+    peerDependenciesMeta:
+      vue:
+        optional: true
 
   vue@3.4.37:
     resolution: {integrity: sha512-3vXvNfkKTBsSJ7JP+LyR7GBuwQuckbWvuwAid3xbqK9ppsKt/DUvfqgZ48fgOLEfpy1IacL5f8QhUVl77RaI7A==}
@@ -10078,6 +10090,10 @@ snapshots:
       - '@types/lodash-es'
       - '@vue/composition-api'
       - vue
+
+  vue3-toastify@0.2.2(vue@3.4.37):
+    optionalDependencies:
+      vue: 3.4.37
 
   vue@3.4.37:
     dependencies:

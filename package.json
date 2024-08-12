@@ -22,7 +22,8 @@
     "nuxt": "^3.12.4",
     "pinia": "^2.2.1",
     "vue": "latest",
-    "vue-waterfall-plugin-next": "^2.4.3"
+    "vue-waterfall-plugin-next": "^2.4.3",
+    "vue3-toastify": "^0.2.2"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
   "devDependencies": {

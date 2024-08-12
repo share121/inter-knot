@@ -67,7 +67,15 @@
               class="text markdown-body"
               v-html="article?.bodyHTML ?? '空'"
             ></div>
-            <reply-btn v-if="article?.url" :url="article?.url" />
+            <div class="action" v-if="article">
+              <reply-btn :url="article?.url" />
+              <report-article-btn
+                v-if="
+                  !['share121', 'VacuolePaoo'].includes(article.author.login)
+                "
+                :article="article"
+              />
+            </div>
             <div class="comments">
               <section
                 class="comment"
@@ -154,14 +162,16 @@ useInfiniteScroll(
     if (show.value === false) return;
     if (!article.value) return;
     if (article.value.hasNextPage) {
-      console.log("my");
-      const res = await getComments(
-        article.value.number,
-        article.value.endCursor
-      );
-      article.value.comments.push(...res.comments);
-      article.value.hasNextPage = res.hasNextPage;
-      article.value.endCursor = res.endCursor;
+      const art = article.value;
+      console.log("load comment");
+      try {
+        const res = await getComments(art.number, art.endCursor);
+        art.comments.push(...res.comments);
+        art.hasNextPage = res.hasNextPage;
+        art.endCursor = res.endCursor;
+      } catch (e) {
+        useNuxtApp().$toast.error("获取评论失败");
+      }
     }
   },
   { distance: 1000 }
@@ -328,6 +338,13 @@ const cover = computed(() =>
           :deep(.footnotes > ol) {
             margin: 8px;
           }
+        }
+
+        .action {
+          display: flex;
+          margin: 16px 0;
+          gap: 8px;
+          align-items: center;
         }
 
         .comments {
