@@ -160,21 +160,6 @@ const content = ref<HTMLDivElement>();
 const isLocked = useScrollLock(window);
 watch(show, async (show) => {
   isLocked.value = show;
-  if (show) {
-    if (!article.value) return;
-    if (article.value.hasNextPage) {
-      const art = article.value;
-      console.log("load comment");
-      try {
-        const res = await getComments(art.number, art.endCursor);
-        art.comments.push(...res.comments);
-        art.hasNextPage = res.hasNextPage;
-        art.endCursor = res.endCursor;
-      } catch (e) {
-        useNuxtApp().$toast.error("获取评论失败");
-      }
-    }
-  }
 });
 
 onMounted(() => {
