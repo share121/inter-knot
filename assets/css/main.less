@@ -47,3 +47,19 @@ body {
   border-radius: @max-radius;
   background-color: #808080;
 }
+
+:target {
+  animation: blink 0.5s ease 0.3s 5 both alternate;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

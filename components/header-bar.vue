@@ -26,7 +26,7 @@ header {
       height: 80px;
     }
   }
-  @media (max-width: 418px) {
+  @media (max-width: 420px) {
     & {
       justify-content: center;
     }

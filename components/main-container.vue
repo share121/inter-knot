@@ -18,6 +18,16 @@
         :width="256"
         img-selector="img"
         ref="waterfall"
+        :breakpoints="[
+          { width: 256, cols: 1 },
+          { width: 512, cols: 2 },
+          { width: 768, cols: 3 },
+          { width: 1024, cols: 4 },
+          { width: 1280, cols: 5 },
+          { width: 1440, cols: 6 },
+          { width: 1600, cols: 7 },
+          { width: 1920, cols: 8 },
+        ]"
       >
         <template #item="{ item }">
           <Card
@@ -108,6 +118,7 @@ main {
   @media (max-width: 1150px) {
     & {
       margin-top: 80px;
+      min-height: calc(100vh - 80px);
     }
   }
 

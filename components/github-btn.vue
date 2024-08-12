@@ -19,6 +19,12 @@
   }
 }
 
+@media (max-width: 420px) {
+  a {
+    display: none;
+  }
+}
+
 svg {
   height: 48px;
   width: 48px;
