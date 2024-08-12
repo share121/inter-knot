@@ -177,6 +177,27 @@ const cover = computed(() =>
 </script>
 
 <style scoped lang="less">
+@media (max-width: 992px) {
+  .popup-container .popup {
+    width: 99% !important;
+    height: 99% !important;
+
+    > main {
+      padding: 24px 2px !important;
+      flex-wrap: wrap !important;
+      overflow-y: auto !important;
+
+      > * {
+        height: unset !important;
+      }
+
+      .cover {
+        flex: 1 0 100% !important;
+      }
+    }
+  }
+}
+
 .popup-container {
   position: fixed;
   inset: 0;
@@ -216,13 +237,6 @@ const cover = computed(() =>
     overflow: hidden;
     border: solid 4px #000;
     outline: solid 4px #cccccc33;
-
-    @media (max-width: 1200px) {
-      & {
-        height: 100%;
-        width: 100%;
-      }
-    }
 
     header {
       background: url("~/assets/svg/bg-point-header.svg") 0 0 / 7px,
@@ -264,24 +278,12 @@ const cover = computed(() =>
       gap: 24px;
       overflow: hidden;
 
-      @media (max-width: 1200px) {
-        & {
-          flex-direction: column;
-        }
-      }
-
       .cover {
         height: 100%;
         flex: 4;
         border-radius: 15px;
         border: solid 4px #313132;
         overflow: hidden;
-
-        @media (max-width: 1200px) {
-          & {
-            flex: 2;
-          }
-        }
 
         img {
           width: 100%;
