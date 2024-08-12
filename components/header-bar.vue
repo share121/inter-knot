@@ -3,6 +3,7 @@
     <user-info :curExp="6380" :totalExp="10000" />
     <tab-container />
     <github-btn title="Github" />
+    <report-btn title="举报" />
   </header>
 </template>
 

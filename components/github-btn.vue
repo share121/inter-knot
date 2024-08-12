@@ -26,8 +26,8 @@
 }
 
 svg {
-  height: 48px;
-  width: 48px;
+  height: 36px;
+  width: 36px;
   color: #888888;
 }
 </style>
