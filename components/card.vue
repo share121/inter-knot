@@ -103,6 +103,8 @@ watch(height, () => emits("resize"));
 
     .cover {
       width: 100%;
+      max-height: 600px;
+      object-fit: cover;
     }
 
     .comments-count {
