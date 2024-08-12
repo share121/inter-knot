@@ -47,7 +47,7 @@
                   d="M1.182 12C2.122 6.88 6.608 3 12 3s9.878 3.88 10.819 9c-.94 5.12-5.427 9-10.819 9s-9.878-3.88-10.818-9M12 17a5 5 0 1 0 0-10a5 5 0 0 0 0 10m0-2a3 3 0 1 1 0-6a3 3 0 0 1 0 6"
                 ></path>
               </svg>
-              114514
+              <p>{{articleMetrics.estimatedViews}}</p>
             </div>
           </div>
           <close-btn @click="$emit('close')" />
@@ -55,7 +55,7 @@
         <main>
           <div class="cover">
             <img
-              :src="cover"
+              :src="articleMetrics.cover"
               alt="封面"
               loading="lazy"
               @error="isCoverErr = true"
@@ -171,9 +171,30 @@ watch(article, async () => {
   isCoverErr.value = false;
 });
 const isCoverErr = ref(false);
-const cover = computed(() =>
-  isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover
-);
+const articleMetrics = computed(() => {
+  // 计算评论数量和文章长度
+  const commentsCount = article.value?.comments?.length ?? 0;
+  const articleLength = article.value?.bodyHTML?.length ?? 0;
+
+  // 基础浏览量基于文章长度，设定一个比例因子
+  const baseMultiplier = 2;
+  const gamma = Math.log(articleLength + 1) * baseMultiplier;
+
+  // 根据文章长度调整评论权重
+  const alphaBase = 1; // 评论的基础权重
+  const alpha = alphaBase + Math.sqrt(articleLength); // 评论权重随文章长度增加
+
+  // 估算浏览量
+  const estimatedViews = Math.round(alpha * commentsCount + gamma);
+
+
+  const cover = isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover;
+
+  return {
+    estimatedViews,
+    cover,
+  };
+});
 </script>
 
 <style scoped lang="less">
