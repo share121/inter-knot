@@ -4,7 +4,7 @@
       class="write"
       target="_blank"
       title="写文章"
-      href="https://github.com/store.owner/inter-knot/discussions/new?category=general"
+      :href="`https://github.com/${store.owner}/inter-knot/discussions/new?category=general`"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -20,6 +20,10 @@
     </a>
   </Teleport>
 </template>
+
+<script setup lang="ts">
+const store = useConfigStore();
+</script>
 
 <style scoped lang="less">
 .write {

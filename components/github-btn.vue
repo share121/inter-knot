@@ -1,5 +1,5 @@
 <template>
-  <a target="_blank" href="https://github.com/store.owner/inter-knot">
+  <a target="_blank" :href="`https://github.com/${store.owner}/inter-knot`">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -11,6 +11,10 @@
     </svg>
   </a>
 </template>
+
+<script setup lang="ts">
+const store = useConfigStore();
+</script>
 
 <style scoped lang="less">
 @media (max-width: 1150px) {

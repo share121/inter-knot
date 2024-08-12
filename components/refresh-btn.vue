@@ -1,12 +1,6 @@
 <template>
   <Teleport to="body">
-    <div
-      class="refresh"
-      target="_blank"
-      title="刷新"
-      @click="$emit('refresh')"
-      href="https://github.com/store.owner/inter-knot/discussions/new?category=general"
-    >
+    <div class="refresh" title="刷新" @click="$emit('refresh')">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="32"
@@ -24,6 +18,7 @@
 
 <script setup lang="ts">
 defineEmits(["refresh"]);
+const store = useConfigStore();
 </script>
 
 <style scoped lang="less">

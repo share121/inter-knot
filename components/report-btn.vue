@@ -1,7 +1,7 @@
 <template>
   <a
     target="_blank"
-    href="https://github.com/share121/inter-knot/discussions/1685#new_comment_form"
+    :href="`https://github.com/${store.owner}/inter-knot/discussions/1685#new_comment_form`"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +14,10 @@
     </svg>
   </a>
 </template>
+
+<script setup lang="ts">
+const store = useConfigStore();
+</script>
 
 <style scoped lang="less">
 @media (max-width: 470px) {
