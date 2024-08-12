@@ -24,13 +24,15 @@
               <level-tag :author="article?.author" />
               <span
                 class="identity-tag"
-                v-if="article?.author.login === 'share121'"
+                v-if="article?.author.login === store.owner"
               >
                 绳网创始人
               </span>
               <span
                 class="identity-tag"
-                v-else-if="article?.author.login === 'VacuolePaoo'"
+                v-else-if="
+                  store.collaborators.includes(article?.author.login ?? '')
+                "
               >
                 绳网管理员
               </span>
@@ -71,7 +73,9 @@
               <reply-btn :url="article?.url" />
               <report-article-btn
                 v-if="
-                  !['share121', 'VacuolePaoo'].includes(article.author.login)
+                  ![store.owner, ...store.collaborators].includes(
+                    article.author.login
+                  )
                 "
                 :article="article"
               />
@@ -110,13 +114,15 @@
                       </span>
                       <span
                         class="identity-tag"
-                        v-if="comment?.author.login === 'share121'"
+                        v-if="comment?.author.login === store.owner"
                       >
                         绳网创始人
                       </span>
                       <span
                         class="identity-tag"
-                        v-else-if="comment?.author.login === 'VacuolePaoo'"
+                        v-else-if="
+                          store.collaborators.includes(comment?.author.login)
+                        "
                       >
                         绳网管理员
                       </span>

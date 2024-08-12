@@ -1,7 +1,7 @@
 <template>
   <a
     target="_blank"
-    href="https://github.com/share121/inter-knot/discussions/1685"
+    href="https://github.com/store.owner/inter-knot/discussions/1685"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
