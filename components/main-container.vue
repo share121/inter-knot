@@ -10,7 +10,6 @@
         请安装“绳网小助手”
       </a>
     </div>
-    <div class="center" v-else-if="isLoading">加载中……</div>
     <ClientOnly v-else>
       <Waterfall
         :list="list"
@@ -58,7 +57,6 @@ const store = useConfigStore();
 const { data } = storeToRefs(store);
 const needUpdata = ref(false);
 const needInstall = ref(false);
-const isLoading = ref(true);
 const showPopup = ref(false);
 const curArticle = ref<Article>();
 const list = computed(() =>
@@ -94,7 +92,6 @@ onMounted(async () => {
           store.endCursor = res.endCursor;
           data.value.push(...res.discussions);
           removeDuplicateArticle(data.value);
-          isLoading.value = false;
         } catch (e) {
           console.error(e);
         }

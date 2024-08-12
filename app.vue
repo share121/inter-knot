@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
 const store = useConfigStore();
 
 async function refresh() {
@@ -19,5 +18,23 @@ async function refresh() {
   store.endCursor = res.endCursor;
   store.data.push(...res.discussions);
   removeDuplicateArticle(store.data);
+  while (
+    document.documentElement.scrollHeight !==
+    document.documentElement.clientHeight
+  ) {
+    await delay(100);
+  }
+  while (
+    document.documentElement.scrollHeight <=
+    document.documentElement.clientHeight
+  ) {
+    console.log("load");
+    if (store.hasNextPage === false) break;
+    const res = await getDiscussions(store.endCursor);
+    store.hasNextPage = res.hasNextPage;
+    store.endCursor = res.endCursor;
+    store.data.push(...res.discussions);
+    removeDuplicateArticle(store.data);
+  }
 }
 </script>
