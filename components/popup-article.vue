@@ -180,7 +180,7 @@ const cover = computed(() =>
 .popup-container {
   position: fixed;
   inset: 0;
-  background: url("~/assets/svg/bg-lines.svg") 0 0 / 12px, rgba(43, 43, 43, 0.5);
+  background: url("~/assets/svg/bg-lines.svg") 0 0 / 5px, rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
