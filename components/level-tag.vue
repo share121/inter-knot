@@ -30,7 +30,7 @@ onMounted(async () => {
     );
   } catch (e) {
     console.error(e);
-    useNuxtApp().$toast.error("获取公开仓库数失败");
+    useNuxtApp().$toast.error("获取用户等级失败");
   }
 });
 </script>
