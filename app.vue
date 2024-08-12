@@ -13,9 +13,8 @@ async function refresh() {
   console.log("refresh");
   store.data.length = 0;
   document.documentElement.scrollTop = 0;
-  const res = await getDiscussions(null);
+  const res = await getAllDiscussions(true);
   store.hasNextPage = res.hasNextPage;
-  store.endCursor = res.endCursor;
   store.data.push(...res.discussions);
   removeDuplicateArticle(store.data);
   while (
@@ -30,9 +29,8 @@ async function refresh() {
   ) {
     console.log("load");
     if (store.hasNextPage === false) break;
-    const res = await getDiscussions(store.endCursor);
+    const res = await getAllDiscussions();
     store.hasNextPage = res.hasNextPage;
-    store.endCursor = res.endCursor;
     store.data.push(...res.discussions);
     removeDuplicateArticle(store.data);
   }

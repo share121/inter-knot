@@ -74,8 +74,71 @@ export async function getDiscussions(endCursor: string | null) {
           },
           bodyHTML: dom.innerHTML,
           comments: [],
+          commentsCount: e.comments.totalCount,
           hasNextPage: true,
           endCursor: null,
+          isPinned: false,
+        };
+      }),
+    hasNextPage,
+    endCursor: newEndCursor,
+  };
+}
+
+export async function getPinnedDiscussions(endCursor: string | null) {
+  const {
+    response: {
+      data: {
+        repository: {
+          pinnedDiscussions: {
+            nodes,
+            pageInfo: { hasNextPage, endCursor: newEndCursor },
+          },
+        },
+      },
+    },
+  } = await window.getPinnedDiscussions(endCursor);
+  return {
+    discussions: nodes
+      .map((e) => e.discussion)
+      .map((e) => {
+        try {
+          return {
+            ...e,
+            bodyHTML: xss(e.bodyHTML),
+          };
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      })
+      .filter((e) => e !== null)
+      .map((e) => {
+        const dom = html2dom(e.bodyHTML);
+        const firstImg = dom.content?.querySelector("img");
+        const cover = firstImg?.src ?? defaultCover;
+        let parent = firstImg?.parentElement;
+        firstImg?.remove();
+        while (parent instanceof HTMLElement && parent.children.length == 0) {
+          parent?.remove();
+          parent = parent.parentElement;
+        }
+        dom.content
+          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+          .forEach((e) => (e.target = "_blank"));
+        return {
+          ...e,
+          cover,
+          author: {
+            ...e.author,
+            repositoriesCount: undefined,
+          },
+          bodyHTML: dom.innerHTML,
+          comments: [],
+          commentsCount: e.comments.totalCount,
+          hasNextPage: true,
+          endCursor: null,
+          isPinned: true,
         };
       }),
     hasNextPage,
@@ -173,4 +236,31 @@ export function removeDuplicateArticle(arr: Article[]) {
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function* genDiscussions() {
+  let res = await getPinnedDiscussions(null);
+  yield res.discussions;
+  while (res.hasNextPage) {
+    res = await getPinnedDiscussions(res.endCursor);
+    yield res.discussions;
+  }
+  res = await getDiscussions(null);
+  yield res.discussions;
+  while (res.hasNextPage) {
+    res = await getDiscussions(res.endCursor);
+    yield res.discussions;
+  }
+}
+
+let gen = genDiscussions();
+export async function getAllDiscussions(reset = false) {
+  if (reset) {
+    gen = genDiscussions();
+  }
+  const { value, done } = await gen.next();
+  return {
+    discussions: value as Article[],
+    hasNextPage: !done,
+  };
 }

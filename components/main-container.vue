@@ -2,7 +2,7 @@
   <main>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请更新“绳网小助手”，最新版本为 1.6.1
+        请更新“绳网小助手”，最新版本为 1.7.0
       </a>
     </div>
     <div class="center" v-else-if="needInstall">
@@ -71,13 +71,13 @@ onMounted(async () => {
   setTimeout(() => {
     if (typeof window.getUserInfo !== "function") {
       needInstall.value = true;
-    } else if (window.version !== "1.6.1") {
+    } else if (window.version !== "1.7.0") {
       needUpdata.value = true;
     }
   }, 2000);
   if (typeof window.run === "undefined") window.run = [];
   window.run.push(async () => {
-    if (window.version !== "1.6.1") {
+    if (window.version !== "1.7.0") {
       needUpdata.value = true;
       return;
     }
@@ -87,9 +87,8 @@ onMounted(async () => {
         if (store.hasNextPage === false) return;
         console.log("scroll");
         try {
-          const res = await getDiscussions(store.endCursor);
+          const res = await getAllDiscussions();
           store.hasNextPage = res.hasNextPage;
-          store.endCursor = res.endCursor;
           data.value.push(...res.discussions);
           removeDuplicateArticle(data.value);
         } catch (e) {

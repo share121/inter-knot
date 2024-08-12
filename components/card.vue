@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" :class="{ 'is-pinned': article.isPinned }">
     <section class="cover-container">
       <div class="cover-wrapper">
         <img
@@ -15,7 +15,7 @@
           ref="cover"
         />
       </div>
-      <div class="visited">
+      <div class="comments-count">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="32"
@@ -24,10 +24,10 @@
         >
           <path
             fill="currentColor"
-            d="M1.182 12C2.122 6.88 6.608 3 12 3s9.878 3.88 10.819 9c-.94 5.12-5.427 9-10.819 9s-9.878-3.88-10.818-9M12 17a5 5 0 1 0 0-10a5 5 0 0 0 0 10m0-2a3 3 0 1 1 0-6a3 3 0 0 1 0 6"
-          ></path>
+            d="M9 22a1 1 0 0 1-1-1v-3H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6.1l-3.7 3.71c-.2.19-.45.29-.7.29zm1-6v3.08L13.08 16H20V4H4v12zm7-5h-2V9h2zm-4 0h-2V9h2zm-4 0H7V9h2z"
+          />
         </svg>
-        {{ visited }}
+        {{ article.commentsCount }}
       </div>
     </section>
     <section class="info-container">
@@ -56,7 +56,6 @@ const isCoverErr = ref(false);
 const isCoverLoaded = ref(false);
 const cover = ref<HTMLImageElement | undefined>();
 const { height } = useElementSize(cover);
-const visited = ref(getRandomInt(1, 1000));
 watch(height, () => emits("resize"));
 </script>
 
@@ -70,6 +69,20 @@ watch(height, () => emits("resize"));
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.3s ease;
+  position: relative;
+
+  &.is-pinned {
+    border-color: #00aaff;
+
+    &::after {
+      color: #fff;
+      position: absolute;
+      content: "置顶";
+      right: 16px;
+      top: 8px;
+      mix-blend-mode: difference;
+    }
+  }
 
   &:hover {
     border-color: #fbfe00;
@@ -92,7 +105,7 @@ watch(height, () => emits("resize"));
       width: 100%;
     }
 
-    .visited {
+    .comments-count {
       display: flex;
       position: absolute;
       top: 8px;
@@ -100,10 +113,11 @@ watch(height, () => emits("resize"));
       align-items: center;
       gap: 4px;
       font-weight: bold;
+      mix-blend-mode: difference;
 
       svg {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
       }
     }
   }

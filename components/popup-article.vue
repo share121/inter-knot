@@ -35,7 +35,7 @@
                 绳网管理员
               </span>
             </a>
-            <div class="visited">
+            <div class="comments-count">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -44,10 +44,10 @@
               >
                 <path
                   fill="currentColor"
-                  d="M1.182 12C2.122 6.88 6.608 3 12 3s9.878 3.88 10.819 9c-.94 5.12-5.427 9-10.819 9s-9.878-3.88-10.818-9M12 17a5 5 0 1 0 0-10a5 5 0 0 0 0 10m0-2a3 3 0 1 1 0-6a3 3 0 0 1 0 6"
-                ></path>
+                  d="M9 22a1 1 0 0 1-1-1v-3H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6.1l-3.7 3.71c-.2.19-.45.29-.7.29zm1-6v3.08L13.08 16H20V4H4v12zm7-5h-2V9h2zm-4 0h-2V9h2zm-4 0H7V9h2z"
+                />
               </svg>
-              114514
+              {{ article?.commentsCount ?? 0 }}
             </div>
           </div>
           <close-btn @click="$emit('close')" />
@@ -257,7 +257,7 @@ const cover = computed(() =>
         background: #121212;
       }
 
-      .visited {
+      .comments-count {
         display: flex;
         align-items: center;
         font-size: 12px;

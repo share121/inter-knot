@@ -31,6 +31,37 @@ export declare global {
                 title: string;
                 url: string;
                 number: number;
+                comments: {
+                  totalCount: number;
+                };
+              }[];
+              pageInfo: { hasNextPage: boolean; endCursor: string };
+            };
+          };
+        };
+      };
+    }>;
+    getPinnedDiscussions(endCursor: string | null): Promise<{
+      response: {
+        data: {
+          repository: {
+            pinnedDiscussions: {
+              nodes: {
+                discussion: {
+                  author: {
+                    avatarUrl: string;
+                    login: string;
+                    url: string;
+                  };
+                  bodyHTML: string;
+                  bodyText: string;
+                  title: string;
+                  url: string;
+                  number: number;
+                  comments: {
+                    totalCount: number;
+                  };
+                };
               }[];
               pageInfo: { hasNextPage: boolean; endCursor: string };
             };
@@ -92,6 +123,8 @@ export declare global {
     bodyText: string;
     cover: string;
     comments: MyComment[];
+    commentsCount: number;
+    isPinned: boolean;
     number: number;
     hasNextPage: boolean;
     endCursor: string | null;
