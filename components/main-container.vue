@@ -105,6 +105,12 @@ main {
   margin-left: auto;
   margin-right: auto;
 
+  @media (max-width: 1150px) {
+    & {
+      margin-top: 80px;
+    }
+  }
+
   .link {
     color: #66ccff;
   }

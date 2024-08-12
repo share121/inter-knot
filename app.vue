@@ -20,14 +20,4 @@ async function refresh() {
   store.data.push(...res.discussions);
   removeDuplicateArticle(store.data);
 }
-
-onMounted(() => {
-  // @ts-ignore
-  LA.init({
-    id: "3J6dEY8wQU3ZxACy",
-    ck: "3J6dEY8wQU3ZxACy",
-    autoTrack: true,
-    prefix: `${config.public.baseUrl ?? location.pathname}event`,
-  });
-});
 </script>

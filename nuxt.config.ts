@@ -48,12 +48,18 @@ export default defineNuxtConfig({
           name: "keywords",
           content: "绳网,Inter-Knot,zzz,绝区零,Zenless Zone Zero",
         },
+        {
+          name: "referrer",
+          content: "no-referrer",
+        },
       ],
       script: [
         {
-          src: `${baseUrl}plugins/js-sdk-pro.min.js`,
+          src: "//sdk.51.la/js-sdk-pro.min.js",
           id: "LA_COLLECT",
-          defer: true,
+        },
+        {
+          src: "data:text/javascript,LA.init%28%7Bid%3A%223JL77Y2vKWhB7sba%22%2Cck%3A%223JL77Y2vKWhB7sba%22%2CautoTrack%3Atrue%2CscreenRecord%3Atrue%7D%29",
         },
       ],
       link: [

@@ -18,11 +18,6 @@ const index = ref(0);
 
 <style scoped lang="less">
 // 媒体查询
-@media (max-width: 1150px) {
-  .tab-container {
-    display: none !important;
-  }
-}
 
 .tab-container {
   display: flex;
@@ -37,6 +32,12 @@ const index = ref(0);
   background: url("~/assets/svg/bg-point-tab.svg") 0 0 / 7px;
   margin-left: auto;
   font-weight: bold;
+
+  @media (max-width: 1150px) {
+    & {
+      display: none !important;
+    }
+  }
 
   .tab {
     display: flex;

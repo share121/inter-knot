@@ -41,12 +41,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="less">
-@media (max-width: 605px) {
-  .user-info {
-    transform: scale(1) !important;
-  }
-}
-
 .user-info {
   display: flex;
   gap: 10px;
@@ -63,6 +57,12 @@ onMounted(async () => {
   transform: scale(1.3);
   transform-origin: left center;
   font-weight: bold;
+
+  @media (max-width: 1150px) {
+    & {
+      transform: scale(1);
+    }
+  }
 
   a {
     height: 100%;

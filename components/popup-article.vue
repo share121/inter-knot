@@ -217,6 +217,13 @@ const cover = computed(() =>
     border: solid 4px #000;
     outline: solid 4px #cccccc33;
 
+    @media (max-width: 1200px) {
+      & {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
     header {
       background: url("~/assets/svg/bg-point-header.svg") 0 0 / 7px,
         linear-gradient(#161616, #080808);
@@ -257,12 +264,24 @@ const cover = computed(() =>
       gap: 24px;
       overflow: hidden;
 
+      @media (max-width: 1200px) {
+        & {
+          flex-direction: column;
+        }
+      }
+
       .cover {
         height: 100%;
         flex: 4;
         border-radius: 15px;
         border: solid 4px #313132;
         overflow: hidden;
+
+        @media (max-width: 1200px) {
+          & {
+            flex: 2;
+          }
+        }
 
         img {
           width: 100%;
