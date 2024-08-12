@@ -17,7 +17,10 @@ const props = defineProps<{
   article: Article;
 }>();
 
+let flag = false;
 async function reportArticle() {
+  if (flag) return;
+  flag = true;
   try {
     await addDiscussionComment(
       await getDiscussionId(1685),
@@ -28,6 +31,7 @@ async function reportArticle() {
     console.error(e);
     useNuxtApp().$toast.error("举报失败");
   }
+  flag = false;
 }
 </script>
 
