@@ -103,7 +103,7 @@ watch(height, () => emits("resize"));
 
     .cover {
       width: 100%;
-      max-height: 600px;
+      max-height: 280px;
       object-fit: cover;
     }
 
