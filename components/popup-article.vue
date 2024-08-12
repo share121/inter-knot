@@ -144,7 +144,7 @@ const props = defineProps<{
   show: boolean;
   article?: Article;
 }>();
-defineEmits(["close"]);
+const emit = defineEmits(["close"]);
 
 const { show, article } = toRefs(props);
 const store = useConfigStore();
@@ -154,6 +154,14 @@ const content = ref<HTMLDivElement>();
 const isLocked = useScrollLock(window);
 watch(show, (show) => {
   isLocked.value = show;
+});
+
+onMounted(() => {
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "Escape") {
+      emit("close");
+    }
+  });
 });
 
 useInfiniteScroll(
