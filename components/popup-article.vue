@@ -160,15 +160,20 @@ const content = ref<HTMLDivElement>();
 const isLocked = useScrollLock(window);
 watch(show, async (show) => {
   isLocked.value = show;
+  if (show) {
+    window.addEventListener("keyup", onEsc);
+  } else {
+    window.removeEventListener("keyup", onEsc);
+  }
 });
 
-onMounted(() => {
-  window.addEventListener("keyup", (e) => {
-    if (e.key === "Escape") {
-      emit("close");
-    }
-  });
-});
+function onEsc(e: KeyboardEvent) {
+  if (e.key === "Escape") {
+    emit("close");
+  }
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+}
 
 useInfiniteScroll(
   content,

@@ -24,10 +24,4 @@ const store = useConfigStore();
     display: none;
   }
 }
-
-svg {
-  height: 36px;
-  width: 36px;
-  color: #888888;
-}
 </style>

@@ -1,36 +1,24 @@
 <template>
   <div class="card" :class="{ 'is-pinned': article.isPinned }">
-    <section class="cover-container">
-      <div class="cover-wrapper">
-        <img
-          class="cover"
-          alt="封面"
-          :src="isCoverErr ? defaultCover : article.cover"
-          loading="lazy"
-          :style="{
-            height: isCoverLoaded || isCoverErr ? 'unset' : '200px',
-          }"
-          @error="isCoverErr = true"
-          @load="isCoverLoaded = true"
-          ref="cover"
-        />
-      </div>
+    <div class="cover-container">
+      <img
+        class="cover"
+        alt="封面"
+        :src="isCoverErr ? defaultCover : article.cover"
+        loading="lazy"
+        :style="{
+          height: isCoverLoaded || isCoverErr ? 'unset' : '200px',
+        }"
+        @error="isCoverErr = true"
+        @load="isCoverLoaded = true"
+        ref="cover"
+      />
       <div class="comments-count">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="currentColor"
-            d="M9 22a1 1 0 0 1-1-1v-3H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6.1l-3.7 3.71c-.2.19-.45.29-.7.29zm1-6v3.08L13.08 16H20V4H4v12zm7-5h-2V9h2zm-4 0h-2V9h2zm-4 0H7V9h2z"
-          />
-        </svg>
+        <comments-icon />
         {{ article.commentsCount }}
       </div>
-    </section>
-    <section class="info-container">
+    </div>
+    <div class="info-container">
       <div class="profile">
         <img
           class="profile-photo"
@@ -42,7 +30,7 @@
       </div>
       <div class="title">{{ article.title }}</div>
       <div class="content">{{ article.bodyText }}</div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -50,11 +38,14 @@
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 
 const props = defineProps<{ article: Article }>();
-const emits = defineEmits(["resize"]);
 const { article } = toRefs(props);
+
+const emits = defineEmits(["resize"]);
+
 const isCoverErr = ref(false);
 const isCoverLoaded = ref(false);
 const cover = ref<HTMLImageElement | undefined>();
+
 const { height } = useElementSize(cover);
 watch(height, () => emits("resize"));
 </script>
@@ -65,7 +56,7 @@ watch(height, () => emits("resize"));
   flex-direction: column;
   border: solid 4px #000;
   border-radius: 20px 20px 0 20px;
-  background: #222222;
+  background: #222;
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.3s ease;
@@ -158,6 +149,7 @@ watch(height, () => emits("resize"));
     .title {
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       margin-top: 4px;
@@ -168,6 +160,7 @@ watch(height, () => emits("resize"));
     .content {
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       margin-top: 4px;

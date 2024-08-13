@@ -1,5 +1,5 @@
 <template>
-  <span class="identity-tag"> Lv{{ author?.repositoriesCount ?? 0 }} </span>
+  <span class="identity-tag">Lv{{ author?.repositoriesCount ?? 0 }}</span>
 </template>
 
 <script setup lang="ts">
@@ -34,17 +34,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped lang="less">
-.identity-tag {
-  display: inline-block;
-  color: #070707;
-  background: #60605e;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: @max-radius;
-  margin-right: 8px;
-  margin-left: 8px;
-  vertical-align: top;
-}
-</style>
