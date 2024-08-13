@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "generate-root": "cross-env BASE_URL=/ nuxt generate",
     "preview": "nuxt preview",
