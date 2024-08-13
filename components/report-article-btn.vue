@@ -14,11 +14,24 @@
     :show="show"
     @close="show = false"
     @cancel="show = false"
-    @submit="reportArticle"
+    @submit="
+      show = false;
+      show2 = true;
+    "
     v-model="text"
     title="举报原因"
     placeholder="请输入举报原因"
     :disabled="text.length === 0"
+  />
+  <popup-input-box
+    :show="show2"
+    @close="show2 = false"
+    @cancel="show2 = false"
+    @submit="reportArticle"
+    v-model="text2"
+    title="确定举报？"
+    placeholder="请输入 yes 确定举报"
+    :disabled="text2 !== 'yes'"
   />
 </template>
 
@@ -28,12 +41,14 @@ const props = defineProps<{
 }>();
 
 const show = ref(false);
+const show2 = ref(false);
 
 const text = ref("");
+const text2 = ref("");
 
 let flag = false;
 async function reportArticle() {
-  show.value = false;
+  show2.value = false;
   if (flag) return;
   flag = true;
   try {

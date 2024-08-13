@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 defineEmits(["refresh"]);
-const store = useConfigStore();
 </script>
 
 <style scoped lang="less">
