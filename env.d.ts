@@ -32,11 +32,39 @@ export declare global {
                 title: string;
                 url: string;
                 number: number;
+                publishedAt: string;
+                updatedAt: string;
                 comments: {
                   totalCount: number;
                 };
               }[];
               pageInfo: { hasNextPage: boolean; endCursor: string };
+            };
+          };
+        };
+      };
+    }>;
+    getDiscussion(number: number): Promise<{
+      response: {
+        data: {
+          repository: {
+            discussion: {
+              author: {
+                avatarUrl: string;
+                login: string;
+                url: string;
+              };
+              id: string;
+              bodyHTML: string;
+              bodyText: string;
+              title: string;
+              url: string;
+              number: number;
+              publishedAt: string;
+              updatedAt: string;
+              comments: {
+                totalCount: number;
+              };
             };
           };
         };
@@ -59,6 +87,8 @@ export declare global {
                   bodyText: string;
                   title: string;
                   url: string;
+                  publishedAt: string;
+                  updatedAt: string;
                   number: number;
                   comments: {
                     totalCount: number;
@@ -163,6 +193,8 @@ export declare global {
     hasNextPage: boolean;
     endCursor: string | null;
     id: string;
+    publishedAt: string;
+    updatedAt: string;
   }
 
   interface MyComment {

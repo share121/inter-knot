@@ -65,6 +65,15 @@ export async function getDiscussions(endCursor: string | null) {
         dom.content
           .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
           .forEach((e) => (e.target = "_blank"));
+        dom.content.querySelectorAll("a").forEach((e) => {
+          const mat =
+            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+              e.href
+            );
+          if (mat === null) return;
+          e.href = `?article=${mat[1]}`;
+          e.target = "_self";
+        });
         return {
           ...e,
           cover,
@@ -82,6 +91,51 @@ export async function getDiscussions(endCursor: string | null) {
       }),
     hasNextPage,
     endCursor: newEndCursor,
+  };
+}
+
+export async function getDiscussion(number: number): Promise<Article> {
+  const {
+    response: {
+      data: {
+        repository: { discussion },
+      },
+    },
+  } = await window.getDiscussion(number);
+  const dom = html2dom(xss(discussion.bodyHTML));
+  const firstImg = dom.content?.querySelector("img");
+  const cover = firstImg?.src ?? defaultCover;
+  let parent = firstImg?.parentElement;
+  firstImg?.remove();
+  while (parent instanceof HTMLElement && parent.children.length == 0) {
+    parent?.remove();
+    parent = parent.parentElement;
+  }
+  dom.content
+    .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+    .forEach((e) => (e.target = "_blank"));
+  dom.content.querySelectorAll("a").forEach((e) => {
+    const mat =
+      /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+        e.href
+      );
+    if (mat === null) return;
+    e.href = `?article=${mat[1]}`;
+    e.target = "_self";
+  });
+  return {
+    ...discussion,
+    cover,
+    author: {
+      ...discussion.author,
+      repositoriesCount: undefined,
+    },
+    bodyHTML: dom.innerHTML,
+    comments: [],
+    commentsCount: discussion.comments.totalCount,
+    hasNextPage: true,
+    endCursor: null,
+    isPinned: false,
   };
 }
 
@@ -126,6 +180,15 @@ export async function getPinnedDiscussions(endCursor: string | null) {
         dom.content
           .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
           .forEach((e) => (e.target = "_blank"));
+        dom.content.querySelectorAll("a").forEach((e) => {
+          const mat =
+            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+              e.href
+            );
+          if (mat === null) return;
+          e.href = `?article=${mat[1]}`;
+          e.target = "_self";
+        });
         return {
           ...e,
           cover,
@@ -184,6 +247,15 @@ export async function getComments(number: number, endCursor: string | null) {
         dom.content
           .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
           .forEach((e) => (e.target = "_blank"));
+        dom.content.querySelectorAll("a").forEach((e) => {
+          const mat =
+            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+              e.href
+            );
+          if (mat === null) return;
+          e.href = `?article=${mat[1]}`;
+          e.target = "_self";
+        });
         return {
           ...e,
           bodyHTML: dom.innerHTML,

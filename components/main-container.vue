@@ -2,7 +2,7 @@
   <main>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请更新“绳网小助手”，最新版本为 1.9.0
+        请更新“绳网小助手”，最新版本为 1.10.0
       </a>
     </div>
     <div class="center" v-else-if="needInstall">
@@ -32,17 +32,14 @@
           <Card
             :key="item.article.url"
             :article="item.article"
-            @click="
-              curArticle = item.article;
-              showPopup = true;
-            "
+            @click="clickHandle(item.article)"
             @resize="waterfall.renderer()"
           />
         </template>
       </Waterfall>
     </ClientOnly>
     <popup-article
-      @close="showPopup = false"
+      @close="closeHandle"
       :show="showPopup"
       :article="curArticle"
     />
@@ -68,16 +65,66 @@ const list = computed(() =>
 const waterfall = ref();
 
 onMounted(async () => {
+  window.addEventListener("popstate", async function () {
+    const url = new URL(location.href);
+    if (url.searchParams.has("article")) {
+      showPopup.value = true;
+      const str = url.searchParams.get("article")!;
+      console.log(str);
+      try {
+        const res = await getDiscussion(parseInt(str));
+        curArticle.value = res;
+        this.document.title = res.title;
+      } catch (e) {
+        useNuxtApp().$toast.error("获取文章失败");
+      }
+    } else {
+      showPopup.value = false;
+    }
+  });
+  const url = new URL(location.href);
+  if (url.searchParams.has("article")) {
+    showPopup.value = true;
+    const str = url.searchParams.get("article")!;
+    console.log(str);
+    try {
+      const res = await getDiscussion(parseInt(str));
+      curArticle.value = res;
+      document.title = res.title;
+    } catch (e) {
+      useNuxtApp().$toast.error("获取文章失败");
+    }
+  }
+});
+
+function clickHandle(article: Article) {
+  curArticle.value = article;
+  showPopup.value = true;
+  const url = new URL(location.href);
+  url.searchParams.set("article", article.number + "");
+  history.pushState(null, "", url);
+  document.title = article.title;
+}
+
+function closeHandle() {
+  showPopup.value = false;
+  const url = new URL(location.href);
+  url.searchParams.delete("article");
+  history.pushState(null, "", url);
+  document.title = "绳网";
+}
+
+onMounted(async () => {
   setTimeout(() => {
     if (typeof window.getUserInfo !== "function") {
       needInstall.value = true;
-    } else if (window.version !== "1.9.0") {
+    } else if (window.version !== "1.10.0") {
       needUpdata.value = true;
     }
   }, 2000);
   if (typeof window.run === "undefined") window.run = [];
   window.run.push(async () => {
-    if (window.version !== "1.9.0") {
+    if (window.version !== "1.10.0") {
       needUpdata.value = true;
       return;
     }

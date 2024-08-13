@@ -1,19 +1,37 @@
 <template>
   <div class="tab-container">
-    <div @click="index = 0" :class="{ active: index === 0 }" class="tab">
+    <div
+      @click="$emit('update:modelValue', 0)"
+      :class="{ active: index === 0 }"
+      class="tab"
+    >
       <span>推送</span>
     </div>
-    <div @click="index = 1" :class="{ active: index === 1 }" class="tab">
+    <div
+      @click="$emit('update:modelValue', 1)"
+      :class="{ active: index === 1 }"
+      class="tab"
+    >
       <span>日程</span>
     </div>
-    <div @click="index = 2" :class="{ active: index === 2 }" class="tab">
-      <span>绳网等级</span>
+    <div
+      @click="$emit('update:modelValue', 2)"
+      :class="{ active: index === 2 }"
+      class="tab"
+    >
+      <span>搜索</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const index = ref(0);
+const props = defineProps<{
+  modelValue: number;
+}>();
+const { modelValue: index } = toRefs(props);
+const emit = defineEmits<{
+  "update:modelValue": [val: number];
+}>();
 </script>
 
 <style scoped lang="less">
