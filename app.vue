@@ -5,6 +5,7 @@
   <write-btn />
   <refresh-btn @refresh="refresh" />
   <go-top-btn />
+  <share-btn />
 </template>
 
 <script setup lang="ts">
