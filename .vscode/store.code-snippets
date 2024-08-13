@@ -1,0 +1,12 @@
+{
+  "init Store": {
+    "scope": "typescript",
+    "prefix": "s",
+    "body": [
+      "export const useStore = defineStore('storeId', () => {",
+      "  return {$1};",
+      "});\n"
+    ],
+    "description": "状态管理模板"
+  }
+}

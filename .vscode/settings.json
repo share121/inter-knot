@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": "explicit",
+  //   "source.fixAll.stylelint": "explicit"
+  // },
+  // "stylelint.validate": ["css", "scss", "vue", "html"],
+  // "eslint.validate": ["typescript", "vue", "html", "json"],
+  // "files.associations": {
+  //   "*.json": "jsonc"
+  // },
+}
