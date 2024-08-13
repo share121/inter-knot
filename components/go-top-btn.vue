@@ -41,7 +41,7 @@ onMounted(() => {
 <style scoped lang="less">
 .go-top {
   position: fixed;
-  bottom: 160px;
+  bottom: 220px;
   right: 40px;
   color: unset;
   background: #222222;
