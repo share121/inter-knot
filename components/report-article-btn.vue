@@ -40,6 +40,8 @@ const props = defineProps<{
   article: Article;
 }>();
 
+const store = useConfigStore();
+
 const show = ref(false);
 const show2 = ref(false);
 
@@ -53,7 +55,7 @@ async function reportArticle() {
   flag = true;
   try {
     await addDiscussionComment(
-      await getDiscussionId(1685),
+      await getDiscussionId(store.reportNumber),
       `违规文章：#${props.article.number}\n违规原因：${text.value}`
     );
     useNuxtApp().$toast.success("举报成功");

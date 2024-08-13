@@ -100,59 +100,64 @@
               />
             </div>
             <div class="comments">
-              <section
-                class="comment"
-                v-for="comment of article?.comments ?? []"
-              >
-                <a target="_blank" :href="comment.author.url">
-                  <img
-                    class="profile-photo"
-                    :src="comment.author.avatarUrl"
-                    alt="头像"
-                    loading="lazy"
-                  />
-                </a>
-                <div>
-                  <div class="name">
-                    <a target="_blank" :href="comment.author.url">
-                      {{ comment.author.login }}
-                      <level-tag :author="comment.author" />
-                      <span
-                        v-if="comment?.author.login === store.author?.login"
-                        class="identity-tag"
-                      >
-                        自己
-                      </span>
-                      <span
-                        v-else-if="
-                          comment.author.login === article?.author.login
-                        "
-                        class="identity-tag"
-                      >
-                        楼主
-                      </span>
-                      <span
-                        class="identity-tag"
-                        v-if="comment?.author.login === store.owner"
-                      >
-                        绳网创始人
-                      </span>
-                      <span
-                        class="identity-tag"
-                        v-else-if="
-                          store.collaborators.includes(comment?.author.login)
-                        "
-                      >
-                        绳网管理员
-                      </span>
-                    </a>
+              <template v-for="comment of article?.comments ?? []">
+                <section
+                  class="comment"
+                  v-if="
+                    article?.number !== store.reportNumber ||
+                    hasLink(comment.bodyHTML)
+                  "
+                >
+                  <a target="_blank" :href="comment.author.url">
+                    <img
+                      class="profile-photo"
+                      :src="comment.author.avatarUrl"
+                      alt="头像"
+                      loading="lazy"
+                    />
+                  </a>
+                  <div>
+                    <div class="name">
+                      <a target="_blank" :href="comment.author.url">
+                        {{ comment.author.login }}
+                        <level-tag :author="comment.author" />
+                        <span
+                          v-if="comment?.author.login === store.author?.login"
+                          class="identity-tag"
+                        >
+                          自己
+                        </span>
+                        <span
+                          v-else-if="
+                            comment.author.login === article?.author.login
+                          "
+                          class="identity-tag"
+                        >
+                          楼主
+                        </span>
+                        <span
+                          class="identity-tag"
+                          v-if="comment?.author.login === store.owner"
+                        >
+                          绳网创始人
+                        </span>
+                        <span
+                          class="identity-tag"
+                          v-else-if="
+                            store.collaborators.includes(comment?.author.login)
+                          "
+                        >
+                          绳网管理员
+                        </span>
+                      </a>
+                    </div>
+                    <div
+                      class="text markdown-body"
+                      v-html="comment.bodyHTML"
+                    ></div>
                   </div>
-                  <div
-                    class="text markdown-body"
-                    v-html="comment.bodyHTML"
-                  ></div>
-                </div>
-              </section>
+                </section>
+              </template>
             </div>
           </div>
         </main>
@@ -241,6 +246,10 @@ const isCoverErr = ref(false);
 const cover = computed(() =>
   isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover
 );
+
+function hasLink(html: string) {
+  return html2dom(html).content.querySelectorAll("a[href]").length > 0;
+}
 </script>
 
 <style scoped lang="less">

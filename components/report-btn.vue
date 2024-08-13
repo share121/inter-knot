@@ -1,7 +1,7 @@
 <template>
   <a
     target="_blank"
-    :href="`https://github.com/${store.owner}/inter-knot/discussions/1685#new_comment_form`"
+    :href="`https://github.com/${store.owner}/inter-knot/discussions/${store.reportNumber}#new_comment_form`"
     title="举报"
   >
     <img src="~/assets/svg/report.svg" alt="" width="62px" />
