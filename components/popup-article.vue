@@ -168,11 +168,27 @@ const store = useConfigStore();
 
 const content = ref<HTMLDivElement>();
 
+let firstLoad = false;
+
 const isLocked = useScrollLock(window);
 watch(show, async (show) => {
   isLocked.value = show;
   if (show) {
     window.addEventListener("keyup", onEsc);
+    if (!article.value) return;
+    if (article.value.hasNextPage) {
+      const art = article.value;
+      console.log("first load comment");
+      try {
+        const res = await getComments(art.number, art.endCursor);
+        art.comments.push(...res.comments);
+        art.hasNextPage = res.hasNextPage;
+        art.endCursor = res.endCursor;
+      } catch (e) {
+        useNuxtApp().$toast.error("获取评论失败");
+      }
+      firstLoad = true;
+    }
   } else {
     window.removeEventListener("keyup", onEsc);
   }
@@ -189,6 +205,7 @@ function onEsc(e: KeyboardEvent) {
 useInfiniteScroll(
   content,
   async () => {
+    if (firstLoad === false) return;
     if (show.value === false) return;
     if (!article.value) return;
     if (article.value.hasNextPage) {
@@ -209,6 +226,7 @@ useInfiniteScroll(
 
 watch(article, async () => {
   isCoverErr.value = false;
+  firstLoad = false;
 });
 const isCoverErr = ref(false);
 const cover = computed(() =>
