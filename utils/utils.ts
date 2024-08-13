@@ -276,6 +276,17 @@ export async function addDiscussionComment(id: string, body: string) {
   return clientMutationId;
 }
 
+export async function deleteDiscussion(id: string) {
+  const {
+    response: {
+      data: {
+        deleteDiscussion: { clientMutationId },
+      },
+    },
+  } = await window.deleteDiscussion(id);
+  return clientMutationId;
+}
+
 export async function getDiscussionId(number: number) {
   const {
     response: {

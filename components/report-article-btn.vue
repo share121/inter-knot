@@ -18,6 +18,7 @@
     v-model="text"
     title="举报原因"
     placeholder="请输入举报原因"
+    :disabled="text.length === 0"
   />
 </template>
 

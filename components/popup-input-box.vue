@@ -18,7 +18,7 @@
             <input :placeholder="placeholder" v-model="text" />
             <footer>
               <button @click="$emit('cancel')">取消</button>
-              <button @click="$emit('submit')" :disabled="text.length === 0">
+              <button @click="$emit('submit')" :disabled="disabled">
                 确定
               </button>
             </footer>
@@ -35,6 +35,7 @@ const props = defineProps<{
   title: string;
   modelValue: string;
   placeholder: string;
+  disabled?: boolean;
 }>();
 const emit = defineEmits(["close", "cancel", "submit", "update:modelValue"]);
 

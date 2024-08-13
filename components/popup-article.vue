@@ -79,6 +79,17 @@
                 "
                 :article="article"
               />
+              <rm-article-btn
+                v-if="
+                  store.author &&
+                  [
+                    store.owner,
+                    ...store.collaborators,
+                    article.author.login,
+                  ].includes(store.author?.login)
+                "
+                :article="article"
+              />
             </div>
             <div class="comments">
               <section

@@ -107,6 +107,15 @@ export declare global {
         };
       };
     }>;
+    deleteDiscussion(id: string): Promise<{
+      response: {
+        data: {
+          deleteDiscussion: {
+            clientMutationId: string | null;
+          };
+        };
+      };
+    }>;
     getRepositoriesCount(login: string): Promise<{
       response: {
         data: {
