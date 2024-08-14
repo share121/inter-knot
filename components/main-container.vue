@@ -68,11 +68,14 @@ onMounted(async () => {
   window.addEventListener("popstate", async function () {
     const url = new URL(location.href);
     if (url.searchParams.has("article")) {
+      const number = +url.searchParams.get("article")!;
+      if (curArticle.value?.number === number) {
+        if (showPopup.value === false) showPopup.value = true;
+        return;
+      }
       showPopup.value = true;
-      const str = url.searchParams.get("article")!;
-      console.log(str);
       try {
-        const res = await getDiscussion(parseInt(str));
+        const res = await getDiscussion(number);
         curArticle.value = res;
         this.document.title = res.title;
       } catch (e) {
