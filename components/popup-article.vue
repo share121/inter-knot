@@ -249,6 +249,10 @@ watch(show, async (show) => {
     window.addEventListener("keyup", onEsc);
   } else {
     window.removeEventListener("keyup", onEsc);
+    // 顺便停止所有播放，以期解决 #725.2
+    if(content.value){
+      content.value.querySelectorAll('video,audio').forEach(el => el.pause());
+    }
   }
 });
 
@@ -519,34 +523,19 @@ img {
             counter-increment: floor;
 
             &::after {
-              margin-left: 8px;
-              margin-top: 4px;
               content: counter(floor) "F";
-              color: #070707;
-              background: #60605e;
-              padding: 2px 8px;
-              border-radius: 0 @max-radius @max-radius @max-radius;
-              height: fit-content;
-              font-size: 12px;
             }
           }
 
           .replies {
             counter-reset: floor-reply;
+            margin-right: 8px;
 
             .reply {
               counter-increment: floor-reply;
 
               &::after {
-                margin-left: 8px;
-                margin-top: 4px;
                 content: counter(floor-reply) "F";
-                color: #070707;
-                background: #60605e;
-                padding: 2px 8px;
-                border-radius: 0 @max-radius @max-radius @max-radius;
-                height: fit-content;
-                font-size: 12px;
               }
             }
           }
@@ -557,10 +546,23 @@ img {
             margin-top: 12px;
             padding-bottom: 8px;
             border-bottom: solid 4px #1c1c1c;
+            position: relative;
 
             &:last-child {
               border-bottom: none;
               padding-bottom: 0;
+            }
+
+            &::after {
+              color: #070707;
+              background: #60605e;
+              padding: 2px 8px;
+              border-radius: 0 @max-radius @max-radius @max-radius;
+              height: fit-content;
+              font-size: 12px;
+              // 楼层号使用绝对定位以腾出更多空间给内容
+              position: absolute;
+              right: 0;
             }
 
             > div {
