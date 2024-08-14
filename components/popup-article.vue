@@ -62,7 +62,7 @@
               loading="lazy"
               @error="isCoverErr = true"
               :style="{
-                filter: filter,
+                filter: article?.isNsfw ?? true ? 'blur(20px)' : 'none',
               }"
             />
           </div>
@@ -249,7 +249,6 @@ watch(show, async (show) => {
     window.addEventListener("keyup", onEsc);
   } else {
     window.removeEventListener("keyup", onEsc);
-    filter.value = "blur(20px)";
   }
 });
 
@@ -282,6 +281,12 @@ useInfiniteScroll(
   { distance: 1000 }
 );
 
+watch(article, async (art) => {
+  if (art?.isNsfw === undefined && art?.cover) {
+    art.isNsfw = await isNsfw(art?.cover);
+  }
+});
+
 watch(article, async () => {
   isCoverErr.value = false;
   firstLoad = false;
@@ -309,7 +314,6 @@ function hasLink(html: string) {
   return html2dom(html).content.querySelectorAll("a[href]").length > 0;
 }
 
-const filter = ref("blur(20px)");
 onMounted(async () => {
   if (!article.value?.cover) return;
   if (content.value) {
@@ -343,23 +347,6 @@ onMounted(async () => {
       childList: true,
       subtree: true,
     });
-  }
-  if ((await isNsfw(article.value.cover)) === false) {
-    filter.value = "none";
-  }
-});
-watch(cover, async (cover) => {
-  if (await isNsfw(cover)) {
-    filter.value = "blur(20px)";
-  } else {
-    filter.value = "none";
-  }
-});
-watch(show, async () => {
-  if (await isNsfw(cover.value)) {
-    filter.value = "blur(20px)";
-  } else {
-    filter.value = "none";
   }
 });
 </script>

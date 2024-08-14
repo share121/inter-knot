@@ -54,10 +54,13 @@ const filter = ref("blur(20px)");
 const coverVisibility = useElementVisibility(cover);
 watch(coverVisibility, async (coverVisibility) => {
   if (coverVisibility === false) return;
+  if (article.value.isNsfw !== undefined) return;
   if (await isNsfw(article.value.cover)) {
     filter.value = "blur(20px)";
+    article.value.isNsfw = true;
   } else {
     filter.value = "none";
+    article.value.isNsfw = false;
   }
 });
 </script>

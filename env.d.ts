@@ -206,6 +206,7 @@ export declare global {
     id: string;
     createdAt: string;
     lastEditedAt: string | null;
+    isNsfw: boolean | undefined;
   }
 
   interface MyComment {

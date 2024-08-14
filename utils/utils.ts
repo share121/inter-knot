@@ -89,6 +89,7 @@ export async function getDiscussions(endCursor: string | null) {
           hasNextPage: true,
           endCursor: null,
           isPinned: false,
+          isNsfw: undefined,
         };
       }),
     hasNextPage,
@@ -138,6 +139,7 @@ export async function getDiscussion(number: number): Promise<Article> {
     hasNextPage: true,
     endCursor: null,
     isPinned: false,
+    isNsfw: undefined,
   };
 }
 
@@ -205,6 +207,7 @@ export async function getPinnedDiscussions(endCursor: string | null) {
           hasNextPage: true,
           endCursor: null,
           isPinned: true,
+          isNsfw: undefined,
         };
       }),
     hasNextPage,
@@ -426,7 +429,7 @@ export let isNsfw = async (src: string): Promise<boolean> => {
       const img = await window.getImage(src);
       img.addEventListener("load", async () => {
         const predictions = await modelOuter.classify(img);
-        resolve(predictions[0].className === "Hentai");
+        resolve(["Porn", "Hentai", "Sexy"].includes(predictions[0].className));
       });
       img.addEventListener("error", () => resolve(false));
       img.addEventListener("abort", () => resolve(false));
