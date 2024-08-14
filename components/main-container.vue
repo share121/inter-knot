@@ -75,6 +75,7 @@ onMounted(async () => {
     document.querySelectorAll("img").forEach(async (e) => {
       const res = await isNsfw(model, await window.getImage(e.src));
       if (res) e.style.filter = "blur(20px)";
+      else e.style.filter = "none";
     });
 
     new MutationObserver((mutations) => {
@@ -89,11 +90,13 @@ onMounted(async () => {
             await window.getImage(mutation.target.src)
           );
           if (res) mutation.target.style.filter = "blur(20px)";
+          else mutation.target.style.filter = "blur(0px)";
         }
         mutation.addedNodes.forEach(async (node) => {
           if (node instanceof HTMLImageElement) {
             const res = await isNsfw(model, await window.getImage(node.src));
             if (res) node.style.filter = "blur(20px)";
+            else node.style.filter = "none";
           }
         });
       });
