@@ -210,6 +210,9 @@ export declare global {
   interface MyComment {
     author: Actor;
     bodyHTML: string;
-    replies: MyComment[];
+    replies: {
+      author: Actor;
+      bodyHTML: string;
+    }[];
   }
 }
