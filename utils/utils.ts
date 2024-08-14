@@ -1,6 +1,7 @@
 import DOMPurify from "dompurify";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
 import type { NSFWJS } from "nsfwjs";
+import modelPath from "/mobilenet_v2/model.json?url";
 
 export function xss(html: string) {
   return DOMPurify.sanitize(html);
@@ -190,6 +191,7 @@ export async function getPinnedDiscussions(endCursor: string | null) {
           e.href = `?article=${mat[1]}`;
           e.target = "_self";
         });
+
         return {
           ...e,
           cover,
@@ -400,18 +402,35 @@ export async function getDiscussionId(number: number) {
   return id;
 }
 
-export async function isNsfw(model: NSFWJS, img: HTMLImageElement) {
-  return new Promise<boolean>((resolve) => {
-    img.addEventListener("load", async () => {
-      const predictions = await model.classify(img);
-      if (
-        predictions[0].className === "Hentai" &&
-        predictions[0].probability > 0.9
-      ) {
-        resolve(true);
-      }
+export let isNsfw = async (src: string): Promise<boolean> => {
+  const tf = await import("@tensorflow/tfjs");
+  const nsfwjs = await import("nsfwjs");
+  tf.enableProdMode();
+
+  let modelOuter: NSFWJS;
+
+  try {
+    const model = await nsfwjs.load("indexeddb://model");
+    modelOuter = model;
+  } catch (e) {
+    console.error(e);
+    const initialLoad = await nsfwjs.load(modelPath);
+    await initialLoad.model.save("indexeddb://model");
+    modelOuter = initialLoad;
+  }
+
+  isNsfw = (src: string) => {
+    return new Promise<boolean>(async (resolve) => {
+      if (new URL(src, location.href).origin === location.origin)
+        return resolve(false);
+      const img = await window.getImage(src);
+      img.addEventListener("load", async () => {
+        const predictions = await modelOuter.classify(img);
+        resolve(predictions[0].className === "Hentai");
+      });
+      img.addEventListener("error", () => resolve(false));
+      img.addEventListener("abort", () => resolve(false));
     });
-    img.addEventListener("error", () => resolve(false));
-    img.addEventListener("abort", () => resolve(false));
-  });
-}
+  };
+  return await isNsfw(src);
+};

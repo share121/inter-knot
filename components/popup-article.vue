@@ -61,16 +61,19 @@
               alt="封面"
               loading="lazy"
               @error="isCoverErr = true"
+              :style="{
+                filter: filter,
+              }"
             />
           </div>
           <div class="content" ref="content">
             <div class="title">{{ article?.title ?? "未知" }}</div>
             <div v-if="article">
               <div>
-                发布时间：{{ new Date(article.publishedAt).toLocaleString() }}
+                发布时间：{{ new Date(article.createdAt).toLocaleString() }}
               </div>
-              <div>
-                最新回复：{{ new Date(article.updatedAt).toLocaleString() }}
+              <div v-if="article.lastEditedAt">
+                更新时间：{{ new Date(article.lastEditedAt).toLocaleString() }}
               </div>
             </div>
             <div
@@ -246,6 +249,7 @@ watch(show, async (show) => {
     window.addEventListener("keyup", onEsc);
   } else {
     window.removeEventListener("keyup", onEsc);
+    filter.value = "blur(20px)";
   }
 });
 
@@ -297,16 +301,74 @@ watch(article, async () => {
   }
 });
 const isCoverErr = ref(false);
-const cover = computed(() =>
+const cover = computed<string>(() =>
   isCoverErr.value ? defaultCover : article.value?.cover ?? defaultCover
 );
 
 function hasLink(html: string) {
   return html2dom(html).content.querySelectorAll("a[href]").length > 0;
 }
+
+const filter = ref("blur(20px)");
+onMounted(async () => {
+  if (!article.value?.cover) return;
+  if (content.value) {
+    new MutationObserver((mutations) => {
+      mutations.forEach(async (mutation) => {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "src" &&
+          mutation.target instanceof HTMLImageElement &&
+          mutation.target.classList.contains("profile-photo") === false
+        ) {
+          mutation.target.style.filter = "blur(20px)";
+          const res = await isNsfw(mutation.target.src);
+          if (res) mutation.target.style.filter = "blur(20px)";
+          else mutation.target.style.filter = "blur(0px)";
+        }
+        mutation.addedNodes.forEach(async (node) => {
+          if (
+            node instanceof HTMLImageElement &&
+            node.classList.contains("profile-photo") === false
+          ) {
+            node.style.filter = "blur(20px)";
+            const res = await isNsfw(node.src);
+            if (res) node.style.filter = "blur(20px)";
+            else node.style.filter = "none";
+          }
+        });
+      });
+    }).observe(content.value, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+  }
+  if ((await isNsfw(article.value.cover)) === false) {
+    filter.value = "none";
+  }
+});
+watch(cover, async (cover) => {
+  if (await isNsfw(cover)) {
+    filter.value = "blur(20px)";
+  } else {
+    filter.value = "none";
+  }
+});
+watch(show, async () => {
+  if (await isNsfw(cover.value)) {
+    filter.value = "blur(20px)";
+  } else {
+    filter.value = "none";
+  }
+});
 </script>
 
 <style scoped lang="less">
+img {
+  transition: filter 0.5s;
+}
+
 @media (max-width: 992px) {
   .popup-container .popup {
     width: 99% !important;
@@ -447,12 +509,8 @@ function hasLink(html: string) {
             margin-bottom: 0 !important;
           }
 
-          :deep(img) {
-            width: 100% !important;
-          }
-
           :deep(video) {
-            width: 100% !important;
+            max-width: 100% !important;
           }
 
           :deep(.footnotes > ol) {
@@ -510,6 +568,13 @@ function hasLink(html: string) {
           .reply {
             display: flex;
             margin-top: 12px;
+            padding-bottom: 8px;
+            border-bottom: solid 4px #1c1c1c;
+
+            &:last-child {
+              border-bottom: none;
+              padding-bottom: 0;
+            }
 
             > div {
               flex: 1;

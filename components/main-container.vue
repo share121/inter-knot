@@ -2,7 +2,7 @@
   <main>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
-        请更新“绳网小助手”，最新版本为 1.12.0
+        请更新“绳网小助手”，最新版本为 1.12.1
       </a>
     </div>
     <div class="center" v-else-if="needInstall">
@@ -13,6 +13,7 @@
     <ClientOnly v-else>
       <Waterfall
         :list="list"
+        row-key="number"
         background-color="transparent"
         :width="256"
         img-selector="img"
@@ -49,8 +50,6 @@
 <script setup lang="ts">
 import { Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/dist/style.css";
-import modelPath from "/mobilenet_v2/model.json?url";
-import type { NSFWJS } from "nsfwjs";
 
 const store = useConfigStore();
 const { data } = storeToRefs(store);
@@ -62,61 +61,10 @@ const list = computed(() =>
   data.value.map((e) => ({
     src: e.cover,
     article: e,
+    number: e.number,
   }))
 );
 const waterfall = ref();
-
-onMounted(async () => {
-  const tf = await import("@tensorflow/tfjs");
-  const nsfwjs = await import("nsfwjs");
-  tf.enableProdMode();
-
-  function cb(model: NSFWJS) {
-    document.querySelectorAll("img").forEach(async (e) => {
-      const res = await isNsfw(model, await window.getImage(e.src));
-      if (res) e.style.filter = "blur(20px)";
-      else e.style.filter = "none";
-    });
-
-    new MutationObserver((mutations) => {
-      mutations.forEach(async (mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "src" &&
-          mutation.target instanceof HTMLImageElement
-        ) {
-          const res = await isNsfw(
-            model,
-            await window.getImage(mutation.target.src)
-          );
-          if (res) mutation.target.style.filter = "blur(20px)";
-          else mutation.target.style.filter = "blur(0px)";
-        }
-        mutation.addedNodes.forEach(async (node) => {
-          if (node instanceof HTMLImageElement) {
-            const res = await isNsfw(model, await window.getImage(node.src));
-            if (res) node.style.filter = "blur(20px)";
-            else node.style.filter = "none";
-          }
-        });
-      });
-    }).observe(document.body, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-    });
-  }
-
-  try {
-    const model = await nsfwjs.load("indexeddb://model");
-    cb(model);
-  } catch (e) {
-    console.error(e);
-    const initialLoad = await nsfwjs.load(modelPath);
-    await initialLoad.model.save("indexeddb://model");
-    cb(initialLoad);
-  }
-});
 
 onMounted(async () => {
   window.addEventListener("popstate", async function () {
@@ -174,13 +122,13 @@ onMounted(async () => {
   setTimeout(() => {
     if (typeof window.getUserInfo !== "function") {
       needInstall.value = true;
-    } else if (window.version !== "1.12.0") {
+    } else if (window.version !== "1.12.1") {
       needUpdata.value = true;
     }
   }, 2000);
   if (typeof window.run === "undefined") window.run = [];
   window.run.push(async () => {
-    if (window.version !== "1.12.0") {
+    if (window.version !== "1.12.1") {
       needUpdata.value = true;
       return;
     }

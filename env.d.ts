@@ -32,8 +32,8 @@ export declare global {
                 title: string;
                 url: string;
                 number: number;
-                publishedAt: string;
-                updatedAt: string;
+                createdAt: string;
+                lastEditedAt: string | null;
                 comments: {
                   totalCount: number;
                 };
@@ -60,8 +60,8 @@ export declare global {
               title: string;
               url: string;
               number: number;
-              publishedAt: string;
-              updatedAt: string;
+              createdAt: string;
+              lastEditedAt: string | null;
               comments: {
                 totalCount: number;
               };
@@ -87,8 +87,8 @@ export declare global {
                   bodyText: string;
                   title: string;
                   url: string;
-                  publishedAt: string;
-                  updatedAt: string;
+                  createdAt: string;
+                  lastEditedAt: string | null;
                   number: number;
                   comments: {
                     totalCount: number;
@@ -204,8 +204,8 @@ export declare global {
     hasNextPage: boolean;
     endCursor: string | null;
     id: string;
-    publishedAt: string;
-    updatedAt: string;
+    createdAt: string;
+    lastEditedAt: string | null;
   }
 
   interface MyComment {
