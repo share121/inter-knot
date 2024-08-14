@@ -117,6 +117,16 @@ export declare global {
                     url: string;
                   };
                   bodyHTML: string;
+                  replies: {
+                    nodes: {
+                      author: {
+                        avatarUrl: string;
+                        login: string;
+                        url: string;
+                      };
+                      bodyHTML: string;
+                    }[];
+                  };
                 }[];
                 pageInfo: { hasNextPage: boolean; endCursor: string };
               };
@@ -200,5 +210,6 @@ export declare global {
   interface MyComment {
     author: Actor;
     bodyHTML: string;
+    replies: MyComment[];
   }
 }

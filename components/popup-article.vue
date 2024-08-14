@@ -155,6 +155,62 @@
                       class="text markdown-body"
                       v-html="comment.bodyHTML"
                     ></div>
+                    <div class="replies">
+                      <section class="reply" v-for="reply of comment.replies">
+                        <a target="_blank" :href="reply.author.url">
+                          <img
+                            class="profile-photo"
+                            :src="reply.author.avatarUrl"
+                            alt="头像"
+                            loading="lazy"
+                          />
+                        </a>
+                        <div>
+                          <div class="name">
+                            <a target="_blank" :href="reply.author.url">
+                              {{ reply.author.login }}
+                              <level-tag :author="reply.author" />
+                              <span
+                                v-if="
+                                  reply?.author.login === store.author?.login
+                                "
+                                class="identity-tag"
+                              >
+                                自己
+                              </span>
+                              <span
+                                v-else-if="
+                                  reply.author.login === article?.author.login
+                                "
+                                class="identity-tag"
+                              >
+                                楼主
+                              </span>
+                              <span
+                                class="identity-tag"
+                                v-if="reply?.author.login === store.owner"
+                              >
+                                绳网创始人
+                              </span>
+                              <span
+                                class="identity-tag"
+                                v-else-if="
+                                  store.collaborators.includes(
+                                    reply?.author.login
+                                  )
+                                "
+                              >
+                                绳网管理员
+                              </span>
+                            </a>
+                          </div>
+                          <div
+                            class="text markdown-body"
+                            v-html="reply.bodyHTML"
+                          ></div>
+                        </div>
+                      </section>
+                    </div>
                   </div>
                 </section>
               </template>
@@ -417,14 +473,7 @@ function hasLink(html: string) {
           counter-reset: floor;
 
           .comment {
-            display: flex;
-            margin-top: 12px;
             counter-increment: floor;
-
-            > div {
-              flex: 1;
-              overflow: hidden;
-            }
 
             &::after {
               margin-left: 8px;
@@ -436,6 +485,37 @@ function hasLink(html: string) {
               border-radius: 0 @max-radius @max-radius @max-radius;
               height: fit-content;
               font-size: 12px;
+            }
+          }
+
+          .replies {
+            counter-reset: floor-reply;
+
+            .reply {
+              counter-increment: floor-reply;
+
+              &::after {
+                margin-left: 8px;
+                margin-top: 4px;
+                content: counter(floor-reply) "F";
+                color: #070707;
+                background: #60605e;
+                padding: 2px 8px;
+                border-radius: 0 @max-radius @max-radius @max-radius;
+                height: fit-content;
+                font-size: 12px;
+              }
+            }
+          }
+
+          .comment,
+          .reply {
+            display: flex;
+            margin-top: 12px;
+
+            > div {
+              flex: 1;
+              overflow: hidden;
             }
 
             .profile-photo {

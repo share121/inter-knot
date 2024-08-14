@@ -235,6 +235,14 @@ export async function getComments(number: number, endCursor: string | null) {
               ...e.author,
               repositoriesCount: undefined,
             },
+            replies: e.replies.nodes.map((e) => ({
+              ...e,
+              bodyHTML: xss(e.bodyHTML),
+              author: {
+                ...e.author,
+                repositoriesCount: undefined,
+              },
+            })),
           };
         } catch (e) {
           console.error(e);
@@ -259,6 +267,25 @@ export async function getComments(number: number, endCursor: string | null) {
         return {
           ...e,
           bodyHTML: dom.innerHTML,
+          replies: e.replies.map((e) => {
+            const dom = html2dom(e.bodyHTML);
+            dom.content
+              .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+              .forEach((e) => (e.target = "_blank"));
+            dom.content.querySelectorAll("a").forEach((e) => {
+              const mat =
+                /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+                  e.href
+                );
+              if (mat === null) return;
+              e.href = `?article=${mat[1]}`;
+              e.target = "_self";
+            });
+            return {
+              ...e,
+              bodyHTML: dom.innerHTML,
+            };
+          }),
         };
       }),
     hasNextPage,
