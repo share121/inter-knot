@@ -21,9 +21,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    esbuild: {
-      drop: ["debugger", "console"],
-    },
+    // esbuild: {
+    //   drop: ["debugger", "console"],
+    // },
     css: {
       preprocessorOptions: {
         less: {
@@ -36,6 +36,9 @@ export default defineNuxtConfig({
     baseURL: baseUrl,
     head: {
       title: "绳网",
+      htmlAttrs: {
+        lang: "zh-CN",
+      },
       meta: [
         {
           name: "description",

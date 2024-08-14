@@ -10,7 +10,6 @@ const store = useConfigStore();
 
 async function refresh() {
   try {
-    console.log("refresh");
     store.data.length = 0;
     document.documentElement.scrollTop = 0;
     const res = await getAllDiscussions(true);
@@ -27,7 +26,6 @@ async function refresh() {
       document.documentElement.scrollHeight <=
       document.documentElement.clientHeight
     ) {
-      console.log("load");
       if (store.hasNextPage === false) break;
       const res = await getAllDiscussions();
       store.hasNextPage = res.hasNextPage;

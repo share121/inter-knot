@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
 import defaultCover from "~/assets/svg/default-cover.svg?url";
+import type { NSFWJS } from "nsfwjs";
 
 export function xss(html: string) {
   return DOMPurify.sanitize(html);
@@ -397,4 +398,20 @@ export async function getDiscussionId(number: number) {
     },
   } = await window.getDiscussionId(number);
   return id;
+}
+
+export async function isNsfw(model: NSFWJS, img: HTMLImageElement) {
+  return new Promise<boolean>((resolve) => {
+    img.addEventListener("load", async () => {
+      const predictions = await model.classify(img);
+      if (
+        predictions[0].className === "Hentai" &&
+        predictions[0].probability > 0.9
+      ) {
+        resolve(true);
+      }
+    });
+    img.addEventListener("error", () => resolve(false));
+    img.addEventListener("abort", () => resolve(false));
+  });
 }

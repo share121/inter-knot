@@ -265,7 +265,6 @@ useInfiniteScroll(
     if (!article.value) return;
     if (article.value.hasNextPage) {
       const art = article.value;
-      console.log("load comment");
       try {
         const res = await getComments(art.number, art.endCursor);
         art.comments.push(...res.comments);
@@ -286,7 +285,6 @@ watch(article, async () => {
   if (!article.value) return;
   if (article.value.hasNextPage) {
     const art = article.value;
-    console.log("first load comment");
     try {
       const res = await getComments(art.number, art.endCursor);
       art.comments.push(...res.comments);

@@ -178,6 +178,7 @@ export declare global {
         };
       };
     }>;
+    getImage(src: string): Promise<HTMLImageElement>;
   }
 
   declare module "*?url";
