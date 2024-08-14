@@ -70,7 +70,7 @@
                 发布时间：{{ new Date(article.publishedAt).toLocaleString() }}
               </div>
               <div>
-                更新时间：{{ new Date(article.updatedAt).toLocaleString() }}
+                最新回复：{{ new Date(article.updatedAt).toLocaleString() }}
               </div>
             </div>
             <div
