@@ -4,6 +4,7 @@
     <tab-container v-model="tab" />
     <github-btn title="Github" />
     <report-btn title="举报" />
+    <discord-btn title="Discord" />
     <popup-input-box
       :show="show"
       @close="(show = false), (tab = old)"
