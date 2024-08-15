@@ -140,7 +140,6 @@ onMounted(async () => {
     }
     getAllReports(store.reportNumber).then((reports) => {
       store.reports = transformReports(reports);
-      store.reports[1650] = ["1", "2", "3", "4", "5"];
     });
     useInfiniteScroll(
       window,

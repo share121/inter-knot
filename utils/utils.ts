@@ -340,7 +340,7 @@ export function transformReports(arr: Reports[]) {
   for (const i of arr) {
     for (const num of i.numbers) {
       if (obj[num] === undefined) obj[num] = [i.login];
-      else obj[num].push(i.login);
+      else if (!obj[num].includes(i.login)) obj[num].push(i.login);
     }
   }
   return obj;
