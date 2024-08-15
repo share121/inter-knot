@@ -8,7 +8,6 @@
         loading="lazy"
         :style="{
           height: isCoverLoaded || isCoverErr ? 'unset' : '200px',
-          filter: filter,
         }"
         @error="isCoverErr = true"
         @load="isCoverLoaded = true"
@@ -49,20 +48,6 @@ const cover = ref<HTMLImageElement | undefined>();
 
 const { height } = useElementSize(cover);
 watch(height, () => emits("resize"));
-
-const filter = ref("blur(20px)");
-const coverVisibility = useElementVisibility(cover);
-watch(coverVisibility, async (coverVisibility) => {
-  if (coverVisibility === false) return;
-  if (article.value.isNsfw !== undefined) return;
-  if (await isNsfw(article.value.cover)) {
-    filter.value = "blur(20px)";
-    article.value.isNsfw = true;
-  } else {
-    filter.value = "none";
-    article.value.isNsfw = false;
-  }
-});
 </script>
 
 <style scoped lang="less">

@@ -61,9 +61,6 @@
               alt="封面"
               loading="lazy"
               @error="isCoverErr = true"
-              :style="{
-                filter: article?.isNsfw ?? true ? 'blur(20px)' : 'none',
-              }"
             />
           </div>
           <div class="content" ref="content">
@@ -281,12 +278,6 @@ useInfiniteScroll(
   { distance: 1000 }
 );
 
-watch(article, async (art) => {
-  if (art?.isNsfw === undefined && art?.cover) {
-    art.isNsfw = await isNsfw(art?.cover);
-  }
-});
-
 watch(article, async () => {
   isCoverErr.value = false;
   firstLoad = false;
@@ -313,42 +304,6 @@ const cover = computed<string>(() =>
 function hasLink(html: string) {
   return html2dom(html).content.querySelectorAll("a[href]").length > 0;
 }
-
-onMounted(async () => {
-  if (!article.value?.cover) return;
-  if (content.value) {
-    new MutationObserver((mutations) => {
-      mutations.forEach(async (mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "src" &&
-          mutation.target instanceof HTMLImageElement &&
-          mutation.target.classList.contains("profile-photo") === false
-        ) {
-          mutation.target.style.filter = "blur(20px)";
-          const res = await isNsfw(mutation.target.src);
-          if (res) mutation.target.style.filter = "blur(20px)";
-          else mutation.target.style.filter = "blur(0px)";
-        }
-        mutation.addedNodes.forEach(async (node) => {
-          if (
-            node instanceof HTMLImageElement &&
-            node.classList.contains("profile-photo") === false
-          ) {
-            node.style.filter = "blur(20px)";
-            const res = await isNsfw(node.src);
-            if (res) node.style.filter = "blur(20px)";
-            else node.style.filter = "none";
-          }
-        });
-      });
-    }).observe(content.value, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-    });
-  }
-});
 </script>
 
 <style scoped lang="less">
