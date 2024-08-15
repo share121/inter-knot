@@ -135,6 +135,14 @@ export declare global {
         };
       };
     }>;
+    getAllReports(number: number): Promise<
+      {
+        author: {
+          login: string;
+        };
+        bodyHTML: string;
+      }[]
+    >;
     addDiscussionComment(
       id: string,
       body: string
@@ -188,6 +196,11 @@ export declare global {
     login: string;
     url: string;
     repositoriesCount: number | undefined;
+  }
+
+  interface Reports {
+    login: string;
+    numbers: number[];
   }
 
   interface Article {

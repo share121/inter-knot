@@ -1,6 +1,7 @@
 export const useConfigStore = defineStore("config", () => {
   const author = ref<Actor>();
   const data = ref<Article[]>([]);
+  const reports = ref<Record<number, string[]>>({});
   const hasNextPage = ref(true);
   const collaborators = ["VacuolePaoo"];
   const owner = "share121";
@@ -12,5 +13,6 @@ export const useConfigStore = defineStore("config", () => {
     collaborators,
     owner,
     reportNumber,
+    reports,
   };
 });

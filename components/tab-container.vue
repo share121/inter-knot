@@ -49,7 +49,14 @@ const emit = defineEmits<{
   margin-left: auto;
   font-weight: bold;
 
-  @media (max-width: 1150px) {
+  @media (max-width: 1300px) {
+    & {
+      transform: scale(0.8);
+      margin-right: -48px;
+    }
+  }
+
+  @media (max-width: 986px) {
     & {
       display: none !important;
     }

@@ -29,7 +29,7 @@
           { width: 1920, cols: 8 },
         ]"
       >
-        <template #item="{ item }">
+        <template #item="{ item }: { item: { article: Article } }">
           <Card
             :key="item.article.url"
             :article="item.article"
@@ -58,11 +58,17 @@ const needInstall = ref(false);
 const showPopup = ref(false);
 const curArticle = ref<Article>();
 const list = computed(() =>
-  data.value.map((e) => ({
-    src: e.cover,
-    article: e,
-    number: e.number,
-  }))
+  data.value
+    .filter(
+      (e) =>
+        [store.owner, ...store.collaborators].includes(e.author.login) ||
+        (store.reports[e.number]?.length ?? 0) < 5
+    )
+    .map((e) => ({
+      src: e.cover,
+      article: e,
+      number: e.number,
+    }))
 );
 const waterfall = ref();
 
@@ -132,6 +138,10 @@ onMounted(async () => {
       needUpdata.value = true;
       return;
     }
+    getAllReports(store.reportNumber).then((reports) => {
+      store.reports = transformReports(reports);
+      store.reports[1650] = ["1", "2", "3", "4", "5"];
+    });
     useInfiniteScroll(
       window,
       async () => {
@@ -162,7 +172,7 @@ main {
   margin-left: auto;
   margin-right: auto;
 
-  @media (max-width: 1150px) {
+  @media (max-width: 1300px) {
     & {
       margin-top: 80px;
       min-height: calc(100vh - 80px);

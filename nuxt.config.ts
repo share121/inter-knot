@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   },
   vite: {
     esbuild: {
-      drop: ["debugger", "console"],
+      // drop: ["debugger", "console"],
     },
     css: {
       preprocessorOptions: {

@@ -45,7 +45,7 @@ header {
   align-items: center;
   gap: 16px;
 
-  @media (max-width: 1150px) {
+  @media (max-width: 1300px) {
     & {
       padding: 12px 24px;
       height: 80px;

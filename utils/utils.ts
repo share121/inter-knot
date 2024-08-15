@@ -335,6 +335,17 @@ export function removeDuplicateArticle(arr: Article[]) {
   return arr;
 }
 
+export function transformReports(arr: Reports[]) {
+  const obj: Record<number, string[]> = {};
+  for (const i of arr) {
+    for (const num of i.numbers) {
+      if (obj[num] === undefined) obj[num] = [i.login];
+      else obj[num].push(i.login);
+    }
+  }
+  return obj;
+}
+
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -399,4 +410,27 @@ export async function getDiscussionId(number: number) {
     },
   } = await window.getDiscussionId(number);
   return id;
+}
+
+export async function getAllReports(reportNumber: number) {
+  const res = await window.getAllReports(reportNumber);
+  return res
+    .map((e) => {
+      const dom = html2dom(e.bodyHTML);
+      const numbers: number[] = [];
+      dom.content.querySelectorAll("a").forEach((e) => {
+        const mat =
+          /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+            e.href
+          );
+        if (mat === null) return;
+        numbers.push(+mat[1]);
+      });
+      if (numbers.length === 0) return null;
+      return {
+        login: e.author.login,
+        numbers,
+      };
+    })
+    .filter((e) => e !== null);
 }

@@ -13,7 +13,13 @@ const store = useConfigStore();
 </script>
 
 <style scoped lang="less">
-@media (max-width: 1150px) {
+@media (max-width: 1300px) {
+  img {
+    width: 52px;
+    height: 52px;
+  }
+}
+@media (max-width: 986px) {
   a {
     margin-left: auto;
   }

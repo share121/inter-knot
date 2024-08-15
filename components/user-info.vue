@@ -63,7 +63,7 @@ onMounted(async () => {
   transform-origin: left center;
   font-weight: bold;
 
-  @media (max-width: 1150px) {
+  @media (max-width: 1300px) {
     & {
       transform: scale(1);
     }

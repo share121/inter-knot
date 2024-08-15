@@ -9,7 +9,13 @@ const store = useConfigStore();
 </script>
 
 <style scoped lang="less">
-@media (max-width: 470px) {
+@media (max-width: 1300px) {
+  img {
+    width: 52px;
+    height: 52px;
+  }
+}
+@media (max-width: 600px) {
   a {
     display: none;
   }
