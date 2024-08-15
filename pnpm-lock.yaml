@@ -29,9 +29,6 @@ importers:
       normalize.css:
         specifier: ^8.0.1
         version: 8.0.1
-      nsfwjs:
-        specifier: ^4.1.0
-        version: 4.1.0(@tensorflow/tfjs@4.20.0(seedrandom@3.0.5))
       nuxt:
         specifier: ^3.12.4
         version: 3.12.4(@parcel/watcher@2.4.1)(@types/node@22.1.0)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(rollup@4.20.0)(terser@5.31.5)(vite@5.4.0(@types/node@22.1.0)(less@4.2.0)(terser@5.31.5))
@@ -2773,11 +2770,6 @@ packages:
   npmlog@5.0.1:
     resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
     deprecated: This package is no longer supported.
-
-  nsfwjs@4.1.0:
-    resolution: {integrity: sha512-2V27SoNXUJbAAi+vW8RHJbONs2AHa1odmjlRsVX2mirxR4IGt1OIzZ49IXgPVg6nktwA8Su61YEJql7VreEKyg==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.0.0
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
@@ -6820,10 +6812,6 @@ snapshots:
       console-control-strings: 1.1.0
       gauge: 3.0.2
       set-blocking: 2.0.0
-
-  nsfwjs@4.1.0(@tensorflow/tfjs@4.20.0(seedrandom@3.0.5)):
-    dependencies:
-      '@tensorflow/tfjs': 4.20.0(seedrandom@3.0.5)
 
   nth-check@2.1.1:
     dependencies:

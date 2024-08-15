@@ -19,7 +19,6 @@
     "dompurify": "^3.1.6",
     "github-markdown-css": "^5.6.1",
     "normalize.css": "^8.0.1",
-    "nsfwjs": "^4.1.0",
     "nuxt": "^3.12.4",
     "pinia": "^2.2.1",
     "vue": "latest",
