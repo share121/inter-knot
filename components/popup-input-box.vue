@@ -15,7 +15,11 @@
         </header>
         <main>
           <div>
-            <input :placeholder="placeholder" v-model="text" />
+            <input
+              :placeholder="placeholder"
+              v-model="text"
+              @keyup.enter="$emit('submit')"
+            />
             <footer>
               <button @click="$emit('cancel')">取消</button>
               <button @click="$emit('submit')" :disabled="disabled">

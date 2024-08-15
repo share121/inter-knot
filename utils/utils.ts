@@ -75,6 +75,9 @@ export async function getDiscussions(endCursor: string | null) {
           e.href = `?article=${mat[1]}`;
           e.target = "_self";
         });
+        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+          e.outerHTML = e.innerHTML;
+        });
         return {
           ...e,
           cover,
@@ -123,6 +126,9 @@ export async function getDiscussion(number: number): Promise<Article> {
     if (mat === null) return;
     e.href = `?article=${mat[1]}`;
     e.target = "_self";
+  });
+  dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+    e.outerHTML = e.innerHTML;
   });
   return {
     ...discussion,
@@ -190,7 +196,9 @@ export async function getPinnedDiscussions(endCursor: string | null) {
           e.href = `?article=${mat[1]}`;
           e.target = "_self";
         });
-
+        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+          e.outerHTML = e.innerHTML;
+        });
         return {
           ...e,
           cover,
@@ -266,6 +274,9 @@ export async function getComments(number: number, endCursor: string | null) {
           e.href = `?article=${mat[1]}`;
           e.target = "_self";
         });
+        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+          e.outerHTML = e.innerHTML;
+        });
         return {
           ...e,
           bodyHTML: dom.innerHTML,
@@ -283,6 +294,11 @@ export async function getComments(number: number, endCursor: string | null) {
               e.href = `?article=${mat[1]}`;
               e.target = "_self";
             });
+            dom.content
+              .querySelectorAll("a:has(> img:only-child)")
+              .forEach((e) => {
+                e.outerHTML = e.innerHTML;
+              });
             return {
               ...e,
               bodyHTML: dom.innerHTML,
