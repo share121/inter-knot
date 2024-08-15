@@ -429,11 +429,17 @@ export let isNsfw = async (src: string): Promise<boolean> => {
       const img = await window.getImage(src);
       img.addEventListener("load", async () => {
         const predictions = await modelOuter.classify(img);
-        resolve(["Porn", "Hentai", "Sexy"].includes(predictions[0].className));
+        resolve(
+          ["Porn", "Hentai", "Sexy"].includes(predictions[0].className) &&
+            predictions[0].probability > 0.3
+        );
       });
       img.addEventListener("error", () => resolve(false));
       img.addEventListener("abort", () => resolve(false));
     });
   };
+
+  // @ts-ignore
+  window.isNsfw = isNsfw;
   return await isNsfw(src);
 };
