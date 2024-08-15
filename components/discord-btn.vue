@@ -1,5 +1,5 @@
 <template>
-  <a target="_blank" :href="`https://discord.gg/Cx83Dw9X9E`" title="Discord">
+  <a target="_blank" :href="`https://disboard.org/zh-cn/server/1273078781241987134`" title="Discord">
     <img src="~/assets/svg/discord.svg" alt="" width="62px" />
   </a>
 </template>
