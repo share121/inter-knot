@@ -246,9 +246,10 @@ watch(show, async (show) => {
     window.addEventListener("keyup", onEsc);
   } else {
     window.removeEventListener("keyup", onEsc);
-    // 顺便停止所有播放，以期解决 #725.2
-    if(content.value){
-      content.value.querySelectorAll('video,audio').forEach(el => el.pause());
+    if (content.value) {
+      content.value
+        .querySelectorAll<HTMLVideoElement | HTMLAudioElement>("video,audio")
+        .forEach((e) => e.pause());
     }
   }
 });
