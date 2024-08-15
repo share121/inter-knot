@@ -19,6 +19,7 @@
               :placeholder="placeholder"
               v-model="text"
               @keyup.enter="$emit('submit')"
+              ref="inputEl"
             />
             <footer>
               <button @click="$emit('cancel')">取消</button>
@@ -46,6 +47,7 @@ const emit = defineEmits(["close", "cancel", "submit", "update:modelValue"]);
 const { show, title, modelValue, placeholder } = toRefs(props);
 
 const text = ref("");
+const inputEl = ref<HTMLInputElement>();
 
 watch(modelValue, (modelValue) => {
   text.value = modelValue;
@@ -58,6 +60,7 @@ const isLocked = useScrollLock(window);
 watch(show, async (show) => {
   isLocked.value = show;
   if (show) {
+    inputEl.value?.focus();
     window.addEventListener("keyup", onEsc);
   } else {
     window.removeEventListener("keyup", onEsc);
