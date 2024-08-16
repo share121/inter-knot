@@ -1,5 +1,8 @@
 <template>
   <main>
+    <div class="banner">
+      <center>2024年8月16日-13:00在Discord服务器举行神秘抽奖</center>
+    </div>
     <div class="center" v-if="needUpdata">
       <a href="https://greasyfork.org/zh-CN/scripts/502874" class="link">
         请更新“绳网小助手”，最新版本为 1.14.0
