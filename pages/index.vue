@@ -9,6 +9,10 @@
 const store = useConfigStore();
 
 async function refresh() {
+  document
+    .querySelector("header > .tab-container > .tab:nth-child(1)")
+    // @ts-ignore
+    ?.click();
   try {
     store.data.length = 0;
     document.documentElement.scrollTop = 0;
