@@ -450,3 +450,73 @@ export async function getAllReports(reportNumber: number) {
     })
     .filter((e) => e !== null);
 }
+
+export async function search(query: string, after: string | null) {
+  const {
+    response: {
+      data: {
+        search: {
+          nodes,
+          pageInfo: { hasNextPage, endCursor: newEndCursor },
+        },
+      },
+    },
+  } = await window.search(query, after);
+  return {
+    discussions: nodes
+      .map((e) => {
+        try {
+          return {
+            ...e,
+            bodyHTML: xss(e.bodyHTML),
+          };
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      })
+      .filter((e) => e !== null)
+      .map((e) => {
+        const dom = html2dom(e.bodyHTML);
+        const firstImg = dom.content?.querySelector("img");
+        const cover = firstImg?.src ?? defaultCover;
+        let parent = firstImg?.parentElement;
+        firstImg?.remove();
+        while (parent instanceof HTMLElement && parent.children.length == 0) {
+          parent?.remove();
+          parent = parent.parentElement;
+        }
+        dom.content
+          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+          .forEach((e) => (e.target = "_blank"));
+        dom.content.querySelectorAll("a").forEach((e) => {
+          const mat =
+            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+              e.href
+            );
+          if (mat === null) return;
+          e.href = `?article=${mat[1]}`;
+          e.target = "_self";
+        });
+        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+          e.outerHTML = e.innerHTML;
+        });
+        return {
+          ...e,
+          cover,
+          author: {
+            ...e.author,
+            repositoriesCount: undefined,
+          },
+          bodyHTML: dom.innerHTML,
+          comments: [],
+          commentsCount: e.comments.totalCount,
+          hasNextPage: true,
+          endCursor: null,
+          isPinned: false,
+        };
+      }),
+    hasNextPage,
+    endCursor: newEndCursor,
+  };
+}

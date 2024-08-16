@@ -65,14 +65,14 @@
           </div>
           <div class="content" ref="content">
             <div class="title">{{ article?.title ?? "未知" }}</div>
-            <div v-if="article">
+            <p v-if="article">
               <div>
                 发布时间：{{ new Date(article.createdAt).toLocaleString() }}
               </div>
               <div v-if="article.lastEditedAt">
                 更新时间：{{ new Date(article.lastEditedAt).toLocaleString() }}
               </div>
-            </div>
+            </p>
             <div
               class="text markdown-body"
               v-html="article?.bodyHTML ?? '空'"
@@ -105,7 +105,7 @@
                   class="comment"
                   v-if="
                     article?.number !== store.reportNumber ||
-                    hasLink(comment.bodyHTML)
+                    hasLink(comment.bodyHTML) && comment.bodyHTML.includes('违规原因')
                   "
                 >
                   <a target="_blank" :href="comment.author.url">

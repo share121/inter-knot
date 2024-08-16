@@ -186,7 +186,36 @@ export declare global {
         };
       };
     }>;
-    getImage(src: string): Promise<HTMLImageElement>;
+    search(
+      query: string,
+      after: string | null
+    ): Promise<{
+      response: {
+        data: {
+          search: {
+            nodes: {
+              author: {
+                avatarUrl: string;
+                login: string;
+                url: string;
+              };
+              id: string;
+              bodyHTML: string;
+              bodyText: string;
+              title: string;
+              url: string;
+              number: number;
+              createdAt: string;
+              lastEditedAt: string | null;
+              comments: {
+                totalCount: number;
+              };
+            }[];
+            pageInfo: { hasNextPage: boolean; endCursor: string };
+          };
+        };
+      };
+    }>;
   }
 
   declare module "*?url";
