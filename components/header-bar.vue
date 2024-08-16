@@ -2,10 +2,9 @@
   <header>
     <user-info :curExp="6380" :totalExp="10000" />
     <tab-container v-model="tab" />
-    <github-btn title="Github" />
-    <discord-btn title="Discord" />
-    <docs-btn title="文档" />
-    ←文档（开发中）
+    <github-btn />
+    <discord-btn />
+    <docs-btn />
     <popup-input-box
       :show="show"
       @close="(show = false), (tab = old)"
