@@ -76,7 +76,11 @@ export async function getDiscussions(endCursor: string | null) {
           e.target = "_self";
         });
         dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          e.outerHTML = e.innerHTML;
+          try {
+            e.outerHTML = e.innerHTML;
+          } catch (err) {
+            console.error(e, err);
+          }
         });
         return {
           ...e,
@@ -128,7 +132,11 @@ export async function getDiscussion(number: number): Promise<Article> {
     e.target = "_self";
   });
   dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-    e.outerHTML = e.innerHTML;
+    try {
+      e.outerHTML = e.innerHTML;
+    } catch (err) {
+      console.error(e, err);
+    }
   });
   return {
     ...discussion,
@@ -197,7 +205,11 @@ export async function getPinnedDiscussions(endCursor: string | null) {
           e.target = "_self";
         });
         dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          e.outerHTML = e.innerHTML;
+          try {
+            e.outerHTML = e.innerHTML;
+          } catch (err) {
+            console.error(e, err);
+          }
         });
         return {
           ...e,
@@ -275,7 +287,11 @@ export async function getComments(number: number, endCursor: string | null) {
           e.target = "_self";
         });
         dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          e.outerHTML = e.innerHTML;
+          try {
+            e.outerHTML = e.innerHTML;
+          } catch (err) {
+            console.error(e, err);
+          }
         });
         return {
           ...e,
@@ -297,7 +313,11 @@ export async function getComments(number: number, endCursor: string | null) {
             dom.content
               .querySelectorAll("a:has(> img:only-child)")
               .forEach((e) => {
-                e.outerHTML = e.innerHTML;
+                try {
+                  e.outerHTML = e.innerHTML;
+                } catch (err) {
+                  console.error(e, err);
+                }
               });
             return {
               ...e,
@@ -499,7 +519,11 @@ export async function search(query: string, after: string | null) {
           e.target = "_self";
         });
         dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          e.outerHTML = e.innerHTML;
+          try {
+            e.outerHTML = e.innerHTML;
+          } catch (err) {
+            console.error(e, err);
+          }
         });
         return {
           ...e,
