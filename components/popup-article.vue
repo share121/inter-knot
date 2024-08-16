@@ -521,6 +521,11 @@ img {
               right: 0;
             }
 
+            .email-hidden-toggle,
+            .email-hidden-reply{
+              display: none;
+            }
+
             > div {
               flex: 1;
               overflow: hidden;
