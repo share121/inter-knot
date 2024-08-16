@@ -20,7 +20,7 @@ const store = useConfigStore();
     height: 52px;
   }
 }
-@media (max-width: 470px) {
+@media (max-width: 570px) {
   a {
     display: none;
   }

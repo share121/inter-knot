@@ -1,5 +1,9 @@
 <template>
-  <a target="_blank" :href="`https://disboard.org/zh-cn/server/1273078781241987134`" title="Discord">
+  <a
+    target="_blank"
+    :href="`https://disboard.org/zh-cn/server/1273078781241987134`"
+    title="Discord"
+  >
     <img src="~/assets/svg/discord.svg" alt="" width="62px" />
   </a>
 </template>
@@ -15,7 +19,7 @@ const store = useConfigStore();
     height: 52px;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   a {
     display: none;
   }

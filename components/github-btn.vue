@@ -25,7 +25,7 @@ const store = useConfigStore();
   }
 }
 
-@media (max-width: 470px) {
+@media (max-width: 420px) {
   a {
     display: none;
   }
