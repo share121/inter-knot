@@ -1,0 +1,35 @@
+name: inter_knot
+description: "绳网是一个游戏、技术交流平台"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.6.6
+  system_theme: ^3.0.0
+  url_launcher: ^6.3.0
+  window_manager: ^0.3.9
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  animations: ^2.0.11
+  chinese_font_library: ^1.2.0
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: MiSans
+      fonts:
+        - asset: fonts/MiSans.ttf
+  assets:
+    - assets/images/
