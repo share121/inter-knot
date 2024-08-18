@@ -26,6 +26,33 @@ export async function getUserInfo(): Promise<Actor> {
   };
 }
 
+const commonDomFilters = new Array<{ (content: DocumentFragment): void }>();
+function doDomFilter(content: DocumentFragment) {
+  commonDomFilters.forEach(func => {
+    func(content);
+  })
+}
+commonDomFilters.push(content => content
+  .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
+  .forEach((e) => (e.target = "_blank")));
+commonDomFilters.push(content => content.querySelectorAll("a").forEach((e) => {
+  const mat =
+    /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
+      e.href
+    );
+  if (mat === null) return;
+  e.href = `?article=${mat[1]}`;
+  e.target = "_self";
+}));
+commonDomFilters.push(content => content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
+  try {
+    e.outerHTML = e.innerHTML;
+  } catch (err) {
+    console.error(e, err);
+  }
+}));
+commonDomFilters.push(content => content.querySelectorAll<HTMLElement>('.email-hidden-toggle,.email-hidden-reply').forEach(e => e.remove()))
+
 export async function getDiscussions(endCursor: string | null) {
   const {
     response: {
@@ -63,25 +90,7 @@ export async function getDiscussions(endCursor: string | null) {
           parent?.remove();
           parent = parent.parentElement;
         }
-        dom.content
-          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
-          .forEach((e) => (e.target = "_blank"));
-        dom.content.querySelectorAll("a").forEach((e) => {
-          const mat =
-            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
-              e.href
-            );
-          if (mat === null) return;
-          e.href = `?article=${mat[1]}`;
-          e.target = "_self";
-        });
-        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          try {
-            e.outerHTML = e.innerHTML;
-          } catch (err) {
-            console.error(e, err);
-          }
-        });
+        doDomFilter(dom.content);
         return {
           ...e,
           cover,
@@ -119,25 +128,7 @@ export async function getDiscussion(number: number): Promise<Article> {
     parent?.remove();
     parent = parent.parentElement;
   }
-  dom.content
-    .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
-    .forEach((e) => (e.target = "_blank"));
-  dom.content.querySelectorAll("a").forEach((e) => {
-    const mat =
-      /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
-        e.href
-      );
-    if (mat === null) return;
-    e.href = `?article=${mat[1]}`;
-    e.target = "_self";
-  });
-  dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-    try {
-      e.outerHTML = e.innerHTML;
-    } catch (err) {
-      console.error(e, err);
-    }
-  });
+  doDomFilter(dom.content);
   return {
     ...discussion,
     cover,
@@ -192,25 +183,7 @@ export async function getPinnedDiscussions(endCursor: string | null) {
           parent?.remove();
           parent = parent.parentElement;
         }
-        dom.content
-          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
-          .forEach((e) => (e.target = "_blank"));
-        dom.content.querySelectorAll("a").forEach((e) => {
-          const mat =
-            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
-              e.href
-            );
-          if (mat === null) return;
-          e.href = `?article=${mat[1]}`;
-          e.target = "_self";
-        });
-        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          try {
-            e.outerHTML = e.innerHTML;
-          } catch (err) {
-            console.error(e, err);
-          }
-        });
+        doDomFilter(dom.content);
         return {
           ...e,
           cover,
@@ -274,25 +247,7 @@ export async function getComments(number: number, endCursor: string | null) {
       .filter((e) => e !== null)
       .map((e) => {
         const dom = html2dom(e.bodyHTML);
-        dom.content
-          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
-          .forEach((e) => (e.target = "_blank"));
-        dom.content.querySelectorAll("a").forEach((e) => {
-          const mat =
-            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
-              e.href
-            );
-          if (mat === null) return;
-          e.href = `?article=${mat[1]}`;
-          e.target = "_self";
-        });
-        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          try {
-            e.outerHTML = e.innerHTML;
-          } catch (err) {
-            console.error(e, err);
-          }
-        });
+        doDomFilter(dom.content);
         return {
           ...e,
           bodyHTML: dom.innerHTML,
@@ -506,25 +461,7 @@ export async function search(query: string, after: string | null) {
           parent?.remove();
           parent = parent.parentElement;
         }
-        dom.content
-          .querySelectorAll<HTMLAnchorElement>('a:not([href^="#"])')
-          .forEach((e) => (e.target = "_blank"));
-        dom.content.querySelectorAll("a").forEach((e) => {
-          const mat =
-            /https:\/\/github.com\/share121\/inter-knot\/discussions\/(\d+)/.exec(
-              e.href
-            );
-          if (mat === null) return;
-          e.href = `?article=${mat[1]}`;
-          e.target = "_self";
-        });
-        dom.content.querySelectorAll("a:has(> img:only-child)").forEach((e) => {
-          try {
-            e.outerHTML = e.innerHTML;
-          } catch (err) {
-            console.error(e, err);
-          }
-        });
+        doDomFilter(dom.content);
         return {
           ...e,
           cover,
