@@ -36,6 +36,6 @@ body:
       required: false
   - type: checkboxes
     attributes:
-    options:
-      - label: 您确认您已经阅读了上方的注意事项，并已知此处并非讨论区。您遇到了问题需要反馈，或有功能建议需要提出。
-      required: true
+      options:
+        - label: 您确认您已经阅读了上方的注意事项，并已知此处并非讨论区。您遇到了问题需要反馈，或有功能建议需要提出。
+          required: true
