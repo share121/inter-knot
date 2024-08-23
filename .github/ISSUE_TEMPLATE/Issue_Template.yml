@@ -1,0 +1,42 @@
+name: Bug 反馈
+description: 网站有明确的错误、异常等
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 绳网错误反馈页
+
+        请注意，本页面是issue追踪器（Issue tracker）而不是讨论区（Discussions）。绳网发帖请移步[讨论区](https://github.com/share121/inter-knot/discussions)。
+        请不要在此处灌水。您在此处的发帖不计入绳网渲染范围。
+        
+
+  - type: dropdown
+    attributes:
+      label: Type
+      options:
+        - 安全问题
+        - 渲染问题
+        - 网络问题
+        - 其他问题
+        - 功能建议
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Bug 描述
+      description: 如何遇到这个bug的？请详细描述，例如您做了什么，等等。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 截屏或视频
+      description: 附加的截图或视频。
+      placeholder: 将截图、视频直接拖拽至此处即可。
+    validations:
+      required: false
+  - type: checkboxes
+    attributes:
+      label: 您确认您已经阅读了上方的注意事项，并已知此处并非讨论区。您遇到了问题需要反馈，或有功能建议需要提出。
+      options:
+        - label: 我确认。
+          required: true
