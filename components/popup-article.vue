@@ -463,6 +463,11 @@ img {
           :deep(.footnotes > ol) {
             margin: 8px;
           }
+
+          :deep(.email-hidden-toggle),
+          :deep(.email-hidden-reply) {
+            display: none;
+          }
         }
 
         .action {
