@@ -52,6 +52,7 @@
               {{ article?.commentsCount ?? 0 }}
             </div>
           </div>
+          <refresh-btn @refresh="$emit('refresh')" />
           <close-btn @click="$emit('close')" />
         </header>
         <main>
@@ -204,10 +205,11 @@
                               </span>
                             </a>
                           </div>
-                          <div
-                            class="text markdown-body"
-                            v-html="reply.bodyHTML"
-                          ></div>
+                          <div class="text markdown-body">
+                            <a target="_blank" :href="reply.bodyHTML">
+                              {{ reply.bodyHTML }}
+                            </a>
+                          </div>
                         </div>
                       </section>
                     </div>
