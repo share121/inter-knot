@@ -19,11 +19,25 @@ dependencies:
   animations: ^2.0.11
   chinese_font_library: ^1.2.0
   shimmer: ^3.0.0
+  waterfall_flow: ^3.0.3
+  dio: ^5.6.0
+  dio_smart_retry: ^6.0.0
+  shared_preferences: ^2.3.2
+  jwt_decoder: ^2.0.1
+  dart_jsonwebtoken: ^2.14.0
+  flutter_gen: ^5.6.0
+  html: ^0.15.4
+  flutter_widget_from_html: ^0.15.2
+  fwfh_cached_network_image: ^0.14.3
+  fwfh_svg: ^0.8.3
+  fwfh_url_launcher: ^0.9.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_gen_runner: ^5.6.0
+  build_runner: ^2.4.12
 
 flutter:
   uses-material-design: true
@@ -32,4 +46,5 @@ flutter:
       fonts:
         - asset: fonts/MiSans.ttf
   assets:
+    - assets/
     - assets/images/

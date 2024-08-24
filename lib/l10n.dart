@@ -21,6 +21,14 @@ class Messages extends Translations {
           'Confirm': '确认',
           'Back': '返回',
           'Empty': '空',
+          'No more data': '没有更多数据了',
+          'Open in Browser': '在浏览器中打开',
+          'Published on: ': '发布时间：',
+          'Last edited on: ': '更新时间：',
+          'landlord': '楼主',
+          'Founder of Inter-Knot': '绳网创始人',
+          'Inter-Knot collaborator': '绳网协作者',
+          'Back to Top': '回到顶部',
         }
       };
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const githubLink = 'https://github.com/share121/inter-knot';
+const githubLink = 'https://github.com/$owner/$repo';
 
 class GithubButton extends StatelessWidget {
   const GithubButton({super.key});

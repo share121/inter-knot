@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="inter_knot"
+        android:label="绳网"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

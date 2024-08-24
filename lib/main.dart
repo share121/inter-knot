@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/gen/fonts.gen.dart';
 import 'package:inter_knot/pages/notifications_page.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:system_theme/system_theme.dart';
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         onGenerateTitle: (context) => 'Inter-Knot'.tr,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: accent.accent),
-          fontFamily: 'MiSans',
+          fontFamily: FontFamily.miSans,
         ).useSystemChineseFont(Brightness.light),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
             seedColor: accent.accent,
             brightness: Brightness.dark,
           ),
-          fontFamily: 'MiSans',
+          fontFamily: FontFamily.miSans,
         ).useSystemChineseFont(Brightness.dark),
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
