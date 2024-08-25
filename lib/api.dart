@@ -139,7 +139,7 @@ Future<Response<Map<String, dynamic>>> graphql(String data) async =>
 
 Future<Nodes<Article>> getDiscussions(String? after) async {
   if ((await graphql(
-              '{ repository(owner: "$owner", name: "$repo") { discussions(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } } }'))
+              '{ repository(owner: "$owner", name: "$repo") { discussions(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } } }'))
           .data
       case {
         'data': {
@@ -228,7 +228,7 @@ Future<Response<Map<String, dynamic>>> getDiscussion(int number) => graphql(
 
 Future<Nodes<Article>> getPinnedDiscussions(String? after) async {
   if ((await graphql(
-              '{ repository(owner: "$owner", name: "$repo") { pinnedDiscussions(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } } } }'))
+              '{ repository(owner: "$owner", name: "$repo") { pinnedDiscussions(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } } } }'))
           .data
       case {
         'data': {
@@ -294,7 +294,7 @@ Future<Nodes<Article>> getPinnedDiscussions(String? after) async {
 
 Future<Nodes<Comment>> getComments(int number, String? after) async {
   if ((await graphql(
-              '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } id bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt } } } } } } } }'))
+              '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } id bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt } } } } } } } }'))
           .data
       case {
         'data': {
@@ -429,7 +429,7 @@ Future<List<dynamic>> getAllReports(int number) async {
   String? after;
   while (true) {
     if ((await graphql(
-                '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { login } bodyHTML } } } } }'))
+                '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { login } bodyHTML } } } } }'))
             .data
         case {
           'data': {
@@ -456,7 +456,7 @@ Future<List<dynamic>> getAllReports(int number) async {
 
 Future<Nodes<Article>> search(String query, String? after) async {
   if ((await graphql(
-              '{ search(first: 100, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } }'))
+              '{ search(first: 20, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } }'))
           .data
       case {
         'data': {
