@@ -165,7 +165,7 @@ class Article extends GetxController {
     required this.commentsCount,
     this.lastEditedAt,
     required this.isPin,
-  }) : url = 'https://github.com/share121/inter-knot/discussions/$number';
+  }) : url = 'https://github.com/$owner/$repo/discussions/$number';
 }
 
 class Comment extends GetxController {
