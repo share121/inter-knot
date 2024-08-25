@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:inter_knot/gen/assets.gen.dart';
 
+import '../gen/assets.gen.dart';
 import '../data.dart';
 
 class DiscussionCard extends StatefulWidget {
@@ -18,14 +18,12 @@ class DiscussionCard extends StatefulWidget {
   State<DiscussionCard> createState() => _DiscussionCardState();
 }
 
-class _DiscussionCardState extends State<DiscussionCard>
-    with AutomaticKeepAliveClientMixin {
+class _DiscussionCardState extends State<DiscussionCard> {
   var elevation = 1.0;
   final heroKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: elevation,
@@ -40,32 +38,7 @@ class _DiscussionCardState extends State<DiscussionCard>
           children: [
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 400),
-              child: Hero(
-                tag: heroKey,
-                child: widget.article.cover == null
-                    ? Assets.images.defaultCover.image()
-                    : Image.network(
-                        widget.article.cover!,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          final progress =
-                              loadingProgress.cumulativeBytesLoaded;
-                          return SizedBox(
-                            height: 157,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes
-                                    .use((e) => progress / e),
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) =>
-                            Assets.images.defaultCover.image(),
-                      ),
-              ),
+              child: Cover(heroKey: heroKey, article: widget.article),
             ),
             SizedBox(
               width: double.infinity,
@@ -97,10 +70,6 @@ class _DiscussionCardState extends State<DiscussionCard>
                           Text(
                             widget.article.author.name,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Get.theme.textTheme.bodyMedium?.color
-                                  ?.withOpacity(0.7),
-                            ),
                           ),
                           const SizedBox(height: 4),
                           const Divider(height: 1)
@@ -116,7 +85,7 @@ class _DiscussionCardState extends State<DiscussionCard>
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 widget.article.title,
-                style: Get.textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
@@ -128,11 +97,7 @@ class _DiscussionCardState extends State<DiscussionCard>
                 child: Text(
                   widget.article.bodyText,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(
-                    color:
-                        Get.theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
-                  ),
+                  maxLines: 3,
                 ),
               ),
             ],
@@ -142,7 +107,41 @@ class _DiscussionCardState extends State<DiscussionCard>
       ),
     );
   }
+}
+
+class Cover extends StatelessWidget {
+  const Cover({
+    super.key,
+    required this.heroKey,
+    required this.article,
+  });
+
+  final UniqueKey heroKey;
+  final Article article;
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: heroKey,
+      child: article.cover == null
+          ? Assets.images.defaultCover.image()
+          : CachedNetworkImage(
+              imageUrl: article.cover!,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              progressIndicatorBuilder: (context, url, downloadProgress) {
+                return SizedBox(
+                  height: 157,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: downloadProgress.progress,
+                    ),
+                  ),
+                );
+              },
+              errorWidget: (context, url, error) =>
+                  Assets.images.defaultCover.image(),
+            ),
+    );
+  }
 }

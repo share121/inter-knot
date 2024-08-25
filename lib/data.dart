@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'api.dart';
+
+final isDesktop = !kIsWeb && GetPlatform.isDesktop;
 
 const owner = 'share121';
 const repo = 'inter-knot';
@@ -12,6 +16,11 @@ const collaborators = ['VacuolePaoo'];
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
 
+  final searchQuery = ''.obs;
+  final searchResult = <Article>[].obs;
+  String? searchEndCur;
+  final searchHasNextPage = true.obs;
+
   String getToken() => pref.getString('access_token') ?? '';
   Future<void> setToken(String v) => pref.setString('access_token', v);
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
@@ -20,10 +29,24 @@ class Controller extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    ever(data, (_) {
+      removeDuplicateArticle(data);
+    });
+    ever(searchResult, (_) {
+      removeDuplicateArticle(searchResult);
+    });
+    debounce(searchQuery, (query) {
+      searchResult.clear();
+      searchEndCur = null;
+      searchHasNextPage.value = true;
+      searchCache.clear();
+      searchData();
+    }, time: 500.ms);
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
-    fetchData();
+    await fetchData();
+    searchResult.addAll(data);
   }
 
   final selectedIndex = 0.obs;
@@ -51,9 +74,26 @@ class Controller extends GetxController {
     this.hasNextPage.value = hasNextPage;
     data.addAll(res);
   }
+
+  final searchCache = <String?>[];
+  Future<void> searchData() async {
+    if (searchQuery.isEmpty) {
+      await fetchData();
+      searchResult.clear();
+      searchResult.addAll(data);
+      return;
+    }
+    if (searchHasNextPage.isFalse || searchCache.contains(searchEndCur)) return;
+    searchCache.add(searchEndCur);
+    final (:endCursor, :hasNextPage, :res) =
+        await search(searchQuery(), searchEndCur);
+    searchEndCur = endCursor;
+    searchHasNextPage.value = hasNextPage;
+    searchResult.addAll(res);
+  }
 }
 
-class Article {
+class Article extends GetxController {
   final String title;
   final String bodyHTML;
   final String bodyText;
@@ -65,20 +105,29 @@ class Article {
   final DateTime createdAt;
   final DateTime? lastEditedAt;
   final int commentsCount;
-  final comments = <Comment>[];
-  bool hasNextPage = true;
+  final comments = <Comment>[].obs;
+  var hasNextPage = true.obs;
   String? endCursor;
 
   final cache = <String?>[];
   Future<void> fetchComments() async {
-    if (hasNextPage == false || cache.contains(endCursor)) {
+    if (hasNextPage() == false || cache.contains(endCursor)) {
       return;
     }
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
         await getComments(number, endCursor);
     comments.addAll(res);
-    hasNextPage = newHasNextPage;
+    hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    ever(comments, (_) {
+      removeDuplicateComment(comments);
+    });
   }
 
   Article({
@@ -95,20 +144,24 @@ class Article {
   }) : url = 'https://github.com/share121/inter-knot/discussions/$number';
 }
 
-class Comment {
+class Comment extends GetxController {
   final Author author;
   final String bodyHTML;
   final DateTime createdAt;
   final DateTime? lastEditedAt;
-  final List<Reply> replies;
+  final replies = <Reply>[].obs;
+  final String id;
 
   Comment({
     required this.author,
     required this.bodyHTML,
     required this.createdAt,
     this.lastEditedAt,
-    required this.replies,
-  });
+    required Iterable<Reply> replies,
+    required this.id,
+  }) {
+    this.replies.addAll(replies);
+  }
 }
 
 class Reply {
@@ -154,13 +207,43 @@ class Author {
   final String name;
   final String avatar;
   final String url;
-  int? level;
+  final level = 0.obs;
 
-  Author({
-    required this.name,
-    required this.avatar,
-    this.level,
-  }) : url = 'https://github.com/$name' {
-    getRepositoriesCount(name).then((c) => level = c);
+  Author({required this.name, required this.avatar, int? level})
+      : url = 'https://github.com/$name' {
+    if (level == null) {
+      getRepositoriesCount(name).then((v) {
+        if (v == null) return;
+        this.level.value = v;
+      });
+    } else {
+      this.level.value = level;
+    }
+  }
+}
+
+void removeDuplicateArticle(List<Article> arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = i + 1; j < len; j++) {
+      if (arr[i].number == arr[j].number) {
+        arr.removeAt(j);
+        len--;
+        j--;
+      }
+    }
+  }
+}
+
+void removeDuplicateComment(List<Comment> arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = i + 1; j < len; j++) {
+      if (arr[i].id == arr[j].id) {
+        arr.removeAt(j);
+        len--;
+        j--;
+      }
+    }
   }
 }

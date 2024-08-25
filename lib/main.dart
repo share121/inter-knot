@@ -1,21 +1,18 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/gen/fonts.gen.dart';
-import 'package:inter_knot/pages/notifications_page.dart';
+import 'package:inter_knot/pages/search_page.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'data.dart';
 import 'l10n.dart';
+import 'pages/notifications_page.dart';
 import 'widget/github_button.dart';
 import 'widget/window_buttons.dart';
-
-final isDesktop = !kIsWeb && GetPlatform.isDesktop;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +45,6 @@ class MyApp extends StatelessWidget {
         onGenerateTitle: (context) => 'Inter-Knot'.tr,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: accent.accent),
-          fontFamily: FontFamily.miSans,
         ).useSystemChineseFont(Brightness.light),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -56,7 +52,6 @@ class MyApp extends StatelessWidget {
             seedColor: accent.accent,
             brightness: Brightness.dark,
           ),
-          fontFamily: FontFamily.miSans,
         ).useSystemChineseFont(Brightness.dark),
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
@@ -69,7 +64,6 @@ class MyApp extends StatelessWidget {
         ],
         translations: Messages(),
         locale: Get.deviceLocale,
-        themeMode: ThemeMode.dark,
         fallbackLocale: const Locale('en', 'US'),
         home: const MyHomePage(),
         debugShowCheckedModeBanner: false,
@@ -121,6 +115,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Get.find<Controller>();
+
     return Scaffold(
       appBar: AppBar(
         title: DragToMoveArea(child: Text('Inter-Knot'.tr)),
@@ -160,7 +155,7 @@ class MyHomePage extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         const NotificationsPage(),
-                        Center(child: Text('Search'.tr)),
+                        const SearchPage(),
                         Center(child: Text('Partition'.tr)),
                         Center(child: Text('Like'.tr)),
                         Center(child: Text('History'.tr)),

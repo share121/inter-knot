@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/data.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+import '../data.dart';
 
 const githubLink = 'https://github.com/$owner/$repo';
 
@@ -18,7 +19,7 @@ class GithubButton extends StatelessWidget {
           title: 'Copied'.tr,
           message: githubLink,
         );
-        await launchUrl(Uri.parse(githubLink));
+        await launchUrlString(githubLink);
       },
       child: const Text('Github'),
     );

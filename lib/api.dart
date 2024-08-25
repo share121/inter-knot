@@ -24,10 +24,6 @@ final Dio dio = Dio(BaseOptions(
         return handler.next(options);
       },
       onResponse: (response, handler) {
-        // ignore: avoid_print
-        // print(response.requestOptions.uri);
-        // ignore: avoid_print
-        // print(jsonEncode(response.data));
         return handler.next(response);
       },
     ),
@@ -38,13 +34,6 @@ final Dio dio = Dio(BaseOptions(
         }
         return handler.next(options);
       },
-      onResponse: (response, handler) async {
-        final data = response.data as Map<String, dynamic>?;
-        if (data?['token'] is String) {
-          await c.setToken(data?['token'] as String);
-        }
-        return handler.next(response);
-      },
       onError: (error, handler) async {
         final response = error.response;
         if (response == null) return handler.next(error);
@@ -52,52 +41,48 @@ final Dio dio = Dio(BaseOptions(
           if (response.requestOptions.extra['isRefreshToken'] == true) {
             return handler.reject(DioException(
               requestOptions: response.requestOptions,
-              message: 'Unauthorized',
+              message: 'Unauthorized, url: ${response.requestOptions.uri}',
               response: response,
               type: DioExceptionType.unknown,
             ));
           } else {
-            final token = await getAccessToken();
-            if (token != null) {
-              final res = await dio.requestUri<Map<String, dynamic>>(
-                response.requestOptions.uri,
-                data: response.requestOptions.data,
-                cancelToken: response.requestOptions.cancelToken,
-                onReceiveProgress: response.requestOptions.onReceiveProgress,
-                onSendProgress: response.requestOptions.onSendProgress,
-                options: Options(
-                  contentType: response.requestOptions.contentType,
-                  headers: {
-                    ...response.requestOptions.headers,
-                    'Authorization': 'Bearer $token'
-                  },
-                  validateStatus: response.requestOptions.validateStatus,
-                  extra: response.requestOptions.extra,
-                  followRedirects: response.requestOptions.followRedirects,
-                  maxRedirects: response.requestOptions.maxRedirects,
-                  sendTimeout: response.requestOptions.sendTimeout,
-                  receiveTimeout: response.requestOptions.receiveTimeout,
-                  requestEncoder: response.requestOptions.requestEncoder,
-                  responseDecoder: response.requestOptions.responseDecoder,
-                  listFormat: response.requestOptions.listFormat,
-                  receiveDataWhenStatusError:
-                      response.requestOptions.receiveDataWhenStatusError,
-                  method: response.requestOptions.method,
-                  persistentConnection:
-                      response.requestOptions.persistentConnection,
-                  preserveHeaderCase:
-                      response.requestOptions.preserveHeaderCase,
-                  responseType: response.requestOptions.responseType,
-                ),
-              );
-              return handler.resolve(res);
-            } else {
-              return handler.reject(DioException(
-                requestOptions: response.requestOptions,
-                message: 'Unauthorized',
-                response: response,
-                type: DioExceptionType.unknown,
-              ));
+            while (true) {
+              final token = await getAccessToken();
+              if (token != null) {
+                await c.setToken(token);
+                final res = await dio.requestUri<Map<String, dynamic>>(
+                  response.requestOptions.uri,
+                  data: response.requestOptions.data,
+                  cancelToken: response.requestOptions.cancelToken,
+                  onReceiveProgress: response.requestOptions.onReceiveProgress,
+                  onSendProgress: response.requestOptions.onSendProgress,
+                  options: Options(
+                    contentType: response.requestOptions.contentType,
+                    headers: {
+                      ...response.requestOptions.headers,
+                      'Authorization': 'Bearer $token'
+                    },
+                    validateStatus: response.requestOptions.validateStatus,
+                    extra: response.requestOptions.extra,
+                    followRedirects: response.requestOptions.followRedirects,
+                    maxRedirects: response.requestOptions.maxRedirects,
+                    sendTimeout: response.requestOptions.sendTimeout,
+                    receiveTimeout: response.requestOptions.receiveTimeout,
+                    requestEncoder: response.requestOptions.requestEncoder,
+                    responseDecoder: response.requestOptions.responseDecoder,
+                    listFormat: response.requestOptions.listFormat,
+                    receiveDataWhenStatusError:
+                        response.requestOptions.receiveDataWhenStatusError,
+                    method: response.requestOptions.method,
+                    persistentConnection:
+                        response.requestOptions.persistentConnection,
+                    preserveHeaderCase:
+                        response.requestOptions.preserveHeaderCase,
+                    responseType: response.requestOptions.responseType,
+                  ),
+                );
+                return handler.resolve(res);
+              }
             }
           }
         }
@@ -232,9 +217,6 @@ typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
     }
     return (html: document.outerHtml, cover: cover);
   }
-  document.querySelectorAll('a > img:only-child').forEach((e) {
-    e.parent!.replaceWith(e);
-  });
   return (html: document.outerHtml, cover: null);
 }
 
@@ -251,7 +233,7 @@ Future<
 
 Future<Nodes<Comment>> getComments(int number, String? after) async {
   if ((await graphql(
-              '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 10, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt } } } } } } } }'))
+              '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 10, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } id bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt } } } } } } } }'))
           .data
       case {
         'data': {
@@ -280,6 +262,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                   'bodyHTML': final String bodyHTML,
                   'createdAt': final String createdAt,
                   'lastEditedAt': final String? lastEditedAt,
+                  'id': final String id,
                   'replies': {
                     'nodes': final List<dynamic> replies,
                   },
@@ -292,6 +275,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                 lastEditedAt: lastEditedAt == null
                     ? null
                     : DateTime.tryParse(lastEditedAt),
+                id: id,
                 replies: replies
                     .map((e) {
                       if (e
@@ -409,7 +393,63 @@ Future<List<dynamic>> getAllReports(int number) async {
   return res;
 }
 
-Future<
-    Response<
-        Map<String, dynamic>>> search(String query, String? after) => graphql(
-    '{ search(first: 10, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } }');
+Future<Nodes<Article>> search(String query, String? after) async {
+  if ((await graphql(
+              '{ search(first: 10, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } }'))
+          .data
+      case {
+        'data': {
+          'search': {
+            'nodes': final List<dynamic> nodes,
+            'pageInfo': {
+              'hasNextPage': final bool hasNextPage,
+              'endCursor': final String endCursor
+            },
+          },
+        }
+      }) {
+    return (
+      res: nodes
+          .map((e) {
+            if (e
+                case {
+                  'author': {
+                    'avatarUrl': final String avatar,
+                    'login': final String name,
+                  },
+                  'id': final String id,
+                  'bodyHTML': final String bodyHTML,
+                  'bodyText': final String bodyText,
+                  'title': final String title,
+                  'number': final int number,
+                  'createdAt': final String createdAt,
+                  'lastEditedAt': final String? lastEditedAt,
+                  'comments': {
+                    'totalCount': final int commentsCount,
+                  },
+                }) {
+              final (:html, :cover) = parseHtml(bodyHTML);
+              return Article(
+                title: title,
+                bodyHTML: html,
+                bodyText: bodyText,
+                author: Author(avatar: avatar, name: name),
+                cover: cover,
+                number: number,
+                id: id,
+                createdAt: DateTime.parse(createdAt),
+                lastEditedAt: lastEditedAt == null
+                    ? null
+                    : DateTime.tryParse(lastEditedAt),
+                commentsCount: commentsCount,
+              );
+            }
+          })
+          .whereType<Article>()
+          .toList(),
+      hasNextPage: hasNextPage,
+      endCursor: endCursor
+    );
+  }
+  return (res: <Article>[], hasNextPage: false, endCursor: null);
+}

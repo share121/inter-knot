@@ -1,4 +1,4 @@
-package com.share121.inter_knot
+package com.example.inter_knot
 
 import io.flutter.embedding.android.FlutterActivity
 

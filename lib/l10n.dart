@@ -29,6 +29,10 @@ class Messages extends Translations {
           'Founder of Inter-Knot': '绳网创始人',
           'Inter-Knot collaborator': '绳网协作者',
           'Back to Top': '回到顶部',
+          'No more comments': '没有更多评论了',
+          'layer master': '层主',
+          'Create a new discussion': '发布文章',
+          'Search for articles': '搜索文章',
         }
       };
 }
