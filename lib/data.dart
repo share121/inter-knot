@@ -64,31 +64,45 @@ class Controller extends GetxController {
   final data = <Article>[].obs;
   String? endCur;
   final hasNextPage = true.obs;
+  var isFetchPinDiscussions = true;
 
   final cache = <String?>[];
   Future<void> fetchData() async {
     if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
     cache.add(endCur);
-    final (:endCursor, :hasNextPage, :res) = await getDiscussions(endCur);
+    late final Nodes<Article> res;
+    if (isFetchPinDiscussions) {
+      res = await getPinnedDiscussions(endCur);
+    } else {
+      res = await getDiscussions(endCur);
+    }
+    final (:endCursor, :hasNextPage, res: articles) = res;
     endCur = endCursor;
-    this.hasNextPage.value = hasNextPage;
-    data.addAll(res);
+    if (isFetchPinDiscussions && hasNextPage == false) {
+      isFetchPinDiscussions = false;
+      endCur = null;
+      cache.clear();
+    } else {
+      this.hasNextPage.value = hasNextPage;
+    }
+    data.addAll(res.res);
   }
 
   Future<void> refreshData() async {
-    c.hasNextPage.value = true;
-    c.endCur = null;
-    c.cache.clear();
-    c.data.clear();
-    await c.fetchData();
+    isFetchPinDiscussions = true;
+    hasNextPage.value = true;
+    endCur = null;
+    cache.clear();
+    data.clear();
+    await fetchData();
   }
 
   Future<void> refreshSearchData() async {
-    c.searchHasNextPage.value = true;
-    c.searchEndCur = null;
-    c.searchCache.clear();
-    c.searchResult.clear();
-    await c.searchData();
+    searchHasNextPage.value = true;
+    searchEndCur = null;
+    searchCache.clear();
+    searchResult.clear();
+    await searchData();
   }
 
   final searchCache = <String?>[];
@@ -124,6 +138,7 @@ class Article extends GetxController {
   final comments = <Comment>[].obs;
   var hasNextPage = true.obs;
   String? endCursor;
+  final bool isPin;
 
   final cache = <String?>[];
   Future<void> fetchComments() async {
@@ -149,6 +164,7 @@ class Article extends GetxController {
     required this.createdAt,
     required this.commentsCount,
     this.lastEditedAt,
+    required this.isPin,
   }) : url = 'https://github.com/share121/inter-knot/discussions/$number';
 }
 

@@ -35,6 +35,7 @@ class Messages extends Translations {
           'Search for articles': '搜索文章',
           'Refresh': '刷新',
           'Write a review': '写评论',
+          'Top': '置顶',
         }
       };
 }

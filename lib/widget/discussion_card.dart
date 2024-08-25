@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../gen/assets.gen.dart';
 import '../data.dart';
@@ -48,6 +49,12 @@ class _DiscussionCardState extends State<DiscussionCard> {
                   left: 12,
                   child: CommentCount(article: widget.article),
                 ),
+                if (widget.article.isPin)
+                  Positioned(
+                    top: 8,
+                    right: 12,
+                    child: Text('Top'.tr),
+                  ),
               ],
             ),
             SizedBox(
