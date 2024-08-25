@@ -117,17 +117,9 @@ class Article extends GetxController {
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
         await getComments(number, endCursor);
     comments.addAll(res);
+    removeDuplicateComment(comments);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    ever(comments, (_) {
-      removeDuplicateComment(comments);
-    });
   }
 
   Article({
