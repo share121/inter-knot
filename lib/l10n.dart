@@ -33,6 +33,8 @@ class Messages extends Translations {
           'layer master': '层主',
           'Create a new discussion': '发布文章',
           'Search for articles': '搜索文章',
+          'Refresh': '刷新',
+          'Write a review': '写评论',
         }
       };
 }

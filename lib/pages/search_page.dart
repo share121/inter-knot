@@ -89,6 +89,11 @@ class _SearchPageState extends State<SearchPage>
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => c.refreshSearchData(),
+        tooltip: 'Refresh'.tr,
+        child: const Icon(Icons.refresh),
+      ),
     );
   }
 

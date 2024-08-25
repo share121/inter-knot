@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../gen/assets.gen.dart';
 import '../data.dart';
+import 'comment_count.dart';
 
 class DiscussionCard extends StatefulWidget {
   const DiscussionCard({
@@ -36,9 +37,18 @@ class _DiscussionCardState extends State<DiscussionCard> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 400),
-              child: Cover(heroKey: heroKey, article: widget.article),
+            Stack(
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 400),
+                  child: Cover(heroKey: heroKey, article: widget.article),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 12,
+                  child: CommentCount(article: widget.article),
+                ),
+              ],
             ),
             SizedBox(
               width: double.infinity,

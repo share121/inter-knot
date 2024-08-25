@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/widget/comment_count.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -89,7 +90,19 @@ class _ArticlePageState extends State<ArticlePage> {
                       child: Column(
                         children: [
                           MainArticle(article: widget.article),
-                          const Divider(),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.add_comment),
+                              onPressed: () {
+                                launchUrlString(
+                                    '${widget.article.url}#new_comment_form');
+                              },
+                              label: Text('Write a review'.tr),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                           Comments(article: widget.article),
                         ],
                       ),
@@ -136,13 +149,7 @@ class MainArticle extends StatelessWidget {
             const SizedBox(width: 8),
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                children: [
-                  const Icon(Icons.comment_outlined, size: 18),
-                  const SizedBox(width: 4),
-                  Text(article.commentsCount.toString()),
-                ],
-              ),
+              child: CommentCount(article: article),
             ),
           ],
         ),

@@ -75,6 +75,22 @@ class Controller extends GetxController {
     data.addAll(res);
   }
 
+  Future<void> refreshData() async {
+    c.hasNextPage.value = true;
+    c.endCur = null;
+    c.cache.clear();
+    c.data.clear();
+    await c.fetchData();
+  }
+
+  Future<void> refreshSearchData() async {
+    c.searchHasNextPage.value = true;
+    c.searchEndCur = null;
+    c.searchCache.clear();
+    c.searchResult.clear();
+    await c.searchData();
+  }
+
   final searchCache = <String?>[];
   Future<void> searchData() async {
     if (searchQuery.isEmpty) {

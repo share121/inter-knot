@@ -65,13 +65,24 @@ class _NotificationsPageState extends State<NotificationsPage>
           );
         }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          launchUrlString(
-              'https://github.com/$owner/$repo/discussions/new?category=general');
-        },
-        tooltip: 'Create a new discussion'.tr,
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: () => c.refreshData(),
+            tooltip: 'Refresh'.tr,
+            child: const Icon(Icons.refresh),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {
+              launchUrlString(
+                  'https://github.com/$owner/$repo/discussions/new?category=general');
+            },
+            tooltip: 'Create a new discussion'.tr,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
