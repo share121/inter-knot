@@ -11,106 +11,88 @@ jobs:
     name: Windows Client
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-      - run: git config --system core.longpaths true
-      - name: Flutter Pub Get
-        run: flutter pub get
-      - name: Build for Windows
-        run: flutter build windows --verbose
+      - run: flutter build windows
+      - uses: actions/upload-artifact@v3
+        with:
+          name: inter_knot_windows_x64
+          path: build/windows/x64/runner/Release
 
   build_android:
     name: Android Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-      - run: flutter pub get
-      - run: flutter build apk --verbose --split-per-abi
-      - run: flutter build appbundle --verbose
+      - run: flutter build apk
+      - run: flutter build appbundle
+      - uses: actions/upload-artifact@v3
+        with:
+          name: inter_knot_apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+      - uses: actions/upload-artifact@v3
+        with:
+          name: inter_knot_appbundle
+          path: build/app/outputs/bundle/release/app-release.aab
 
   build_iOS:
     name: iOS Client
     runs-on: macos-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          architecture: x64
           cache: true
-
-      - run: flutter pub get
-      - run: flutter build ios --verbose --release --no-codesign
-      - run: flutter build ipa --verbose --release --no-codesign
+      - run: flutter build ios --release --no-codesign
+      - run: flutter build ipa --release --no-codesign
+      - run: tree build
 
   build_macOS:
     name: macOS Client
     runs-on: macos-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          architecture: x64
           cache: true
-
-      - run: flutter pub get
       - run: flutter build macos
+      - run: tree build
 
   build_linux:
     name: Linux Client
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
-
-      - run: sudo apt-get update -y
-      - run: sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev mpv libmpv-dev dpkg-dev p7zip-full p7zip-rar
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-      - run: flutter pub get
-      - run: flutter build linux --verbose
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+      - run: flutter build linux
+      - run: tree build
 
   build_web:
     name: Web Client
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
-
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-      - run: flutter pub get
-      - run: flutter build web --base-href /inter_knot/ --web-renderer html --verbose
+      - run: flutter build web --base-href /inter_knot/ --web-renderer html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: inter_knot_web
+          path: build/web

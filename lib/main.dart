@@ -5,7 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:system_theme/system_theme.dart';
 
 import 'data.dart';
 import 'l10n.dart';
@@ -28,8 +27,6 @@ Future<void> main() async {
       await windowManager.focus();
     });
   }
-  SystemTheme.fallbackColor = Colors.blue;
-  await SystemTheme.accentColor.load();
   runApp(const MyApp());
 }
 
@@ -39,36 +36,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(Controller());
-    return SystemThemeBuilder(builder: (context, accent) {
-      return GetMaterialApp(
-        title: 'Inter-Knot',
-        onGenerateTitle: (context) => 'Inter-Knot'.tr,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: accent.accent),
-        ).useSystemChineseFont(Brightness.light),
-        darkTheme: ThemeData(
+    return GetMaterialApp(
+      title: 'Inter-Knot',
+      onGenerateTitle: (context) => 'Inter-Knot'.tr,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      ).useSystemChineseFont(Brightness.light),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
           brightness: Brightness.dark,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: accent.accent,
-            brightness: Brightness.dark,
-          ),
-        ).useSystemChineseFont(Brightness.dark),
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('zh', 'CN'),
-          Locale('en', 'US'),
-        ],
-        translations: Messages(),
-        locale: Get.deviceLocale,
-        fallbackLocale: const Locale('en', 'US'),
-        home: const MyHomePage(),
-        debugShowCheckedModeBanner: false,
-      );
-    });
+        ),
+      ).useSystemChineseFont(Brightness.dark),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('en', 'US'),
+      ],
+      translations: Messages(),
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('en', 'US'),
+      home: const MyHomePage(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 
