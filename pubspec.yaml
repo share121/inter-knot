@@ -1,0 +1,57 @@
+name: inter_knot
+description: 绳网是一个游戏、技术交流平台
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.6.6
+  system_theme: ^3.0.0
+  url_launcher: ^6.3.0
+  window_manager: ^0.4.2
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  chinese_font_library: ^1.2.0
+  waterfall_flow: ^3.0.3
+  dio: ^5.6.0
+  shared_preferences: ^2.3.2
+  dart_jsonwebtoken: ^2.14.0
+  flutter_gen: ^5.6.0
+  html: ^0.15.4
+  flutter_widget_from_html: ^0.15.2
+  fwfh_cached_network_image: ^0.14.3
+  fwfh_svg: ^0.8.3
+  fwfh_url_launcher: ^0.9.1
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_gen_runner: ^5.6.0
+  build_runner: ^2.4.12
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: assets/images/icon.png
+  web:
+    generate: true
+  windows:
+    generate: true
+    icon_size: 256
+  macos:
+    generate: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/images/

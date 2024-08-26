@@ -1,0 +1,33 @@
+name: Flutter Analysis
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  package-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Run analysis
+        run: flutter analyze
+
+      - name: Verify package health
+        run: flutter pub publish --dry-run
+
+      - name: Run tests
+        run: flutter test
