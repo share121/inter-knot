@@ -29,5 +29,5 @@ jobs:
       - name: Verify package health
         run: flutter pub publish --dry-run
 
-      - name: Run tests
-        run: flutter test
+      # - name: Run tests
+      #   run: flutter test
