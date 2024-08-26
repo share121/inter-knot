@@ -103,5 +103,7 @@ typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
     }
     return (html: document.outerHtml, cover: cover);
   }
+  document.querySelectorAll('.email-hidden-toggle').forEach((e) => e.remove());
+  document.querySelectorAll('.email-hidden-reply').forEach((e) => e.remove());
   return (html: document.outerHtml, cover: null);
 }
