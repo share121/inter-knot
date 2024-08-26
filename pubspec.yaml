@@ -37,6 +37,7 @@ dev_dependencies:
   flutter_gen_runner: ^5.6.0
   build_runner: ^2.4.12
   flutter_launcher_icons: ^0.13.1
+  msix: ^3.16.8
 
 flutter_launcher_icons:
   android: true
@@ -56,3 +57,11 @@ flutter:
   assets:
     - assets/
     - assets/images/
+
+msix_config:
+  display_name: 绳网
+  publisher_display_name: share121
+  identity_name: com.share121.inter-knot
+  msix_version: 1.0.0.0
+  logo_path: assets/images/icon.png
+  capabilities: internetClient
