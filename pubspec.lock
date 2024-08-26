@@ -1259,10 +1259,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: "28b1d818f2beeb108a1ed7c58a40becae86735922a98c81c7052cb278b89ea65"
+      sha256: e343701aa890b74a863fa460f5c0e628127ed06a975d7d9af6b697133fb25bdf
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.7.0"
+    version: "2.7.1"
   video_player_avfoundation:
     dependency: transitive
     description:
