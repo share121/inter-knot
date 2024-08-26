@@ -17,7 +17,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build windows
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_windows_x64
           path: build/windows/x64/runner/Release
@@ -37,11 +37,11 @@ jobs:
           cache: true
       - run: flutter build apk
       - run: flutter build appbundle
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_apk
           path: build/app/outputs/flutter-apk/app-release.apk
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_appbundle
           path: build/app/outputs/bundle/release/app-release.aab
@@ -96,7 +96,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build web --base-href /inter_knot/ --web-renderer html
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_web
           path: build/web
