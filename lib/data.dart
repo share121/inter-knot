@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,31 +73,24 @@ class Controller extends GetxController {
 
   final cache = <String?>[];
   Future<void> fetchData() async {
-    try {
-      if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
-      cache.add(endCur);
-      late final Nodes<Article> res;
-      if (isFetchPinDiscussions) {
-        res = await getPinnedDiscussions(endCur);
-      } else {
-        res = await getDiscussions(endCur);
-      }
-      final (:endCursor, :hasNextPage, res: articles) = res;
-      endCur = endCursor;
-      if (isFetchPinDiscussions && hasNextPage == false) {
-        isFetchPinDiscussions = false;
-        endCur = null;
-        cache.clear();
-      } else {
-        this.hasNextPage.value = hasNextPage;
-      }
-      data.addAll(res.res);
-    } on DioException catch (e) {
-      Get.rawSnackbar(
-          message: e.response?.data.toString() ?? e.toString(), duration: 10.s);
-    } catch (e) {
-      Get.rawSnackbar(message: e.toString(), duration: 10.s);
+    if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
+    cache.add(endCur);
+    late final Nodes<Article> res;
+    if (isFetchPinDiscussions) {
+      res = await getPinnedDiscussions(endCur);
+    } else {
+      res = await getDiscussions(endCur);
     }
+    final (:endCursor, :hasNextPage, res: articles) = res;
+    endCur = endCursor;
+    if (isFetchPinDiscussions && hasNextPage == false) {
+      isFetchPinDiscussions = false;
+      endCur = null;
+      cache.clear();
+    } else {
+      this.hasNextPage.value = hasNextPage;
+    }
+    data.addAll(res.res);
   }
 
   Future<void> refreshData() async {

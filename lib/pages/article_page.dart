@@ -88,14 +88,26 @@ class _ArticlePageState extends State<ArticlePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Back to Top'.tr,
-        onPressed: () => scrollController.animateTo(
-          0,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        ),
-        child: const Icon(Icons.arrow_upward),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            tooltip: 'Back to Top'.tr,
+            onPressed: () => scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            ),
+            child: const Icon(Icons.arrow_upward),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () =>
+                launchUrlString('${widget.article.url}#new_comment_form'),
+            tooltip: 'Write a review'.tr,
+            child: const Icon(Icons.add_comment),
+          ),
+        ],
       ),
     );
   }
@@ -117,16 +129,7 @@ class RightBox extends StatelessWidget {
         children: [
           MainArticle(article: article),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.add_comment),
-              onPressed: () =>
-                  launchUrlString('${article.url}#new_comment_form'),
-              label: Text('Write a review'.tr),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const Divider(),
           Comments(article: article),
         ],
       ),
@@ -164,7 +167,10 @@ class MainArticle extends StatelessWidget {
         ListTile(
           onTap: () => launchUrlString(article.author.url),
           leading: Avatar(article.author.avatar),
-          title: Text(article.author.name),
+          title: Text(
+            article.author.name,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           subtitle: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Wrap(
@@ -210,9 +216,8 @@ class Comments extends StatelessWidget {
             ListTile(
               titleAlignment: ListTileTitleAlignment.top,
               leading: ClipOval(
-                // TODO
-                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: InkWell(
+                  borderRadius: BorderRadius.circular(50),
                   onTap: () => launchUrlString(comment.author.url),
                   child: Avatar(comment.author.avatar),
                 ),
@@ -291,9 +296,8 @@ class Replies extends StatelessWidget {
           ListTile(
             titleAlignment: ListTileTitleAlignment.top,
             leading: ClipOval(
-              // TODO
-              clipBehavior: Clip.antiAliasWithSaveLayer,
               child: InkWell(
+                borderRadius: BorderRadius.circular(50),
                 onTap: () => launchUrlString(reply.author.url),
                 child: Avatar(reply.author.avatar),
               ),

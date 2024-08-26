@@ -1,7 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
+import 'package:logger/logger.dart';
+
+import 'get_access_token.dart';
+import '../data.dart';
+
+final c = Get.find<Controller>();
+final logger = Logger();
 
 final dio = Dio(BaseOptions(
   responseType: ResponseType.json,
@@ -11,35 +20,66 @@ final dio = Dio(BaseOptions(
   ..interceptors.addAll([
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        // ignore: avoid_print
-        print('Request');
-        // ignore: avoid_print
-        print(options.uri);
+        logger.d('Request: ${options.uri}');
         return handler.next(options);
       },
       onResponse: (response, handler) {
-        // ignore: avoid_print
-        print('Response');
-        // ignore: avoid_print
-        print(response.requestOptions.uri);
-        // ignore: avoid_print
-        // print(response.data);
+        logger.d('Response: ${response.requestOptions.uri}');
         return handler.next(response);
       },
       onError: (error, handler) {
-        // ignore: avoid_print
-        print('Error');
-        // ignore: avoid_print
-        print(error.requestOptions.uri);
-        // ignore: avoid_print
-        print(error.response?.data);
+        logger.e(
+          'Error: ${error.requestOptions.uri}\nResponse: ${error.response?.data}',
+          error: error,
+          stackTrace: error.stackTrace,
+        );
+        Get.defaultDialog(
+          title: 'Error: ${error.requestOptions.uri}',
+          content: SelectableText(
+              'Response:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'),
+        );
         return handler.next(error);
       },
     ),
   ]);
 
+Future<Response<T>> request<T>(
+  String url, {
+  Object? data,
+  Map<String, dynamic>? queryParameters,
+  Options? options,
+}) async {
+  options ??= Options();
+  options.headers ??= {};
+  var delay = 0.5.s;
+  while (true) {
+    options.headers!['Authorization'] = 'Bearer ${c.getToken()}';
+    try {
+      return await dio.request<T>(
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        try {
+          final accessToken = await getAccessToken();
+          await c.setToken(accessToken);
+          continue;
+        } catch (e, s) {
+          logger.e('Failed to get access token', error: e, stackTrace: s);
+        }
+      }
+    }
+    await Future.delayed(delay);
+    delay += 0.5.s;
+  }
+}
+
 Future<Response<Map<String, dynamic>>> graphql(String data) async =>
-    dio.post('/graphql', data: jsonEncode({'query': data}));
+    request('/graphql',
+        data: jsonEncode({'query': data}), options: Options(method: 'POST'));
 
 String encode(String text) => text
     .replaceAll('\\', '\\\\')

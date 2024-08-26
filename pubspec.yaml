@@ -28,6 +28,7 @@ dependencies:
   fwfh_svg: ^0.8.3
   fwfh_url_launcher: ^0.9.1
   cached_network_image: ^3.4.1
+  logger: ^2.4.0
 
 dev_dependencies:
   flutter_test:

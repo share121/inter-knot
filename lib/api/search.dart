@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:inter_knot/api/common.dart';
-import 'package:inter_knot/data.dart';
+
+import 'common.dart';
+import '../data.dart';
 
 Future<Nodes<Article>> search(String query, String? after) async {
   final res = await graphql(
