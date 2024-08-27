@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/services.dart';
 
+import '../gen/assets.gen.dart';
 import '../data.dart';
 
-final pem = rootBundle.loadString('assets/private_key.pem');
+final pem = rootBundle.loadString(Assets.privateKey);
 Future<String> genToken() async {
   final time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final jwt = JWT({'iat': time, 'exp': time + 60, 'iss': clientId});

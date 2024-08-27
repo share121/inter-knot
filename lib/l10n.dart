@@ -36,6 +36,16 @@ class Messages extends Translations {
           'Refresh': '刷新',
           'Write a review': '写评论',
           'Top': '置顶',
+          'Genshin Impact': '原神',
+          'Zenless Zone Zero': '绝区零',
+          'Honkai: Star Rail': '崩坏：星穹铁道',
+          'Honkai Impact 3': '崩坏 3',
+          'Technology': '科技',
+          'Irrigation': '灌水',
+          'Other': '其他',
+          'Tutorial': '教程',
+          'Delegate': '委托',
+          'Documentation': '文档',
         }
       };
 }

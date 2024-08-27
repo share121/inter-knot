@@ -12,19 +12,49 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/default-cover.png
+  /// File path: assets/images/bh3.webp
+  AssetGenImage get bh3 => const AssetGenImage('assets/images/bh3.webp');
+
+  /// File path: assets/images/default-cover.webp
   AssetGenImage get defaultCover =>
-      const AssetGenImage('assets/images/default-cover.png');
+      const AssetGenImage('assets/images/default-cover.webp');
 
-  /// File path: assets/images/icon.png
-  AssetGenImage get icon => const AssetGenImage('assets/images/icon.png');
+  /// File path: assets/images/drawer-cover.webp
+  AssetGenImage get drawerCover =>
+      const AssetGenImage('assets/images/drawer-cover.webp');
 
-  /// File path: assets/images/profile-photo.png
+  /// File path: assets/images/github.svg
+  String get github => 'assets/images/github.svg';
+
+  /// File path: assets/images/icon.webp
+  AssetGenImage get icon => const AssetGenImage('assets/images/icon.webp');
+
+  /// File path: assets/images/profile-photo.webp
   AssetGenImage get profilePhoto =>
-      const AssetGenImage('assets/images/profile-photo.png');
+      const AssetGenImage('assets/images/profile-photo.webp');
+
+  /// File path: assets/images/sr.webp
+  AssetGenImage get sr => const AssetGenImage('assets/images/sr.webp');
+
+  /// File path: assets/images/yuanshen.webp
+  AssetGenImage get yuanshen =>
+      const AssetGenImage('assets/images/yuanshen.webp');
+
+  /// File path: assets/images/zzz.webp
+  AssetGenImage get zzz => const AssetGenImage('assets/images/zzz.webp');
 
   /// List of all assets
-  List<AssetGenImage> get values => [defaultCover, icon, profilePhoto];
+  List<dynamic> get values => [
+        bh3,
+        defaultCover,
+        drawerCover,
+        github,
+        icon,
+        profilePhoto,
+        sr,
+        yuanshen,
+        zzz
+      ];
 }
 
 class Assets {

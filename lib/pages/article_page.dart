@@ -9,7 +9,6 @@ import 'package:window_manager/window_manager.dart';
 import '../widget/comment_count.dart';
 import '../gen/assets.gen.dart';
 import '../data.dart';
-import '../widget/github_button.dart';
 import '../widget/window_buttons.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -62,32 +61,43 @@ class _ArticlePageState extends State<ArticlePage> {
             tooltip: 'Open in Browser'.tr,
             onPressed: () => launchUrlString(widget.article.url),
           ),
-          const SizedBox(width: 4),
-          const GithubButton(),
           const SizedBox(width: 8),
           if (isDesktop) const WindowButtons(),
         ],
         elevation: 4,
       ),
-      body: SizedBox.expand(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 4,
-              child: Cover(heroKey: widget.heroKey, article: widget.article),
+      body: LayoutBuilder(builder: (context, con) {
+        if (con.maxWidth < 800) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                Cover(heroKey: widget.heroKey, article: widget.article),
+                RightBox(article: widget.article),
+              ],
             ),
-            Expanded(
-              flex: 5,
-              child: SizedBox.expand(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: RightBox(article: widget.article),
-                ),
+          );
+        }
+        return SizedBox.expand(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Cover(heroKey: widget.heroKey, article: widget.article),
               ),
-            )
-          ],
-        ),
-      ),
+              Expanded(
+                flex: 5,
+                child: SizedBox.expand(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: RightBox(article: widget.article),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      }),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -150,7 +160,7 @@ class MainArticle extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 article.title,
                 style: Theme.of(context).textTheme.headlineLarge,

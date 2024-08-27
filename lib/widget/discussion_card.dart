@@ -38,19 +38,26 @@ class _DiscussionCardState extends State<DiscussionCard> {
             Stack(
               children: [
                 ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 600),
+                  constraints:
+                      const BoxConstraints(maxHeight: 600, minHeight: 100),
                   child: Cover(heroKey: heroKey, article: widget.article),
                 ),
                 Positioned(
                   top: 8,
                   left: 12,
-                  child: CommentCount(article: widget.article),
+                  child: CommentCount(
+                    article: widget.article,
+                    color: Colors.white,
+                  ),
                 ),
                 if (widget.article.isPin)
                   Positioned(
                     top: 8,
                     right: 12,
-                    child: Text('Top'.tr),
+                    child: Text(
+                      'Top'.tr,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
               ],
             ),
@@ -77,7 +84,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
-                          const Divider(height: 1)
+                          const Divider(height: 1),
                         ],
                       ),
                     ),
@@ -89,7 +96,10 @@ class _DiscussionCardState extends State<DiscussionCard> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                widget.article.title,
+                (widget.article.partition.isEmpty
+                        ? ''
+                        : '[${widget.article.partition}] ') +
+                    widget.article.title,
                 style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,

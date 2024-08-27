@@ -35,8 +35,13 @@ final dio = Dio(BaseOptions(
         );
         Get.defaultDialog(
           title: 'Error: ${error.requestOptions.uri}',
-          content: SelectableText(
-              'Response:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'),
+          contentPadding: const EdgeInsets.all(16),
+          content: Flexible(
+            child: SingleChildScrollView(
+              child: SelectableText(
+                  'Response:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'),
+            ),
+          ),
         );
         return handler.next(error);
       },
@@ -89,8 +94,11 @@ String encode(String text) => text
 
 typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
 
-({String html, String? cover}) parseHtml(String html,
-    [bool isComment = false]) {
+({
+  String html,
+  String? cover,
+  String? partition,
+}) parseHtml(String html, [bool isComment = false]) {
   final document = parseFragment(html);
   if (isComment == false) {
     final img = document.querySelector('img');
@@ -101,9 +109,24 @@ typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
       parent.remove();
       parent = parent.parent;
     }
-    return (html: document.outerHtml, cover: cover);
+    var partition = '';
+    document.querySelectorAll('h3').forEach((e) {
+      if (e.text.trim() == '分区') {
+        if (e.nextElementSibling?.text is String) {
+          partition = e.nextElementSibling!.text;
+          e.nextElementSibling!.remove();
+        }
+        e.remove();
+      }
+      if (e.text.trim() == '封面') e.remove();
+      if (e.text.trim() == '内容') e.remove();
+    });
+    document.querySelectorAll('p>em:only-child').forEach((e) {
+      if (e.text.trim() == 'No response') e.parent!.remove();
+    });
+    return (html: document.outerHtml, cover: cover, partition: partition);
   }
   document.querySelectorAll('.email-hidden-toggle').forEach((e) => e.remove());
   document.querySelectorAll('.email-hidden-reply').forEach((e) => e.remove());
-  return (html: document.outerHtml, cover: null);
+  return (html: document.outerHtml, cover: null, partition: null);
 }

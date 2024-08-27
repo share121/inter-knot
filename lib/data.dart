@@ -17,6 +17,9 @@ const repo = 'inter-knot';
 const clientId = 'Iv23li8gf1MxGAgvw5lU';
 const clientSecret = '3ea999c0e2d7283f602ab4994cc684ada2eeec2b';
 const collaborators = ['VacuolePaoo'];
+const githubLink = 'https://github.com/$owner/$repo';
+const discordLink = 'https://disboard.org/zh-cn/server/1273078781241987134';
+const docLink = 'https://docs.xn--5o0anh.top/';
 
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
@@ -144,6 +147,7 @@ class Article extends GetxController {
   var hasNextPage = true.obs;
   String? endCursor;
   final bool isPin;
+  final String partition;
 
   final cache = <String?>[];
   Future<void> fetchComments() async {
@@ -170,6 +174,7 @@ class Article extends GetxController {
     required this.commentsCount,
     this.lastEditedAt,
     required this.isPin,
+    required this.partition,
   }) : url = 'https://github.com/$owner/$repo/discussions/$number';
 }
 
