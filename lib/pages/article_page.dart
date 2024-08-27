@@ -72,7 +72,12 @@ class _ArticlePageState extends State<ArticlePage> {
             controller: scrollController,
             child: Column(
               children: [
-                Cover(heroKey: widget.heroKey, article: widget.article),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 600),
+                  width: double.infinity,
+                  child:
+                      Cover(heroKey: widget.heroKey, article: widget.article),
+                ),
                 RightBox(article: widget.article),
               ],
             ),
