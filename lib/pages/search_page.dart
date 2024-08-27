@@ -32,6 +32,7 @@ class _SearchPageState extends State<SearchPage>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SearchBar(
+                controller: c.searchController,
                 onSubmitted: c.searchQuery.call,
                 leading: const Padding(
                   padding: EdgeInsets.only(left: 8),

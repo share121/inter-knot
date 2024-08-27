@@ -44,8 +44,8 @@ Future<Nodes<Article>> getDiscussions(String? after) async {
               return Article(
                 title: title,
                 bodyHTML: html,
-                bodyText: bodyText,
-                author: Author(avatar: avatar, name: name),
+                rawBodyText: bodyText,
+                author: Author(avatar: avatar, login: name),
                 cover: cover,
                 number: number,
                 id: id,

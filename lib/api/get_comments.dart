@@ -41,7 +41,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                 }) {
               final (:html, :cover, :partition) = parseHtml(bodyHTML, true);
               return Comment(
-                author: Author(avatar: avatar, name: name),
+                author: Author(avatar: avatar, login: name),
                 bodyHTML: html,
                 createdAt: DateTime.parse(createdAt),
                 lastEditedAt: lastEditedAt == null
@@ -63,7 +63,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                         final (:html, :cover, :partition) =
                             parseHtml(bodyHTML, true);
                         return Reply(
-                          author: Author(avatar: avatar, name: name),
+                          author: Author(avatar: avatar, login: name),
                           bodyHTML: html,
                           createdAt: DateTime.parse(createdAt),
                           lastEditedAt: lastEditedAt == null

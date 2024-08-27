@@ -79,10 +79,10 @@ class _DiscussionCardState extends State<DiscussionCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 4),
-                          Text(
-                            widget.article.author.name,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          Obx(() => Text(
+                                widget.article.author.name(),
+                                overflow: TextOverflow.ellipsis,
+                              )),
                           const SizedBox(height: 4),
                           const Divider(height: 1),
                         ],
@@ -105,12 +105,16 @@ class _DiscussionCardState extends State<DiscussionCard> {
                 maxLines: 2,
               ),
             ),
-            if (widget.article.bodyText.trim().isNotEmpty) ...[
+            if (widget.article.rawBodyText.trim().isNotEmpty) ...[
               const SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  widget.article.bodyText,
+                  widget.article.rawBodyText
+                      .replaceAll(RegExp(r'\s+'), ' ')
+                      .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
+                      .replaceAll('No response', '')
+                      .trim(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
                 ),

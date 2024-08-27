@@ -7,7 +7,7 @@ import 'api/common.dart';
 import 'api/get_comments.dart';
 import 'api/get_discussions.dart';
 import 'api/get_pinned_discussions.dart';
-import 'api/get_repositories_count.dart';
+import 'api/get_user_info.dart';
 import 'api/search.dart';
 
 final isDesktop = !kIsWeb && GetPlatform.isDesktop;
@@ -46,6 +46,7 @@ class Controller extends GetxController {
       if (t.length < searchResult.length) searchResult.value = t;
     });
     debounce(searchQuery, (query) {
+      searchController.text = query;
       searchResult.clear();
       searchEndCur = null;
       searchHasNextPage.value = true;
@@ -75,6 +76,7 @@ class Controller extends GetxController {
   String? endCur;
   final hasNextPage = true.obs;
   var isFetchPinDiscussions = true;
+  final searchController = SearchController();
 
   final cache = <String?>[];
   Future<void> fetchData() async {
@@ -136,11 +138,11 @@ class Controller extends GetxController {
 class Article extends GetxController {
   final String title;
   final String bodyHTML;
-  final String bodyText;
+  final String rawBodyText;
   final Author author;
   final String? cover;
   final int number;
-  final String url;
+  late final url = 'https://github.com/$owner/$repo/discussions/$number';
   final String id;
   final DateTime createdAt;
   final DateTime? lastEditedAt;
@@ -150,6 +152,11 @@ class Article extends GetxController {
   String? endCursor;
   final bool isPin;
   final String partition;
+  late final bodyText = rawBodyText
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
+      .replaceAll('No response', '')
+      .trim();
 
   final cache = <String?>[];
   Future<void> fetchComments() async {
@@ -167,7 +174,7 @@ class Article extends GetxController {
   Article({
     required this.title,
     required this.bodyHTML,
-    required this.bodyText,
+    required this.rawBodyText,
     required this.author,
     this.cover,
     required this.number,
@@ -177,7 +184,7 @@ class Article extends GetxController {
     this.lastEditedAt,
     required this.isPin,
     required this.partition,
-  }) : url = 'https://github.com/$owner/$repo/discussions/$number';
+  });
 }
 
 class Comment extends GetxController {
@@ -240,17 +247,17 @@ extension DurationFomater on Duration {
 }
 
 class Author {
-  final String name;
+  final String login;
+  late final name = login.obs;
   final String avatar;
-  final String url;
+  late final url = 'https://github.com/$login';
   final level = 0.obs;
 
-  Author({required this.name, required this.avatar, int? level})
-      : url = 'https://github.com/$name' {
+  Author({required this.login, required this.avatar, int? level}) {
     if (level == null) {
-      getRepositoriesCount(name).then((v) {
-        if (v == null) return;
-        this.level.value = v;
+      getUserInfo(login).then((v) {
+        if (v.totalCount != null) this.level.value = v.totalCount!;
+        if (v.name != null) name.value = v.name!;
       });
     } else {
       this.level.value = level;

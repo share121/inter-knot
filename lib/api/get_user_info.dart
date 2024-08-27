@@ -1,28 +1,22 @@
 import 'dart:async';
 
 import 'common.dart';
-import '../data.dart';
 
-Future<Author?> getUserInfo() async {
+Future<({int? totalCount, String? name})> getUserInfo(String login) async {
   final res = await graphql(
-      '{ viewer { avatarUrl(size: 50) login repositories { totalCount } } }');
+      '{ user(login: "${encode(login)}") { repositories { totalCount } } }');
   if (res.data
       case {
         'data': {
-          'viewer': {
-            'login': final String name,
-            'avatarUrl': final String avatar,
+          'user': {
             'repositories': {
-              'totalCount': final int level,
+              'totalCount': final int totalCount,
             },
-          },
+            'name': final String name,
+          }
         }
       }) {
-    return Author(
-      name: name,
-      avatar: avatar,
-      level: level,
-    );
+    return (totalCount: totalCount, name: name);
   }
-  return null;
+  return (totalCount: null, name: null);
 }

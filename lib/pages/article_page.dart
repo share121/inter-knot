@@ -182,19 +182,19 @@ class MainArticle extends StatelessWidget {
         ListTile(
           onTap: () => launchUrlString(article.author.url),
           leading: Avatar(article.author.avatar),
-          title: Text(
-            article.author.name,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          title: Obx(() => Text(
+                article.author.name(),
+                style: Theme.of(context).textTheme.titleMedium,
+              )),
           subtitle: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Wrap(
               spacing: 8,
               children: [
                 Obx(() => MyChip('Lv${article.author.level()}')),
-                if (article.author.name == owner)
+                if (article.author.login == owner)
                   MyChip('Founder of Inter-Knot'.tr),
-                if (collaborators.contains(article.author.name))
+                if (collaborators.contains(article.author.login))
                   MyChip('Inter-Knot collaborator'.tr),
               ],
             ),
@@ -239,7 +239,7 @@ class Comments extends StatelessWidget {
               ),
               title: Row(
                 children: [
-                  Flexible(child: Text(comment.author.name)),
+                  Flexible(child: Obx(() => Text(comment.author.name()))),
                   const SizedBox(width: 8),
                   Expanded(
                     child: SingleChildScrollView(
@@ -248,11 +248,11 @@ class Comments extends StatelessWidget {
                         spacing: 8,
                         children: [
                           Obx(() => MyChip('Lv${comment.author.level()}')),
-                          if (comment.author.name == article.author.name)
+                          if (comment.author.login == article.author.login)
                             MyChip('landlord'.tr),
-                          if (comment.author.name == owner)
+                          if (comment.author.login == owner)
                             MyChip('Founder of Inter-Knot'.tr),
-                          if (collaborators.contains(comment.author.name))
+                          if (collaborators.contains(comment.author.login))
                             MyChip('Inter-Knot collaborator'.tr),
                         ],
                       ),
@@ -319,7 +319,7 @@ class Replies extends StatelessWidget {
             ),
             title: Row(
               children: [
-                Flexible(child: Text(reply.author.name)),
+                Flexible(child: Obx(() => Text(reply.author.name()))),
                 const SizedBox(width: 8),
                 Expanded(
                   child: SingleChildScrollView(
@@ -328,13 +328,13 @@ class Replies extends StatelessWidget {
                       spacing: 8,
                       children: [
                         Obx(() => MyChip('Lv${reply.author.level()}')),
-                        if (reply.author.name == article.author.name)
+                        if (reply.author.login == article.author.login)
                           MyChip('landlord'.tr),
-                        if (reply.author.name == comment.author.name)
+                        if (reply.author.login == comment.author.login)
                           MyChip('layer master'.tr),
-                        if (reply.author.name == owner)
+                        if (reply.author.login == owner)
                           MyChip('Founder of Inter-Knot'.tr),
-                        if (collaborators.contains(reply.author.name))
+                        if (collaborators.contains(reply.author.login))
                           MyChip('Inter-Knot collaborator'.tr),
                       ],
                     ),
