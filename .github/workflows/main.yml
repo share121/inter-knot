@@ -103,3 +103,22 @@ jobs:
         with:
           name: inter_knot_web
           path: build/web
+
+  deploy:
+    name: Deploy
+    needs: build_web
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: inter_knot_web
+          path: build/web
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
