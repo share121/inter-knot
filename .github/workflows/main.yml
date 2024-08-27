@@ -21,6 +21,15 @@ jobs:
         with:
           name: inter_knot_windows_x64
           path: build/windows/x64/runner/Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: node build-exe.js
+      - run: .\enigmavbconsole.exe pack.evb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inter_knot_windows_x64_boxed
+          path: inter_knot_boxed.exe
 
   build_android:
     name: Android Client
@@ -142,6 +151,10 @@ jobs:
       - run: zip -r inter_knot_windows_x64.zip inter_knot_windows_x64
       - uses: actions/download-artifact@v4
         with:
+          name: inter_knot_windows_x64_boxed
+          path: inter_knot_windows_x64_boxed
+      - uses: actions/download-artifact@v4
+        with:
           name: inter_knot_apk
           path: inter_knot_apk
       - uses: actions/download-artifact@v4
@@ -166,5 +179,6 @@ jobs:
             inter_knot_windows_x64.zip
             inter_knot_apk/app-release.apk
             inter_knot_appbundle/app-release.aab
+            inter_knot_windows_x64_boxed/inter_knot_boxed.exe
             inter_knot_linux.zip
             inter_knot_web.zip
