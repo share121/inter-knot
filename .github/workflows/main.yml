@@ -98,7 +98,7 @@ jobs:
         with:
           channel: stable
           cache: true
-      - run: flutter build web --base-href /inter_knot/ --web-renderer html
+      - run: flutter build web --base-href /inter_knot/
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_web
