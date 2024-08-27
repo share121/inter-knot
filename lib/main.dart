@@ -186,22 +186,24 @@ class MyHomePage extends StatelessWidget {
           child: Row(
             children: [
               if (con.maxWidth > 600)
-                SingleChildScrollView(
-                  child: SizedBox(
-                    height: max(con.maxHeight, 336),
-                    child: Obx(() {
-                      return NavigationRail(
-                        destinations: destinations,
-                        selectedIndex: c.selectedIndex(),
-                        onDestinationSelected: (index) =>
-                            c.animateToPage(index),
-                        labelType: con.maxHeight < 456
-                            ? NavigationRailLabelType.selected
-                            : NavigationRailLabelType.all,
-                      );
-                    }),
-                  ),
-                ),
+                LayoutBuilder(builder: (context, con) {
+                  return SingleChildScrollView(
+                    child: SizedBox(
+                      height: max(con.maxHeight, 336),
+                      child: Obx(() {
+                        return NavigationRail(
+                          destinations: destinations,
+                          selectedIndex: c.selectedIndex(),
+                          onDestinationSelected: (index) =>
+                              c.animateToPage(index),
+                          labelType: con.maxHeight < 456
+                              ? NavigationRailLabelType.selected
+                              : NavigationRailLabelType.all,
+                        );
+                      }),
+                    ),
+                  );
+                }),
               Expanded(
                 child: PageView(
                   controller: c.pageController,
