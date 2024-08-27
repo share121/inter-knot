@@ -4,7 +4,7 @@ import 'common.dart';
 
 Future<({int? totalCount, String? name})> getUserInfo(String login) async {
   final res = await graphql(
-      '{ user(login: "${encode(login)}") { repositories { totalCount } } }');
+      '{ user(login: "${encode(login)}") { repositories { totalCount }, name } }');
   if (res.data
       case {
         'data': {

@@ -1,7 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api/get_new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'api/common.dart';
 import 'api/get_comments.dart';
@@ -20,6 +24,24 @@ const collaborators = ['VacuolePaoo'];
 const githubLink = 'https://github.com/$owner/$repo';
 const discordLink = 'https://disboard.org/zh-cn/server/1273078781241987134';
 const docLink = 'https://docs.xn--5o0anh.top/';
+const issuesLink = '$githubLink/issues';
+
+bool isUpdateVersion(String newVer, String oldVer) {
+  final [newVerStr, newVerBuildStr] = newVer.split('+');
+  final [oldVerStr, oldVerBuildStr] = oldVer.split('+');
+  var newList = newVerStr[0].split('.');
+  var oldList = oldVerStr[0].split('.');
+  for (int i = 0; i < newList.length; i++) {
+    final newVerInt = int.parse(newList[i]);
+    final oldVerInt = int.parse(oldList[i]);
+    if (newVerInt > oldVerInt) {
+      return true;
+    } else if (newVerInt < oldVerInt) {
+      return false;
+    }
+  }
+  return int.parse(newVerBuildStr) > int.parse(oldVerBuildStr);
+}
 
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
@@ -37,6 +59,9 @@ class Controller extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    pref = await SharedPreferencesWithCache.create(
+      cacheOptions: const SharedPreferencesWithCacheOptions(),
+    );
     ever(data, (_) {
       final t = removeDuplicateArticle(data);
       if (t.length < data.length) data.value = t;
@@ -53,11 +78,86 @@ class Controller extends GetxController {
       searchCache.clear();
       searchData();
     }, time: 500.ms);
-    pref = await SharedPreferencesWithCache.create(
-      cacheOptions: const SharedPreferencesWithCacheOptions(),
-    );
-    await fetchData();
-    searchResult.addAll(data);
+    fetchData().then((_) => searchResult.addAll(data));
+    getNewVersion().then((version) async {
+      if (version == null) {
+        Get.defaultDialog(
+          title: 'Error: Unable to detect the latest version'.tr,
+          contentPadding: const EdgeInsets.all(16),
+          content: Flexible(
+            child: Text(
+                'Unable to detect the latest version, please go to @githubLink to update manually.'
+                    .trParams({'githubLink': githubLink})),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Future.delayed(3.s).then((_) => launchUrlString(issuesLink));
+                await Clipboard.setData(ClipboardData(
+                    text: 'Error: Unable to detect the latest version'.tr));
+                Get.rawSnackbar(
+                  title: 'The error message has been copied.'.tr,
+                  message:
+                      'The GitHub Issues page automatically opens after 3 seconds'
+                          .tr,
+                );
+              },
+              child: Text('Feedback'.tr),
+            ),
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text('OK'.tr),
+            ),
+          ],
+        );
+      } else {
+        final info = await PackageInfo.fromPlatform();
+        if (isUpdateVersion(
+            version.version, '${info.version}+${info.buildNumber}')) {
+          Get.defaultDialog(
+            title: 'New version available'.tr,
+            contentPadding: const EdgeInsets.all(16),
+            content: Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text('Current version @version'.trParams(
+                        {'version': 'v${info.version}+${info.buildNumber}'})),
+                    Text('Latest version @version'
+                        .trParams({'version': 'v${version.version}'})),
+                    const SizedBox(height: 8),
+                    for (final item in version.releaseAssets)
+                      ListTile(
+                        title: Text(item.name),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Last edited on: '.tr +
+                                item.updatedAt.toLocal().toString()),
+                            Text('Size: @size bytes'
+                                .trParams({'size': item.size.toString()})),
+                            Text('Download count: '.tr +
+                                item.downloadCount.toString()),
+                          ],
+                        ),
+                        onTap: () async {
+                          launchUrlString(item.downloadUrl);
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(),
+                child: Text('OK'.tr),
+              ),
+            ],
+          );
+        }
+      }
+    });
   }
 
   final selectedIndex = 0.obs;

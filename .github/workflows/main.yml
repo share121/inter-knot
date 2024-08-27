@@ -173,8 +173,9 @@ jobs:
       - run: zip -r inter_knot_web.zip inter_knot_web
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          body_path: CHANGELOG.md
           files: |
             inter_knot_windows_x64.zip
             inter_knot_apk/app-release.apk

@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'get_access_token.dart';
 import '../data.dart';
@@ -42,6 +44,27 @@ final dio = Dio(BaseOptions(
                   'Response:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'),
             ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Future.delayed(3.s).then((_) => launchUrlString(issuesLink));
+                await Clipboard.setData(ClipboardData(
+                    text:
+                        'Error: ${error.requestOptions.uri}\n\nResponse:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'));
+                Get.rawSnackbar(
+                  title: 'The error message has been copied.'.tr,
+                  message:
+                      'The GitHub Issues page automatically opens after 3 seconds'
+                          .tr,
+                );
+              },
+              child: Text('Feedback'.tr),
+            ),
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text('OK'.tr),
+            ),
+          ],
         );
         return handler.next(error);
       },
