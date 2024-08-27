@@ -26,7 +26,7 @@ Future<List<dynamic>> getAllReports(int number) async {
           }
         }) {
       res.addAll(nodes);
-      if (hasNextPage == false) break;
+      if (!hasNextPage) break;
       after = endCursor;
     }
   }

@@ -38,10 +38,12 @@ class Controller extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     ever(data, (_) {
-      removeDuplicateArticle(data);
+      final t = removeDuplicateArticle(data);
+      if (t.length < data.length) data.value = t;
     });
     ever(searchResult, (_) {
-      removeDuplicateArticle(searchResult);
+      final t = removeDuplicateArticle(searchResult);
+      if (t.length < searchResult.length) searchResult.value = t;
     });
     debounce(searchQuery, (query) {
       searchResult.clear();
@@ -86,7 +88,7 @@ class Controller extends GetxController {
     }
     final (:endCursor, :hasNextPage, res: articles) = res;
     endCur = endCursor;
-    if (isFetchPinDiscussions && hasNextPage == false) {
+    if (isFetchPinDiscussions && !hasNextPage) {
       isFetchPinDiscussions = false;
       endCur = null;
       cache.clear();
@@ -151,13 +153,13 @@ class Article extends GetxController {
 
   final cache = <String?>[];
   Future<void> fetchComments() async {
-    if (hasNextPage() == false || cache.contains(endCursor)) {
+    if (hasNextPage.isFalse || cache.contains(endCursor)) {
       return;
     }
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
         await getComments(number, endCursor);
     comments.addAll(res);
-    removeDuplicateComment(comments);
+    comments.value = removeDuplicateComment(comments);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
   }
@@ -217,8 +219,8 @@ extension Use<V> on V? {
 }
 
 extension True on bool {
-  T? isTrue<T>(T Function() fn) => this == true ? fn() : null;
-  T? isFalse<T>(T Function() fn) => this == false ? fn() : null;
+  T? isTrue<T>(T Function() fn) => this ? fn() : null;
+  T? isFalse<T>(T Function() fn) => !this ? fn() : null;
 }
 
 extension Num2Duration on num {
@@ -256,28 +258,20 @@ class Author {
   }
 }
 
-void removeDuplicateArticle(List<Article> arr) {
-  var len = arr.length;
-  for (var i = 0; i < len; i++) {
-    for (var j = i + 1; j < len; j++) {
-      if (arr[i].number == arr[j].number) {
-        arr.removeAt(j);
-        len--;
-        j--;
-      }
-    }
+List<Article> removeDuplicateArticle(List<Article> arr) {
+  final res = <Article>[];
+  for (final item in arr) {
+    final isDuplicate = res.any((e) => item.id == e.id);
+    if (!isDuplicate) res.add(item);
   }
+  return res;
 }
 
-void removeDuplicateComment(List<Comment> arr) {
-  var len = arr.length;
-  for (var i = 0; i < len; i++) {
-    for (var j = i + 1; j < len; j++) {
-      if (arr[i].id == arr[j].id) {
-        arr.removeAt(j);
-        len--;
-        j--;
-      }
-    }
+List<Comment> removeDuplicateComment(List<Comment> arr) {
+  final res = <Comment>[];
+  for (final item in arr) {
+    final isDuplicate = res.any((e) => item.id == e.id);
+    if (!isDuplicate) res.add(item);
   }
+  return res;
 }

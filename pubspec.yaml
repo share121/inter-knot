@@ -16,7 +16,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.19.0
-  chinese_font_library: ^1.2.0
   waterfall_flow: ^3.0.3
   dio: ^5.6.0
   shared_preferences: ^2.3.2

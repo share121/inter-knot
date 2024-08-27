@@ -100,7 +100,7 @@ typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
   String? partition,
 }) parseHtml(String html, [bool isComment = false]) {
   final document = parseFragment(html);
-  if (isComment == false) {
+  if (!isComment) {
     final img = document.querySelector('img');
     final cover = img?.attributes['src'];
     img?.remove();
