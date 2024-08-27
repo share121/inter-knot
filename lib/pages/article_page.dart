@@ -396,7 +396,7 @@ class Cover extends StatelessWidget {
     return Hero(
       tag: heroKey,
       child: article.cover == null
-          ? Assets.images.defaultCover.image()
+          ? Assets.images.defaultCover.image(fit: BoxFit.contain)
           : MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
@@ -412,7 +412,7 @@ class Cover extends StatelessWidget {
                     );
                   },
                   errorWidget: (context, url, error) =>
-                      Assets.images.defaultCover.image(),
+                      Assets.images.defaultCover.image(fit: BoxFit.contain),
                 ),
               ),
             ),

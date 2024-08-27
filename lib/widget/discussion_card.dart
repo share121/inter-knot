@@ -135,7 +135,10 @@ class Cover extends StatelessWidget {
     return Hero(
       tag: heroKey,
       child: article.cover == null
-          ? Assets.images.defaultCover.image()
+          ? Assets.images.defaultCover.image(
+              width: double.infinity,
+              fit: BoxFit.cover,
+            )
           : CachedNetworkImage(
               imageUrl: article.cover!,
               width: double.infinity,
@@ -151,7 +154,10 @@ class Cover extends StatelessWidget {
                 );
               },
               errorWidget: (context, url, error) =>
-                  Assets.images.defaultCover.image(),
+                  Assets.images.defaultCover.image(
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
     );
   }
