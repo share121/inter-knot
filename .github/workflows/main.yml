@@ -176,7 +176,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: CHANGELOG.md
+          body_path: release-content.md
           files: |
             inter_knot_windows_x64.zip
             inter_knot_apk/app-release.apk

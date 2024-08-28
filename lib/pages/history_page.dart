@@ -6,14 +6,14 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../widget/discussion_card.dart';
 import 'article_page.dart';
 
-class LikedPage extends StatefulWidget {
-  const LikedPage({super.key});
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
 
   @override
-  State<LikedPage> createState() => _LikedPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _LikedPageState extends State<LikedPage>
+class _HistoryPageState extends State<HistoryPage>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
@@ -23,24 +23,24 @@ class _LikedPageState extends State<LikedPage>
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
-            [SliverAppBar(title: Text('Like'.tr))],
+            [SliverAppBar(title: Text('History'.tr))],
         floatHeaderSlivers: true,
         body: Obx(() {
-          if (c.bookmarks.isEmpty) return Center(child: Text('Empty'.tr));
+          if (c.history.isEmpty) return Center(child: Text('Empty'.tr));
           return WaterfallFlow.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 270,
             ),
-            itemCount: c.bookmarks.length,
+            itemCount: c.history.length,
             itemBuilder: (context, index) {
               return Obx(() {
                 return DiscussionCard(
-                  article: c.bookmarks[index],
+                  article: c.history[index],
                   onTap: (heroKey) {
                     Get.to<void>(() => ArticlePage(
-                        heroKey: heroKey, article: c.bookmarks[index]));
+                        heroKey: heroKey, article: c.history[index]));
                   },
                 );
               });

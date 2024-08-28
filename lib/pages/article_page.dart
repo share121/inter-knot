@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api/common.dart';
 import 'package:inter_knot/widget/avatar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
@@ -28,6 +29,13 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   void initState() {
     super.initState();
+    Future(() {
+      c.history.value = [
+        widget.article,
+        ...c.history.where((e) => e.number != widget.article.number)
+      ];
+      logger.e(c.history());
+    });
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
       final currentScroll = scrollController.position.pixels;
@@ -124,7 +132,7 @@ class _ArticlePageState extends State<ArticlePage> {
               onPressed: () {
                 if (isLiked) {
                   c.bookmarks
-                      .retainWhere((e) => e.number != widget.article.number);
+                      .removeWhere((e) => e.number == widget.article.number);
                 } else {
                   c.bookmarks.insert(0, widget.article);
                 }

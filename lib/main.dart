@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inter_knot/gen/assets.gen.dart';
+import 'package:inter_knot/pages/history_page.dart';
 import 'package:inter_knot/pages/liked_page.dart';
 import 'package:inter_knot/pages/partition_page.dart';
 import 'package:inter_knot/widget/discord_button.dart';
@@ -215,7 +216,7 @@ class MyHomePage extends StatelessWidget {
                     const SearchPage(),
                     const PartitionPage(),
                     const LikedPage(),
-                    Center(child: Text('History'.tr)),
+                    const HistoryPage(),
                     Center(child: Text('Settings'.tr)),
                     const AboutPage(),
                   ],

@@ -65,6 +65,15 @@ class Controller extends GetxController {
 
   final bookmarks = <Article>[].obs;
 
+  Future<List<Article>> getHistory() async {
+    final discussionNumber = pref.getStringList('history') ?? [];
+    final futures =
+        discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
+    return (await Future.wait(futures)).whereType<Article>().toList();
+  }
+
+  final history = <Article>[].obs;
+
   late final info = PackageInfo.fromPlatform();
 
   @override
@@ -91,9 +100,18 @@ class Controller extends GetxController {
     }, time: 500.ms);
     fetchData().then((_) => searchResult.addAll(data));
     getBookmarks().then(bookmarks.call);
+    getHistory().then(history.call);
     ever(bookmarks, (v) {
       pref.setStringList(
           'bookmarks', v.map((e) => e.number.toString()).toList());
+    });
+    ever(history, (v) {
+      if (v.length > 20) {
+        history.removeRange(20, v.length);
+      } else {
+        pref.setStringList(
+            'history', v.map((e) => e.number.toString()).toList());
+      }
     });
     getNewVersion().then((release) async {
       if (release == null) {

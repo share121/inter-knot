@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
@@ -55,7 +57,14 @@ final dio = Dio(BaseOptions(
         return handler.next(error);
       },
     ),
-  ]);
+  ])
+  ..httpClientAdapter = IOHttpClientAdapter(
+    createHttpClient: () {
+      final client = HttpClient();
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
+    },
+  );
 
 Future<Response<T>> request<T>(
   String url, {
