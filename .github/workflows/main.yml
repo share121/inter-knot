@@ -38,24 +38,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: "zulu"
+          distribution: zulu
           java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
       - run: flutter build apk
-      - run: flutter build appbundle
       - run: mv build/app/outputs/flutter-apk/app-release.apk inter_knot_android.apk
-      - run: mv build/app/outputs/bundle/release/app-release.aab inter_knot_android.aab
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_apk
           path: inter_knot_android.apk
-      - uses: actions/upload-artifact@v4
-        with:
-          name: inter_knot_appbundle
-          path: inter_knot_android.aab
 
   build_iOS:
     name: iOS Client
@@ -169,10 +163,6 @@ jobs:
           path: inter_knot_apk
       - uses: actions/download-artifact@v4
         with:
-          name: inter_knot_appbundle
-          path: inter_knot_appbundle
-      - uses: actions/download-artifact@v4
-        with:
           name: inter_knot_linux
           path: inter_knot_linux
       - run: zip -r inter_knot_linux.zip inter_knot_linux
@@ -199,7 +189,6 @@ jobs:
             inter_knot_windows_x64.zip
             inter_knot_windows_x64_boxed/inter_knot_windows_x64_boxed.exe
             inter_knot_apk/inter_knot_android.apk
-            inter_knot_appbundle/inter_knot_android.aab
             inter_knot_linux.zip
             inter_knot_web.zip
             inter_knot_macos.app.zip
