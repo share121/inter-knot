@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
+import 'package:inter_knot/widget/feedback_btn.dart';
 import 'package:logger/logger.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import 'get_access_token.dart';
 import '../data.dart';
@@ -35,36 +34,23 @@ final dio = Dio(BaseOptions(
           error: error,
           stackTrace: error.stackTrace,
         );
-        Get.defaultDialog(
-          title: 'Error: ${error.requestOptions.uri}',
-          contentPadding: const EdgeInsets.all(16),
-          content: Flexible(
-            child: SingleChildScrollView(
-              child: SelectableText(
-                  'Response:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Future.delayed(3.s).then((_) => launchUrlString(issuesLink));
-                await Clipboard.setData(ClipboardData(
-                    text:
-                        'Error: ${error.requestOptions.uri}\n\nResponse:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}'));
-                Get.rawSnackbar(
-                  title: 'The error message has been copied.'.tr,
-                  message:
-                      'The GitHub Issues page automatically opens after 3 seconds'
-                          .tr,
-                );
-              },
-              child: Text('Feedback'.tr),
-            ),
-            TextButton(
-              onPressed: () => Get.back(),
-              child: Text('OK'.tr),
-            ),
-          ],
+        final msg =
+            'Error: ${error.requestOptions.uri}\n\nResponse:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}';
+        showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error: ${error.requestOptions.uri}'),
+              content: SelectableText(msg),
+              actions: [
+                FeedbackBtn(msg),
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: Text('OK'.tr),
+                ),
+              ],
+            );
+          },
         );
         return handler.next(error);
       },

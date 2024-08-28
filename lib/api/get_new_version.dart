@@ -1,12 +1,12 @@
 import 'package:inter_knot/api/common.dart';
 import 'package:inter_knot/data.dart';
 
-class Version {
+class Release {
   final String version;
   final List<ReleaseAsset> releaseAssets;
   final String? descriptionHTML;
 
-  Version({
+  Release({
     required this.version,
     required this.releaseAssets,
     this.descriptionHTML,
@@ -29,10 +29,9 @@ class ReleaseAsset {
   });
 }
 
-Future<Version?> getNewVersion() async {
+Future<Release?> getNewVersion() async {
   final res = await graphql(
       '{ repository(owner: "$owner", name: "inter_knot") { releases(first: 1) { nodes { tagName descriptionHTML releaseAssets(first: 100) { nodes { downloadUrl name downloadCount size updatedAt } } } } }}');
-
   if (res.data
       case {
         'data': {
@@ -49,7 +48,7 @@ Future<Version?> getNewVersion() async {
           }
         }
       }) {
-    return Version(
+    return Release(
       version: tagName.substring(1),
       descriptionHTML: descriptionHTML,
       releaseAssets: assets

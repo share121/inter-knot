@@ -13,6 +13,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'data.dart';
 import 'l10n.dart';
+import 'pages/about_page.dart';
 import 'pages/search_page.dart';
 import 'pages/notifications_page.dart';
 import 'widget/github_button.dart';
@@ -215,7 +216,7 @@ class MyHomePage extends StatelessWidget {
                     Center(child: Text('Like'.tr)),
                     Center(child: Text('History'.tr)),
                     Center(child: Text('Settings'.tr)),
-                    Center(child: Text('About'.tr)),
+                    const AboutPage(),
                   ],
                 ),
               )

@@ -54,12 +54,18 @@ class Messages extends Translations {
           'The GitHub Issues page automatically opens after 3 seconds':
               '3 秒后自动打开 GitHub Issues 页面',
           'Error: Unable to detect the latest version': '错误：无法检测到最新版本',
-          'Unable to detect the latest version, please go to @githubLink to update manually.':
-              '无法检测到最新版本，请前往 @githubLink 手动更新。',
+          'Unable to detect the latest version, please go to @releasesLink to update manually.':
+              '无法检测到最新版本，请前往 @releasesLink 手动更新。',
           'Discover new version @version': '发现新版本 @version',
-          'Current version @version': '当前版本 @version',
+          'Current version': '当前版本',
+          'Latest version': '最新版本',
           'Download count: ': '下载次数：',
-          'Size: @size bytes': '大小：@size 字节'
+          'Size: @size bytes': '大小：@size 字节',
+          'Version': '版本',
+          'Unknown': '未知',
+          'Update content': '更新内容',
+          'Copy failed': '复制失败',
+          'Open': '打开',
         }
       };
 }
