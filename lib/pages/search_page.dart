@@ -77,9 +77,9 @@ class _SearchPageState extends State<SearchPage>
                       return DiscussionCard(
                         article: c.searchResult[index],
                         onTap: (heroKey) {
-                          Get.to<void>(() => Obx(() => ArticlePage(
+                          Get.to<void>(() => ArticlePage(
                               heroKey: heroKey,
-                              article: c.searchResult[index])));
+                              article: c.searchResult[index]));
                         },
                       );
                     });

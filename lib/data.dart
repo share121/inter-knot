@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api/get_discussion.dart';
 import 'package:inter_knot/api/get_new_version.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,6 +56,15 @@ class Controller extends GetxController {
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
   Future<void> setRefreshToken(String v) => pref.setString('refresh_token', v);
 
+  Future<List<Article>> getBookmarks() async {
+    final discussionNumber = pref.getStringList('bookmarks') ?? [];
+    final futures =
+        discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
+    return (await Future.wait(futures)).whereType<Article>().toList();
+  }
+
+  final bookmarks = <Article>[].obs;
+
   late final info = PackageInfo.fromPlatform();
 
   @override
@@ -80,6 +90,11 @@ class Controller extends GetxController {
       searchData();
     }, time: 500.ms);
     fetchData().then((_) => searchResult.addAll(data));
+    getBookmarks().then(bookmarks.call);
+    ever(bookmarks, (v) {
+      pref.setStringList(
+          'bookmarks', v.map((e) => e.number.toString()).toList());
+    });
     getNewVersion().then((release) async {
       if (release == null) {
         showDialog(

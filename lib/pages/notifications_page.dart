@@ -56,8 +56,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                 return DiscussionCard(
                   article: c.data[index],
                   onTap: (heroKey) {
-                    Get.to<void>(() => Obx(() =>
-                        ArticlePage(heroKey: heroKey, article: c.data[index])));
+                    Get.to<void>(() =>
+                        ArticlePage(heroKey: heroKey, article: c.data[index]));
                   },
                 );
               });

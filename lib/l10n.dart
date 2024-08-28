@@ -66,6 +66,7 @@ class Messages extends Translations {
           'Update content': '更新内容',
           'Copy failed': '复制失败',
           'Open': '打开',
+          'Unlike': '不喜欢',
         }
       };
 }

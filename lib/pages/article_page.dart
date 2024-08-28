@@ -116,6 +116,24 @@ class _ArticlePageState extends State<ArticlePage> {
             child: const Icon(Icons.arrow_upward),
           ),
           const SizedBox(height: 16),
+          Obx(() {
+            final isLiked = c.bookmarks
+                .map((e) => e.number)
+                .contains(widget.article.number);
+            return FloatingActionButton(
+              onPressed: () {
+                if (isLiked) {
+                  c.bookmarks
+                      .retainWhere((e) => e.number != widget.article.number);
+                } else {
+                  c.bookmarks.insert(0, widget.article);
+                }
+              },
+              tooltip: isLiked ? 'Unlike'.tr : 'Like'.tr,
+              child: Icon(isLiked ? Icons.favorite : Icons.favorite_outline),
+            );
+          }),
+          const SizedBox(height: 16),
           FloatingActionButton(
             onPressed: () =>
                 launchUrlString('${widget.article.url}#new_comment_form'),
