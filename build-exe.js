@@ -7,7 +7,10 @@ const start = `<?xml version="1.0" encoding="windows-1252"?>
     __dirname,
     "./build/windows/x64/runner/Release/inter_knot.exe"
   )}</InputFile>
-  <OutputFile>${p.join(__dirname, "inter_knot_boxed.exe")}</OutputFile>
+  <OutputFile>${p.join(
+    __dirname,
+    "inter_knot_windows_x64_boxed.exe"
+  )}</OutputFile>
   <Files>
     <Enabled>True</Enabled>
     <DeleteExtractedOnExit>True</DeleteExtractedOnExit>

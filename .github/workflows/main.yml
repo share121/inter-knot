@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_windows_x64_boxed
-          path: inter_knot_boxed.exe
+          path: inter_knot_windows_x64_boxed.exe
 
   build_android:
     name: Android Client
@@ -46,14 +46,16 @@ jobs:
           cache: true
       - run: flutter build apk
       - run: flutter build appbundle
+      - run: mv build/app/outputs/flutter-apk/app-release.apk inter_knot_android.apk
+      - run: mv build/app/outputs/bundle/release/app-release.aab inter_knot_android.aab
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: inter_knot_android.apk
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_appbundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: inter_knot_android.aab
 
   build_iOS:
     name: iOS Client
@@ -65,8 +67,11 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build ios --release --no-codesign
-      - run: flutter build ipa --release --no-codesign
-      - run: ls -R
+      - run: mv build/ios/iphoneos/Runner.app inter_knot_ios.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inter_knot_ios
+          path: inter_knot_ios.app
 
   build_macOS:
     name: macOS Client
@@ -78,7 +83,11 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build macos
-      - run: ls -R
+      - run: mv build/macos/Build/Products/Release/绳网.app inter_knot_macos.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inter_knot_macos
+          path: inter_knot_macos.app
 
   build_linux:
     name: Linux Client
@@ -172,6 +181,14 @@ jobs:
           name: inter_knot_web
           path: inter_knot_web
       - run: zip -r inter_knot_web.zip inter_knot_web
+      - uses: actions/download-artifact@v4
+        with:
+          name: inter_knot_macos
+          path: inter_knot_macos
+      - uses: actions/download-artifact@v4
+        with:
+          name: inter_knot_ios
+          path: inter_knot_ios.app
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -179,8 +196,9 @@ jobs:
           body_path: release-content.md
           files: |
             inter_knot_windows_x64.zip
-            inter_knot_apk/app-release.apk
-            inter_knot_appbundle/app-release.aab
-            inter_knot_windows_x64_boxed/inter_knot_boxed.exe
+            inter_knot_apk/inter_knot_android.apk
+            inter_knot_appbundle/inter_knot_android.aab
+            inter_knot_windows_x64_boxed/inter_knot_windows_x64_boxed.exe
             inter_knot_linux.zip
             inter_knot_web.zip
+            inter_knot_macos/inter_knot_macos.app

@@ -67,6 +67,10 @@ class Messages extends Translations {
           'Copy failed': '复制失败',
           'Open': '打开',
           'Unlike': '不喜欢',
+          'Report template copied': '举报模板已复制',
+          'Jump to the report page after 3 seconds': '3 秒后跳转到举报页',
+          'Report': '举报',
+          'This article is suspected of violating regulations': '此文章涉嫌违规',
         }
       };
 }

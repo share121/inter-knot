@@ -37,10 +37,10 @@ class _HistoryPageState extends State<HistoryPage>
             itemBuilder: (context, index) {
               return Obx(() {
                 return DiscussionCard(
-                  article: c.history[index],
+                  article: c.history.elementAt(index),
                   onTap: (heroKey) {
                     Get.to<void>(() => ArticlePage(
-                        heroKey: heroKey, article: c.history[index]));
+                        heroKey: heroKey, article: c.history.elementAt(index)));
                   },
                 );
               });

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../gen/assets.gen.dart';
 import '../data.dart';
@@ -20,110 +21,128 @@ class DiscussionCard extends StatefulWidget {
 class _DiscussionCardState extends State<DiscussionCard> {
   var elevation = 1.0;
   final heroKey = UniqueKey();
+  final c = Get.find<Controller>();
 
   @override
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: elevation,
-      child: InkWell(
-        onTap: () => widget.onTap?.call(heroKey),
-        onTapDown: (_) => setState(() => elevation = 4),
-        onTapUp: (_) => setState(() => elevation = 1),
-        onTapCancel: () => setState(() => elevation = 1),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                ConstrainedBox(
-                  constraints:
-                      const BoxConstraints(maxHeight: 600, minHeight: 100),
-                  child: Cover(heroKey: heroKey, article: widget.article),
+      child: Obx(() {
+        if (!c.canVisit(widget.article)) {
+          return AspectRatio(
+            aspectRatio: 5 / 6,
+            child: InkWell(
+              onTap: () => launchUrlString(widget.article.url),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                      'This article is suspected of violating regulations'.tr),
                 ),
-                Positioned(
-                  top: 8,
-                  left: 12,
-                  child: CommentCount(
-                    article: widget.article,
-                    color: Colors.white,
+              ),
+            ),
+          );
+        }
+        return InkWell(
+          onTap: () => widget.onTap?.call(heroKey),
+          onTapDown: (_) => setState(() => elevation = 4),
+          onTapUp: (_) => setState(() => elevation = 1),
+          onTapCancel: () => setState(() => elevation = 1),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxHeight: 600, minHeight: 100),
+                    child: Cover(heroKey: heroKey, article: widget.article),
                   ),
-                ),
-                if (widget.article.isPin)
                   Positioned(
                     top: 8,
-                    right: 12,
-                    child: Text(
-                      'Top'.tr,
-                      style: const TextStyle(color: Colors.white),
+                    left: 12,
+                    child: CommentCount(
+                      article: widget.article,
+                      color: Colors.white,
                     ),
                   ),
-              ],
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.centerLeft,
-                  children: [
+                  if (widget.article.isPin)
                     Positioned(
-                      top: -26,
-                      child: Avatar(widget.article.author.avatar),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 54),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4),
-                          Obx(() => Text(
-                                widget.article.author.name(),
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                          const SizedBox(height: 4),
-                          const Divider(height: 1),
-                        ],
+                      top: 8,
+                      right: 12,
+                      child: Text(
+                        'Top'.tr,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                  ],
+                ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.centerLeft,
+                    children: [
+                      Positioned(
+                        top: -26,
+                        child: Avatar(widget.article.author.avatar),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 54),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 4),
+                            Obx(() => Text(
+                                  widget.article.author.name(),
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                            const SizedBox(height: 4),
+                            const Divider(height: 1),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                (widget.article.partition.isEmpty
-                        ? ''
-                        : '[${widget.article.partition}] ') +
-                    widget.article.title,
-                style: Theme.of(context).textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-            ),
-            if (widget.article.rawBodyText.trim().isNotEmpty) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  widget.article.rawBodyText
-                      .replaceAll(RegExp(r'\s+'), ' ')
-                      .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
-                      .replaceAll('No response', '')
-                      .trim(),
+                  (widget.article.partition.isEmpty
+                          ? ''
+                          : '[${widget.article.partition}] ') +
+                      widget.article.title,
+                  style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
+                  maxLines: 2,
                 ),
               ),
+              if (widget.article.rawBodyText.trim().isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    widget.article.rawBodyText
+                        .replaceAll(RegExp(r'\s+'), ' ')
+                        .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
+                        .replaceAll('No response', '')
+                        .trim(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
             ],
-            const SizedBox(height: 12),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

@@ -11,6 +11,12 @@ class Release {
     required this.releaseAssets,
     this.descriptionHTML,
   });
+
+  @override
+  operator ==(Object other) => other is Release && other.version == version;
+
+  @override
+  int get hashCode => version.hashCode;
 }
 
 class ReleaseAsset {
@@ -27,6 +33,13 @@ class ReleaseAsset {
     required this.size,
     required this.updatedAt,
   });
+
+  @override
+  operator ==(Object other) =>
+      other is ReleaseAsset && other.downloadUrl == downloadUrl;
+
+  @override
+  int get hashCode => downloadUrl.hashCode;
 }
 
 Future<Release?> getNewVersion() async {

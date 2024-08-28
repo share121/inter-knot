@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'api/common.dart';
+import 'api/get_all_reports.dart';
 import 'api/get_comments.dart';
 import 'api/get_discussions.dart';
 import 'api/get_pinned_discussions.dart';
@@ -20,6 +21,7 @@ import 'widget/feedback_btn.dart';
 
 final isDesktop = !kIsWeb && GetPlatform.isDesktop;
 
+const reportDiscussionNumber = 1685;
 const owner = 'share121';
 const repo = 'inter-knot';
 const clientId = 'Iv23li8gf1MxGAgvw5lU';
@@ -47,7 +49,7 @@ class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
 
   final searchQuery = ''.obs;
-  final searchResult = <Article>[].obs;
+  final searchResult = <Article>{}.obs;
   String? searchEndCur;
   final searchHasNextPage = true.obs;
 
@@ -56,25 +58,33 @@ class Controller extends GetxController {
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
   Future<void> setRefreshToken(String v) => pref.setString('refresh_token', v);
 
-  Future<List<Article>> getBookmarks() async {
+  Future<Set<Article>> getBookmarks() async {
     final discussionNumber = pref.getStringList('bookmarks') ?? [];
     final futures =
         discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
-    return (await Future.wait(futures)).whereType<Article>().toList();
+    return (await Future.wait(futures)).whereType<Article>().toSet();
   }
 
-  final bookmarks = <Article>[].obs;
+  final report = <int, Set<ReportComment>>{}.obs;
 
-  Future<List<Article>> getHistory() async {
+  final bookmarks = <Article>{}.obs;
+
+  Future<Set<Article>> getHistory() async {
     final discussionNumber = pref.getStringList('history') ?? [];
     final futures =
         discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
-    return (await Future.wait(futures)).whereType<Article>().toList();
+    return (await Future.wait(futures)).whereType<Article>().toSet();
   }
 
-  final history = <Article>[].obs;
+  final history = <Article>{}.obs;
 
   late final info = PackageInfo.fromPlatform();
+
+  bool canVisit(Article article) =>
+      report[article.number] == null ||
+      [owner, ...collaborators].contains(article.author.login) ||
+      article.isPin ||
+      report[article.number]!.length < 6;
 
   @override
   Future<void> onInit() async {
@@ -82,14 +92,6 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
-    ever(data, (_) {
-      final t = removeDuplicateArticle(data);
-      if (t.length < data.length) data.value = t;
-    });
-    ever(searchResult, (_) {
-      final t = removeDuplicateArticle(searchResult);
-      if (t.length < searchResult.length) searchResult.value = t;
-    });
     debounce(searchQuery, (query) {
       searchController.text = query;
       searchResult.clear();
@@ -107,12 +109,13 @@ class Controller extends GetxController {
     });
     ever(history, (v) {
       if (v.length > 20) {
-        history.removeRange(20, v.length);
+        history(history.take(20).toSet());
       } else {
         pref.setStringList(
             'history', v.map((e) => e.number.toString()).toList());
       }
     });
+    getAllReports(reportDiscussionNumber).then(report.call);
     getNewVersion().then((release) async {
       if (release == null) {
         showDialog(
@@ -169,7 +172,7 @@ class Controller extends GetxController {
                         onTap: () {},
                         title: Text('Update content'.tr),
                         subtitle: descriptionHTML.trim().isEmpty
-                            ? const Text('无')
+                            ? Text('Empty'.tr)
                             : HtmlWidget(descriptionHTML),
                       ),
                       const Divider(),
@@ -222,13 +225,13 @@ class Controller extends GetxController {
     );
   }
 
-  final data = <Article>[].obs;
+  final data = <Article>{}.obs;
   String? endCur;
   final hasNextPage = true.obs;
   var isFetchPinDiscussions = true;
   final searchController = SearchController();
 
-  final cache = <String?>[];
+  final cache = <String?>{};
   Future<void> fetchData() async {
     if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
     cache.add(endCur);
@@ -251,6 +254,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshData() async {
+    getAllReports(reportDiscussionNumber).then(report.call);
     isFetchPinDiscussions = true;
     hasNextPage.value = true;
     endCur = null;
@@ -260,6 +264,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshSearchData() async {
+    getAllReports(reportDiscussionNumber).then(report.call);
     searchHasNextPage.value = true;
     searchEndCur = null;
     searchCache.clear();
@@ -267,7 +272,7 @@ class Controller extends GetxController {
     await searchData();
   }
 
-  final searchCache = <String?>[];
+  final searchCache = <String?>{};
   Future<void> searchData() async {
     if (searchQuery.isEmpty) {
       await fetchData();
@@ -297,7 +302,7 @@ class Article extends GetxController {
   final DateTime createdAt;
   final DateTime? lastEditedAt;
   final int commentsCount;
-  final comments = <Comment>[].obs;
+  final comments = <Comment>{}.obs;
   var hasNextPage = true.obs;
   String? endCursor;
   final bool isPin;
@@ -308,7 +313,7 @@ class Article extends GetxController {
       .replaceAll('No response', '')
       .trim();
 
-  final cache = <String?>[];
+  final cache = <String?>{};
   Future<void> fetchComments() async {
     if (hasNextPage.isFalse || cache.contains(endCursor)) {
       return;
@@ -316,7 +321,6 @@ class Article extends GetxController {
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
         await getComments(number, endCursor);
     comments.addAll(res);
-    comments.value = removeDuplicateComment(comments);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
   }
@@ -335,6 +339,12 @@ class Article extends GetxController {
     required this.isPin,
     required this.partition,
   });
+
+  @override
+  operator ==(Object other) => other is Article && other.number == number;
+
+  @override
+  int get hashCode => number;
 }
 
 class Comment extends GetxController {
@@ -342,7 +352,7 @@ class Comment extends GetxController {
   final String bodyHTML;
   final DateTime createdAt;
   final DateTime? lastEditedAt;
-  final replies = <Reply>[].obs;
+  final replies = <Reply>{}.obs;
   final String id;
 
   Comment({
@@ -355,6 +365,12 @@ class Comment extends GetxController {
   }) {
     this.replies.addAll(replies);
   }
+
+  @override
+  operator ==(Object other) => other is Comment && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class Reply {
@@ -369,7 +385,21 @@ class Reply {
     required this.createdAt,
     this.lastEditedAt,
   });
+
+  @override
+  operator ==(Object other) =>
+      other is Reply &&
+      other.author == author &&
+      other.bodyHTML == bodyHTML &&
+      other.createdAt == createdAt &&
+      other.lastEditedAt == lastEditedAt;
+
+  @override
+  int get hashCode => Object.hash(author, bodyHTML, createdAt, lastEditedAt);
 }
+
+bool canReport(Article article) =>
+    ![owner, ...collaborators].contains(article.author.login) && !article.isPin;
 
 extension Use<V> on V? {
   T? use<T>(T Function(V value) fn) => this == null ? null : fn(this as V);
@@ -413,22 +443,10 @@ class Author {
       this.level.value = level;
     }
   }
-}
 
-List<Article> removeDuplicateArticle(List<Article> arr) {
-  final res = <Article>[];
-  for (final item in arr) {
-    final isDuplicate = res.any((e) => item.id == e.id);
-    if (!isDuplicate) res.add(item);
-  }
-  return res;
-}
+  @override
+  operator ==(Object other) => other is Author && other.login == login;
 
-List<Comment> removeDuplicateComment(List<Comment> arr) {
-  final res = <Comment>[];
-  for (final item in arr) {
-    final isDuplicate = res.any((e) => item.id == e.id);
-    if (!isDuplicate) res.add(item);
-  }
-  return res;
+  @override
+  int get hashCode => login.hashCode;
 }

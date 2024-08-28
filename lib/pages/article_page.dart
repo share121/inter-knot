@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/api/common.dart';
 import 'package:inter_knot/widget/avatar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
@@ -30,11 +29,7 @@ class _ArticlePageState extends State<ArticlePage> {
   void initState() {
     super.initState();
     Future(() {
-      c.history.value = [
-        widget.article,
-        ...c.history.where((e) => e.number != widget.article.number)
-      ];
-      logger.e(c.history());
+      c.history({widget.article, ...c.history});
     });
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -123,6 +118,22 @@ class _ArticlePageState extends State<ArticlePage> {
             ),
             child: const Icon(Icons.arrow_upward),
           ),
+          if (canReport(widget.article)) ...[
+            const SizedBox(height: 16),
+            FloatingActionButton(
+              onPressed: () {
+                Future.delayed(3.s).then((_) => launchUrlString(
+                    'https://github.com/share121/inter-knot/discussions/1685#new_comment_form'));
+                copyText(
+                  '举报文章：#${widget.article.number}\n举报原因：',
+                  title: 'Report template copied'.tr,
+                  msg: 'Jump to the report page after 3 seconds'.tr,
+                );
+              },
+              tooltip: 'Report'.tr,
+              child: const Icon(Icons.report),
+            ),
+          ],
           const SizedBox(height: 16),
           Obx(() {
             final isLiked = c.bookmarks
@@ -134,7 +145,7 @@ class _ArticlePageState extends State<ArticlePage> {
                   c.bookmarks
                       .removeWhere((e) => e.number == widget.article.number);
                 } else {
-                  c.bookmarks.insert(0, widget.article);
+                  c.bookmarks({widget.article, ...c.bookmarks});
                 }
               },
               tooltip: isLiked ? 'Unlike'.tr : 'Like'.tr,

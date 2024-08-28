@@ -37,10 +37,12 @@ class _LikedPageState extends State<LikedPage>
             itemBuilder: (context, index) {
               return Obx(() {
                 return DiscussionCard(
-                  article: c.bookmarks[index],
+                  article: c.bookmarks.elementAt(index),
                   onTap: (heroKey) {
                     Get.to<void>(() => ArticlePage(
-                        heroKey: heroKey, article: c.bookmarks[index]));
+                          heroKey: heroKey,
+                          article: c.bookmarks.elementAt(index),
+                        ));
                   },
                 );
               });

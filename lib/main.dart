@@ -174,7 +174,7 @@ class MyHomePage extends StatelessWidget {
               ListTile(
                 title: const Text('Discord'),
                 leading: const Icon(Icons.discord_outlined),
-                onTap: () => launchUrlString('githubLink'),
+                onTap: () => launchUrlString(discordLink),
               ),
               ListTile(
                 title: Text('Documentation'.tr),
