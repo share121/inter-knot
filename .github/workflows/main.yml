@@ -98,8 +98,10 @@ jobs:
       #     name: inter_knot_macos
       #     srcdir: inter_knot_macos.app
 
+      - run: ls -R
+
       - run: brew install create-dmg
-      - run: create-dmg --volname 绳网安装器 --window-pos 200 120 --window-size 800 400 --icon-size 100 --icon 绳网.app 200 190 --hide-extension 绳网.app --app-drop-link 600 185 inter_knot_macos.dmg build/macos/Build/Products/Release/绳网.apps
+      - run: create-dmg --volname 绳网安装器 --window-pos 200 120 --window-size 800 400 --icon-size 100 --icon 绳网.app 200 190 --hide-extension 绳网.app --app-drop-link 600 185 inter_knot_macos.dmg build/macos/Build/Products/Release/绳网.app
 
       - run: ls -R
 
