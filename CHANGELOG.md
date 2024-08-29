@@ -1,6 +1,6 @@
 ## 2.3.0+1
 
-适配 MacOS 平台
+适配 MacOS 平台（感谢 [@AetherLude](https://github.com/AetherLude)）
 
 ## 2.2.0+2
 
