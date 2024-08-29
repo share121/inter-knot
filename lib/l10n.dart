@@ -71,6 +71,9 @@ class Messages extends Translations {
           'Jump to the report page after 3 seconds': '3 秒后跳转到举报页',
           'Report': '举报',
           'This article is suspected of violating regulations': '此文章涉嫌违规',
+          'This article was reported by @count people': '这篇文章被 @count 人举报',
+          'Articles that have been reported: ': '被举报的文章：',
+          'A total of @count reports': '共 @count 次举报',
         }
       };
 }

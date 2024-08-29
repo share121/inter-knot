@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:inter_knot/api/is_discussion_available.dart';
+
 import 'common.dart';
 import '../data.dart';
 
@@ -60,7 +62,11 @@ Future<Report> getAllReports(int number) async {
       after = endCursor;
     }
   }
-  return transformReports(res);
+  final t = await Future.wait(transformReports(res)
+      .entries
+      .map((e) => isDiscussionAvailable(e.key).then((v) => v ? e : null))
+      .toList());
+  return Map.fromEntries(t.whereType<MapEntry<int, Set<ReportComment>>>());
 }
 
 typedef Report = Map<int, Set<ReportComment>>;
@@ -68,6 +74,7 @@ typedef Report = Map<int, Set<ReportComment>>;
 class ReportComment {
   final String login;
   final String bodyHTML;
+  late final url = 'https://github.com/$login';
 
   ReportComment({required this.login, required this.bodyHTML});
 

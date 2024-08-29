@@ -32,7 +32,7 @@ class _NotificationsPageState extends State<NotificationsPage>
             return const Center(child: CircularProgressIndicator());
           }
           return WaterfallFlow.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 270,
               lastChildLayoutTypeBuilder: (index) => index == c.data.length
@@ -46,7 +46,14 @@ class _NotificationsPageState extends State<NotificationsPage>
             itemBuilder: (context, index) {
               return Obx(() {
                 if (index == c.data.length) {
-                  if (c.hasNextPage.isFalse) return Text('No more data.'.tr);
+                  if (c.hasNextPage.isFalse) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('No more data'.tr),
+                      ),
+                    );
+                  }
                   return const SizedBox(
                     width: 60,
                     height: 60,
@@ -69,12 +76,14 @@ class _NotificationsPageState extends State<NotificationsPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
+            heroTag: null,
             onPressed: () => c.refreshData(),
             tooltip: 'Refresh'.tr,
             child: const Icon(Icons.refresh),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: null,
             onPressed: () => launchUrlString(
                 'https://github.com/$owner/$repo/discussions/new?category=general'),
             tooltip: 'Create a new discussion'.tr,

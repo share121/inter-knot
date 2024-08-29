@@ -28,7 +28,7 @@ class _HistoryPageState extends State<HistoryPage>
         body: Obx(() {
           if (c.history.isEmpty) return Center(child: Text('Empty'.tr));
           return WaterfallFlow.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 270,

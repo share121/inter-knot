@@ -12,7 +12,7 @@ class DiscussionCard extends StatefulWidget {
   const DiscussionCard({super.key, this.onTap, required this.article});
 
   final Article article;
-  final void Function(UniqueKey heroKey)? onTap;
+  final void Function(Object heroKey)? onTap;
 
   @override
   State<DiscussionCard> createState() => _DiscussionCardState();
@@ -34,11 +34,18 @@ class _DiscussionCardState extends State<DiscussionCard> {
             aspectRatio: 5 / 6,
             child: InkWell(
               onTap: () => launchUrlString(widget.article.url),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                      'This article is suspected of violating regulations'.tr),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('This article is suspected of violating regulations'
+                        .tr),
+                    Text('This article was reported by @count people'.trParams({
+                      'count':
+                          c.report[widget.article.number]!.length.toString(),
+                    })),
+                  ],
                 ),
               ),
             ),
@@ -150,7 +157,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
 class Cover extends StatelessWidget {
   const Cover({super.key, required this.heroKey, required this.article});
 
-  final UniqueKey heroKey;
+  final Object heroKey;
   final Article article;
 
   @override

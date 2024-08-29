@@ -119,113 +119,114 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = Get.find<Controller>();
 
-    return LayoutBuilder(builder: (context, con) {
-      return Scaffold(
-        appBar: AppBar(
-          title: DragToMoveArea(child: Text('Inter-Knot'.tr)),
-          flexibleSpace: const DragToMoveArea(child: SizedBox.expand()),
-          actions: [
-            if (con.maxWidth > 410) const DocButton(),
-            if (con.maxWidth > 370) const DiscordButton(),
-            if (con.maxWidth > 330) const GithubButton(),
-            if (con.maxWidth > 322) const SizedBox(width: 8),
-            if (isDesktop) const WindowButtons(),
+    return Scaffold(
+      appBar: AppBar(
+        title: DragToMoveArea(child: Text('Inter-Knot'.tr)),
+        flexibleSpace: const DragToMoveArea(child: SizedBox.expand()),
+        actions: [
+          if (MediaQuery.sizeOf(context).width > 410 - (isDesktop ? 0 : 138))
+            const DocButton(),
+          if (MediaQuery.sizeOf(context).width > 370 - (isDesktop ? 0 : 138))
+            const DiscordButton(),
+          if (MediaQuery.sizeOf(context).width > 330 - (isDesktop ? 0 : 138))
+            const GithubButton(),
+          if (MediaQuery.sizeOf(context).width > 322 - (isDesktop ? 0 : 138))
+            const SizedBox(width: 8),
+          if (isDesktop) const WindowButtons(),
+        ],
+        elevation: 4,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: Assets.images.drawerCover.provider(),
+                ),
+              ),
+              child: Text(
+                'Inter-Knot'.tr,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            ...destinations.indexed.map((e) => Obx(() => ListTile(
+                  title: e.$2.label,
+                  leading:
+                      c.selectedIndex() == e.$1 ? e.$2.selectedIcon : e.$2.icon,
+                  selected: c.selectedIndex() == e.$1,
+                  onTap: () {
+                    c.animateToPage(e.$1);
+                    Get.back();
+                  },
+                ))),
+            const Divider(),
+            ListTile(
+              title: const Text('Github'),
+              leading: SvgPicture.asset(
+                Assets.images.github,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurfaceVariant,
+                  BlendMode.srcIn,
+                ),
+              ),
+              onTap: () => launchUrlString(githubLink),
+            ),
+            ListTile(
+              title: const Text('Discord'),
+              leading: const Icon(Icons.discord_outlined),
+              onTap: () => launchUrlString(discordLink),
+            ),
+            ListTile(
+              title: Text('Documentation'.tr),
+              leading: const Icon(Icons.book_outlined),
+              onTap: () => launchUrlString(docLink),
+            ),
           ],
-          elevation: 4,
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Assets.images.drawerCover.provider(),
+      ),
+      body: SafeArea(
+        child: Row(
+          children: [
+            if (MediaQuery.sizeOf(context).width > 600)
+              LayoutBuilder(builder: (context, con) {
+                return SingleChildScrollView(
+                  child: SizedBox(
+                    height: max(con.maxHeight, 336),
+                    child: Obx(() {
+                      return NavigationRail(
+                        destinations: destinations,
+                        selectedIndex: c.selectedIndex(),
+                        onDestinationSelected: (index) =>
+                            c.animateToPage(index),
+                        labelType: con.maxHeight < 456
+                            ? NavigationRailLabelType.selected
+                            : NavigationRailLabelType.all,
+                      );
+                    }),
                   ),
-                ),
-                child: Text(
-                  'Inter-Knot'.tr,
-                  style: const TextStyle(color: Colors.white),
-                ),
+                );
+              }),
+            Expanded(
+              child: PageView(
+                controller: c.pageController,
+                scrollDirection: Axis.vertical,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  const NotificationsPage(),
+                  const SearchPage(),
+                  const PartitionPage(),
+                  const LikedPage(),
+                  const HistoryPage(),
+                  Center(child: Text('Settings'.tr)),
+                  const AboutPage(),
+                ],
               ),
-              ...destinations.indexed.map((e) => Obx(() => ListTile(
-                    title: e.$2.label,
-                    leading: c.selectedIndex() == e.$1
-                        ? e.$2.selectedIcon
-                        : e.$2.icon,
-                    selected: c.selectedIndex() == e.$1,
-                    onTap: () {
-                      c.animateToPage(e.$1);
-                      Get.back();
-                    },
-                  ))),
-              const Divider(),
-              ListTile(
-                title: const Text('Github'),
-                leading: SvgPicture.asset(
-                  Assets.images.github,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurfaceVariant,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                onTap: () => launchUrlString(githubLink),
-              ),
-              ListTile(
-                title: const Text('Discord'),
-                leading: const Icon(Icons.discord_outlined),
-                onTap: () => launchUrlString(discordLink),
-              ),
-              ListTile(
-                title: Text('Documentation'.tr),
-                leading: const Icon(Icons.book_outlined),
-                onTap: () => launchUrlString(docLink),
-              ),
-            ],
-          ),
+            )
+          ],
         ),
-        body: SafeArea(
-          child: Row(
-            children: [
-              if (con.maxWidth > 600)
-                LayoutBuilder(builder: (context, con) {
-                  return SingleChildScrollView(
-                    child: SizedBox(
-                      height: max(con.maxHeight, 336),
-                      child: Obx(() {
-                        return NavigationRail(
-                          destinations: destinations,
-                          selectedIndex: c.selectedIndex(),
-                          onDestinationSelected: (index) =>
-                              c.animateToPage(index),
-                          labelType: con.maxHeight < 456
-                              ? NavigationRailLabelType.selected
-                              : NavigationRailLabelType.all,
-                        );
-                      }),
-                    ),
-                  );
-                }),
-              Expanded(
-                child: PageView(
-                  controller: c.pageController,
-                  scrollDirection: Axis.vertical,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    const NotificationsPage(),
-                    const SearchPage(),
-                    const PartitionPage(),
-                    const LikedPage(),
-                    const HistoryPage(),
-                    Center(child: Text('Settings'.tr)),
-                    const AboutPage(),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
 }

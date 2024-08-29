@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
-import 'package:inter_knot/widget/feedback_btn.dart';
 import 'package:logger/logger.dart';
 
 import 'get_access_token.dart';
@@ -21,7 +19,7 @@ final dio = Dio(BaseOptions(
   ..interceptors.addAll([
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        logger.d('Request: ${options.uri}');
+        logger.d('Request: ${options.uri}\nData: ${options.data}');
         return handler.next(options);
       },
       onResponse: (response, handler) {
@@ -34,24 +32,24 @@ final dio = Dio(BaseOptions(
           error: error,
           stackTrace: error.stackTrace,
         );
-        final msg =
-            'Error: ${error.requestOptions.uri}\n\nResponse:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}';
-        showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Error: ${error.requestOptions.uri}'),
-              content: SelectableText(msg),
-              actions: [
-                FeedbackBtn(msg),
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text('OK'.tr),
-                ),
-              ],
-            );
-          },
-        );
+        // final msg =
+        //     'Error: ${error.requestOptions.uri}\n\nResponse:\n${error.response?.data}\n\nError Object:\n$error\n\nStack Trace:\n${error.stackTrace}';
+        // showDialog(
+        //   context: Get.context!,
+        //   builder: (context) {
+        //     return AlertDialog(
+        //       title: Text('Error: ${error.requestOptions.uri}'),
+        //       content: SelectableText(msg),
+        //       actions: [
+        //         FeedbackBtn(msg),
+        //         TextButton(
+        //           onPressed: () => Get.back(),
+        //           child: Text('OK'.tr),
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
         return handler.next(error);
       },
     ),

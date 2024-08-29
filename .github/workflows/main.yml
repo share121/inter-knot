@@ -82,6 +82,15 @@ jobs:
         with:
           name: inter_knot_macos.app
           path: inter_knot_macos.app
+      - uses: L-Super/create-dmg-actions@v1
+        with:
+          dmg_name: inter_knot_macos
+          src_dir: inter_knot_macos.app
+      - run: ls -R
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inter_knot_macos.dmg
+          path: inter_knot_macos.dmg
 
   build_linux:
     name: Linux Client
@@ -173,6 +182,10 @@ jobs:
       - run: zip -r inter_knot_web.zip inter_knot_web
       - uses: actions/download-artifact@v4
         with:
+          name: inter_knot_macos.dmg
+          path: inter_knot_macos.dmg
+      - uses: actions/download-artifact@v4
+        with:
           name: inter_knot_macos.app
           path: inter_knot_macos.app
       - run: zip -r inter_knot_macos.app.zip inter_knot_macos.app
@@ -192,4 +205,5 @@ jobs:
             inter_knot_linux.zip
             inter_knot_web.zip
             inter_knot_macos.app.zip
+            inter_knot_macos.dmg/inter_knot_macos.dmg
             inter_knot_ios.app.zip

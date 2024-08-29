@@ -17,7 +17,7 @@ class PartitionPage extends StatelessWidget {
         floatHeaderSlivers: true,
         body: GridView.extent(
           maxCrossAxisExtent: 270,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           mainAxisSpacing: 4,
           crossAxisSpacing: 4,
           childAspectRatio: 5 / 6,

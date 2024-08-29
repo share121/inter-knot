@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api/common.dart';
 import 'package:inter_knot/widget/avatar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
@@ -15,7 +17,7 @@ class ArticlePage extends StatefulWidget {
   const ArticlePage({super.key, required this.article, required this.heroKey});
 
   final Article article;
-  final UniqueKey heroKey;
+  final Object heroKey;
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();
@@ -39,9 +41,13 @@ class _ArticlePageState extends State<ArticlePage> {
       }
     });
     widget.article.fetchComments().then((e) async {
-      while (scrollController.position.maxScrollExtent == 0 &&
-          widget.article.hasNextPage()) {
-        await widget.article.fetchComments();
+      try {
+        while (scrollController.position.maxScrollExtent == 0 &&
+            widget.article.hasNextPage()) {
+          await widget.article.fetchComments();
+        }
+      } catch (e, s) {
+        logger.e('Failed to get scroll position', error: e, stackTrace: s);
       }
     });
   }
@@ -110,6 +116,7 @@ class _ArticlePageState extends State<ArticlePage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
+            heroTag: null,
             tooltip: 'Back to Top'.tr,
             onPressed: () => scrollController.animateTo(
               0,
@@ -121,11 +128,12 @@ class _ArticlePageState extends State<ArticlePage> {
           if (canReport(widget.article)) ...[
             const SizedBox(height: 16),
             FloatingActionButton(
+              heroTag: null,
               onPressed: () {
                 Future.delayed(3.s).then((_) => launchUrlString(
                     'https://github.com/share121/inter-knot/discussions/1685#new_comment_form'));
                 copyText(
-                  '举报文章：#${widget.article.number}\n举报原因：',
+                  '违规文章：#${widget.article.number}\n举报原因：',
                   title: 'Report template copied'.tr,
                   msg: 'Jump to the report page after 3 seconds'.tr,
                 );
@@ -140,6 +148,7 @@ class _ArticlePageState extends State<ArticlePage> {
                 .map((e) => e.number)
                 .contains(widget.article.number);
             return FloatingActionButton(
+              heroTag: null,
               onPressed: () {
                 if (isLiked) {
                   c.bookmarks
@@ -154,6 +163,7 @@ class _ArticlePageState extends State<ArticlePage> {
           }),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: null,
             onPressed: () =>
                 launchUrlString('${widget.article.url}#new_comment_form'),
             tooltip: 'Write a review'.tr,
@@ -182,10 +192,74 @@ class RightBox extends StatelessWidget {
           MainArticle(article: article),
           const SizedBox(height: 16),
           const Divider(),
-          Comments(article: article),
+          if (article.number == reportDiscussionNumber)
+            const ReportArticleComment()
+          else
+            Comments(article: article),
         ],
       ),
     );
+  }
+}
+
+class ReportArticleComment extends StatelessWidget {
+  const ReportArticleComment({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return Column(
+        children: [
+          for (final MapEntry(:key, :value) in c.report.entries) ...[
+            ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: 'Articles that have been reported: '.tr),
+                  TextSpan(
+                    text: '#$key',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => launchUrlString(
+                          'https://github.com/share121/inter-knot/discussions/$key'),
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary,
+                      decorationColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const TextSpan(text: '\n'),
+                  TextSpan(
+                    text: 'A total of @count reports'
+                        .trParams({'count': value.length.toString()}),
+                  ),
+                ]),
+              ),
+              subtitle: Column(
+                children: [
+                  for (final (index, comment) in value.indexed)
+                    ListTile(
+                      minVerticalPadding: 0,
+                      title: InkWell(
+                        onTap: () => launchUrlString(comment.url),
+                        child: Text(comment.login),
+                      ),
+                      subtitle: Column(
+                        children: [
+                          SelectionArea(
+                            child: HtmlWidget(comment.bodyHTML),
+                          ),
+                          if (index != value.length - 1) const Divider(),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const Divider(),
+          ]
+        ],
+      );
+    });
   }
 }
 
@@ -217,6 +291,9 @@ class MainArticle extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         ListTile(
+          contentPadding: const EdgeInsets.all(0),
+          horizontalTitleGap: 8,
+          minVerticalPadding: 0,
           onTap: () => launchUrlString(article.author.url),
           leading: Avatar(article.author.avatar),
           title: Obx(() => Text(
@@ -225,8 +302,7 @@ class MainArticle extends StatelessWidget {
               )),
           subtitle: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Wrap(
-              spacing: 8,
+            child: Row(
               children: [
                 Obx(() => MyChip('Lv${article.author.level()}')),
                 if (article.author.login == owner)
@@ -267,6 +343,9 @@ class Comments extends StatelessWidget {
           for (final (index, comment) in article.comments.indexed)
             ListTile(
               titleAlignment: ListTileTitleAlignment.top,
+              contentPadding: const EdgeInsets.all(0),
+              horizontalTitleGap: 8,
+              minVerticalPadding: 0,
               leading: ClipOval(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(50),
@@ -276,13 +355,15 @@ class Comments extends StatelessWidget {
               ),
               title: Row(
                 children: [
-                  Flexible(child: Obx(() => Text(comment.author.name()))),
+                  InkWell(
+                    onTap: () => launchUrlString(comment.author.url),
+                    child: Obx(() => Text(comment.author.name())),
+                  ),
                   const SizedBox(width: 8),
-                  Expanded(
+                  Flexible(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        spacing: 8,
+                      child: Row(
                         children: [
                           Obx(() => MyChip('Lv${comment.author.level()}')),
                           if (comment.author.login == article.author.login)
@@ -344,25 +425,32 @@ class Replies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        for (final (index, reply) in comment.replies.indexed)
+        for (final reply in comment.replies)
           ListTile(
             titleAlignment: ListTileTitleAlignment.top,
-            leading: ClipOval(
-              child: InkWell(
-                borderRadius: BorderRadius.circular(50),
-                onTap: () => launchUrlString(reply.author.url),
-                child: Avatar(reply.author.avatar),
-              ),
-            ),
+            contentPadding: const EdgeInsets.all(0),
+            horizontalTitleGap: 8,
+            minVerticalPadding: 0,
+            leading: MediaQuery.of(context).size.width > 400
+                ? ClipOval(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () => launchUrlString(reply.author.url),
+                      child: Avatar(reply.author.avatar),
+                    ),
+                  )
+                : null,
             title: Row(
               children: [
-                Flexible(child: Obx(() => Text(reply.author.name()))),
+                InkWell(
+                  onTap: () => launchUrlString(reply.author.url),
+                  child: Obx(() => Text(reply.author.name())),
+                ),
                 const SizedBox(width: 8),
-                Expanded(
+                Flexible(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Wrap(
-                      spacing: 8,
+                    child: Row(
                       children: [
                         Obx(() => MyChip('Lv${reply.author.level()}')),
                         if (reply.author.login == article.author.login)
@@ -379,7 +467,6 @@ class Replies extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: MyChip('F${index + 1}'),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -411,13 +498,11 @@ class MyChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text(text),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        child: Text(text, style: const TextStyle(fontSize: 10)),
       ),
-      padding: const EdgeInsets.all(0),
-      labelStyle: Theme.of(context).textTheme.labelSmall,
     );
   }
 }
@@ -426,7 +511,7 @@ class Cover extends StatelessWidget {
   const Cover({super.key, required this.article, required this.heroKey});
 
   final Article article;
-  final UniqueKey heroKey;
+  final Object heroKey;
 
   @override
   Widget build(BuildContext context) {

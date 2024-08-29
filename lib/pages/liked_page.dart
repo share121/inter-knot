@@ -28,7 +28,7 @@ class _LikedPageState extends State<LikedPage>
         body: Obx(() {
           if (c.bookmarks.isEmpty) return Center(child: Text('Empty'.tr));
           return WaterfallFlow.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 270,

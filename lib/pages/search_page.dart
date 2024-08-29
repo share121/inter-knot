@@ -49,7 +49,7 @@ class _SearchPageState extends State<SearchPage>
                   return const Center(child: CircularProgressIndicator());
                 }
                 return WaterfallFlow.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(8),
                   gridDelegate:
                       SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 270,
@@ -65,8 +65,13 @@ class _SearchPageState extends State<SearchPage>
                   itemBuilder: (context, index) {
                     return Obx(() {
                       if (index == c.searchResult.length) {
-                        if (c.hasNextPage.isFalse) {
-                          return Text('No more data.'.tr);
+                        if (c.searchHasNextPage.isFalse) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text('No more data'.tr),
+                            ),
+                          );
                         }
                         return const SizedBox(
                           width: 60,
@@ -78,8 +83,9 @@ class _SearchPageState extends State<SearchPage>
                         article: c.searchResult.elementAt(index),
                         onTap: (heroKey) {
                           Get.to<void>(() => ArticlePage(
-                              heroKey: heroKey,
-                              article: c.searchResult.elementAt(index)));
+                                heroKey: heroKey,
+                                article: c.searchResult.elementAt(index),
+                              ));
                         },
                       );
                     });
@@ -91,6 +97,7 @@ class _SearchPageState extends State<SearchPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: null,
         onPressed: () => c.refreshSearchData(),
         tooltip: 'Refresh'.tr,
         child: const Icon(Icons.refresh),
