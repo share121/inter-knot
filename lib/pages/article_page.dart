@@ -239,9 +239,15 @@ class ReportArticleComment extends StatelessWidget {
                   for (final (index, comment) in value.indexed)
                     ListTile(
                       minVerticalPadding: 0,
-                      title: InkWell(
-                        onTap: () => launchUrlString(comment.url),
-                        child: Text(comment.login),
+                      title: Row(
+                        children: [
+                          Flexible(
+                            child: InkWell(
+                              onTap: () => launchUrlString(comment.url),
+                              child: Text(comment.login),
+                            ),
+                          ),
+                        ],
                       ),
                       subtitle: Column(
                         children: [
