@@ -44,6 +44,7 @@ jobs:
         with:
           channel: stable
           cache: true
+      - run: echo -e "storePassword=${{ secrets.PWD }}\nkeyPassword=${{ secrets.PWD }}\nkeyAlias=upload\nstoreFile=../../upload-keystore.jks" > android/key.properties
       - run: flutter build apk
       - run: mv build/app/outputs/flutter-apk/app-release.apk inter_knot_android.apk
       - uses: actions/upload-artifact@v4
