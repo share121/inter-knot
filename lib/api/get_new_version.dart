@@ -44,7 +44,7 @@ class ReleaseAsset {
 
 Future<Release?> getNewVersion() async {
   final res = await graphql(
-      '{ repository(owner: "$owner", name: "inter_knot") { releases(first: 1) { nodes { tagName descriptionHTML releaseAssets(first: 100) { nodes { downloadUrl name downloadCount size updatedAt } } } } }}');
+      '{ repository(owner: "$owner", name: "$repo") { releases(first: 1) { nodes { tagName descriptionHTML releaseAssets(first: 100) { nodes { downloadUrl name downloadCount size updatedAt } } } } }}');
   if (res.data
       case {
         'data': {
