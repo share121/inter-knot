@@ -81,7 +81,7 @@ jobs:
           path: inter_knot_ios.app
 
   build_macOS:
-    name: macOS Client
+    name: MacOS Client
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
