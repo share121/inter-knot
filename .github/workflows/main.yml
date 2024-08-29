@@ -83,10 +83,10 @@ jobs:
         with:
           name: inter_knot_macos.app
           path: inter_knot_macos.app
-      - uses: L-Super/create-dmg-actions@v1
+      - uses: QQxiaoming/create-dmg-action@v0.0.2
         with:
-          dmg_name: inter_knot_macos
-          src_dir: inter_knot_macos.app
+          name: inter_knot_macos
+          srcdir: inter_knot_macos.app
       - run: ls -R
       - uses: actions/upload-artifact@v4
         with:
