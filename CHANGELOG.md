@@ -1,3 +1,5 @@
+## 2.3.1+1
+
 ## 2.3.0+1
 
 适配 MacOS 平台（感谢 [@AetherLude](https://github.com/AetherLude)）
