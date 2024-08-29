@@ -126,7 +126,7 @@ class _ArticlePageState extends State<ArticlePage> {
             child: const Icon(Icons.arrow_upward),
           ),
           if (canReport(widget.article)) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             FloatingActionButton(
               heroTag: null,
               onPressed: () {
@@ -142,7 +142,7 @@ class _ArticlePageState extends State<ArticlePage> {
               child: const Icon(Icons.report),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Obx(() {
             final isLiked = c.bookmarks
                 .map((e) => e.number)
@@ -161,7 +161,7 @@ class _ArticlePageState extends State<ArticlePage> {
               child: Icon(isLiked ? Icons.favorite : Icons.favorite_outline),
             );
           }),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           FloatingActionButton(
             heroTag: null,
             onPressed: () =>

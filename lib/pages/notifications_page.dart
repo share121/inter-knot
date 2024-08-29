@@ -81,7 +81,7 @@ class _NotificationsPageState extends State<NotificationsPage>
             tooltip: 'Refresh'.tr,
             child: const Icon(Icons.refresh),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           FloatingActionButton(
             heroTag: null,
             onPressed: () => launchUrlString(
