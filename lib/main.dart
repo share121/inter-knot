@@ -101,11 +101,6 @@ final destinations = [
     label: Text('History'.tr),
   ),
   NavigationRailDestination(
-    icon: const Icon(Icons.settings_outlined),
-    selectedIcon: const Icon(Icons.settings),
-    label: Text('Settings'.tr),
-  ),
-  NavigationRailDestination(
     icon: const Icon(Icons.info_outline),
     selectedIcon: const Icon(Icons.info),
     label: Text('About'.tr),
@@ -193,14 +188,14 @@ class MyHomePage extends StatelessWidget {
               LayoutBuilder(builder: (context, con) {
                 return SingleChildScrollView(
                   child: SizedBox(
-                    height: max(con.maxHeight, 336),
+                    height: max(con.maxHeight, 292),
                     child: Obx(() {
                       return NavigationRail(
                         destinations: destinations,
                         selectedIndex: c.selectedIndex(),
                         onDestinationSelected: (index) =>
                             c.animateToPage(index),
-                        labelType: con.maxHeight < 456
+                        labelType: con.maxHeight < 392
                             ? NavigationRailLabelType.selected
                             : NavigationRailLabelType.all,
                       );
@@ -213,14 +208,13 @@ class MyHomePage extends StatelessWidget {
                 controller: c.pageController,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  const NotificationsPage(),
-                  const SearchPage(),
-                  const PartitionPage(),
-                  const LikedPage(),
-                  const HistoryPage(),
-                  Center(child: Text('Settings'.tr)),
-                  const AboutPage(),
+                children: const [
+                  NotificationsPage(),
+                  SearchPage(),
+                  PartitionPage(),
+                  LikedPage(),
+                  HistoryPage(),
+                  AboutPage(),
                 ],
               ),
             )
