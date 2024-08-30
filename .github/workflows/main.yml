@@ -173,6 +173,8 @@ jobs:
 
       - run: git init
       - run: git add .
+      - run: git config --global user.email 2854631158@qq.com
+      - run: git config --global user.name share121
       - run: git commit -m "first commit"
       - run: git branch -M main
       - run: git remote add origin https://github.com/share121/inter-knot-vercel.git
