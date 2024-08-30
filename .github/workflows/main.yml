@@ -171,13 +171,15 @@ jobs:
         with:
           name: inter_knot_vercel
 
+      - run: git init
+
       - uses: appleboy/git-push-action@v0.0.2
         with:
           author_email: 2854631158@qq.com
           author_name: share121
           branch: main
           commit: true
-          commit_message: "deploy"
+          commit_message: deploy
           force: true
           remote: git@github.com:share121/inter-knot-vercel.git
           ssh_key: ${{ secrets.DEPLOY_KEY }}
