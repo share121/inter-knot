@@ -172,6 +172,7 @@ jobs:
           name: inter_knot_vercel
 
       - run: git init
+      - run: git add .
       - run: git commit -m "first commit"
       - run: git branch -M main
       - run: git remote add origin https://github.com/share121/inter-knot-vercel.git
