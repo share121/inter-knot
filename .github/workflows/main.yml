@@ -141,6 +141,44 @@ jobs:
           name: inter_knot_web
           path: build/web
 
+  build_web_vercel:
+    name: Web Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter build web --web-renderer html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inter_knot_web_vercel
+          path: build/web
+
+  sync_to_vercel:
+    name: Sync to vercel
+    needs: build_web_vercel
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: inter_knot_web_vercel
+
+      - uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID}}
+          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          working-directory: .
+
   deploy:
     name: Deploy
     needs: build_web
