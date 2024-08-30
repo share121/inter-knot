@@ -171,16 +171,11 @@ jobs:
         with:
           name: inter_knot_vercel
 
-      - name: Push to another repository
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source-directory: "."
-          destination-github-username: share121
-          destination-repository-name: inter-knot-vercel
-          user-email: 2854631158@qq.com
-          target-branch: main
+      - run: git init
+      - run: git commit -m "first commit"
+      - run: git branch -M main
+      - run: git remote add origin https://github.com/share121/inter-knot-vercel.git
+      - run: git push -u origin main --force
 
   deploy:
     name: Deploy
