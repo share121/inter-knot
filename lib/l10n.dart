@@ -74,6 +74,8 @@ class Messages extends Translations {
           'This article was reported by @count people': '这篇文章被 @count 人举报',
           'Articles that have been reported: ': '被举报的文章：',
           'A total of @count reports': '共 @count 次举报',
+          'Error: API rate limit reached': '错误：API 速率限制已到达',
+          'Please try again later': '请稍后再试',
         }
       };
 }

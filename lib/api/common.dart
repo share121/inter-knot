@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:html/parser.dart';
 import 'package:logger/logger.dart';
@@ -11,6 +12,8 @@ import '../data.dart';
 final c = Get.find<Controller>();
 final logger = Logger();
 
+var canRequest = true;
+
 final dio = Dio(BaseOptions(
   responseType: ResponseType.json,
   headers: {'accept': 'application/json'},
@@ -19,11 +22,37 @@ final dio = Dio(BaseOptions(
   ..interceptors.addAll([
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        logger.d('Request: ${options.uri}\nData: ${options.data}');
-        return handler.next(options);
+        if (canRequest) {
+          logger.d('Request: ${options.uri}\nData: ${options.data}');
+          return handler.next(options);
+        } else {
+          return handler.reject(DioException.requestCancelled(
+              requestOptions: options, reason: 'RATE_LIMITED'));
+        }
       },
-      onResponse: (response, handler) {
-        // logger.d('Response: ${response.requestOptions.uri}');
+      onResponse: (response, handler) async {
+        logger.d(
+            'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
+        if (response.data['errors']?[0]?['type'] == 'RATE_LIMITED') {
+          showDialog(
+            context: Get.context!,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Error: API rate limit reached'.tr),
+                content: SelectableText('Please try again later'.tr),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(),
+                    child: Text('OK'.tr),
+                  ),
+                ],
+              );
+            },
+          );
+          canRequest = false;
+          await Future.delayed(60.s);
+          canRequest = true;
+        }
         return handler.next(response);
       },
       onError: (error, handler) {
