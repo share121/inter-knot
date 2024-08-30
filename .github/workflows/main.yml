@@ -172,7 +172,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: inter_knot_web_vercel
-          path: build
+          path: build/web
 
       - uses: amondnet/vercel-action@v20
         with:
@@ -180,7 +180,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
-          working-directory: build
+          working-directory: build/web
 
   deploy:
     name: Deploy
