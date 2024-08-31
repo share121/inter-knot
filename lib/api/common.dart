@@ -1,7 +1,6 @@
 part of 'api_root.dart';
 
 var canRequest = true;
-var count = 0;
 
 final dio = Dio(BaseOptions(
   responseType: ResponseType.json,
