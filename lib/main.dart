@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/gen/assets.gen.dart';
-import 'package:inter_knot/pages/history_page.dart';
-import 'package:inter_knot/pages/liked_page.dart';
-import 'package:inter_knot/pages/partition_page.dart';
-import 'package:inter_knot/widget/discord_button.dart';
-import 'package:inter_knot/widget/doc_button.dart';
+import 'gen/assets.gen.dart';
+import 'pages/history_page.dart';
+import 'pages/liked_page.dart';
+import 'pages/partition_page.dart';
+import 'widget/discord_button.dart';
+import 'widget/doc_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'data.dart';
 import 'l10n.dart';
-import 'pages/about_page.dart';
+import 'pages/settings_page.dart';
 import 'pages/search_page.dart';
 import 'pages/notifications_page.dart';
 import 'widget/github_button.dart';
@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      themeMode: ThemeMode.dark,
       supportedLocales: const [
         Locale('zh', 'CN'),
         Locale('en', 'US'),
@@ -101,9 +102,9 @@ final destinations = [
     label: Text('History'.tr),
   ),
   NavigationRailDestination(
-    icon: const Icon(Icons.info_outline),
-    selectedIcon: const Icon(Icons.info),
-    label: Text('About'.tr),
+    icon: const Icon(Icons.settings_outlined),
+    selectedIcon: const Icon(Icons.settings),
+    label: Text('Settings'.tr),
   ),
 ];
 
@@ -214,7 +215,7 @@ class MyHomePage extends StatelessWidget {
                   PartitionPage(),
                   LikedPage(),
                   HistoryPage(),
-                  AboutPage(),
+                  SettingsPage(),
                 ],
               ),
             )

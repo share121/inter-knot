@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:inter_knot/gen/assets.gen.dart';
+import '../gen/assets.gen.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar(this.src, {super.key});

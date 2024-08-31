@@ -1,5 +1,5 @@
-import 'package:inter_knot/api/common.dart';
-import 'package:inter_knot/data.dart';
+import 'common.dart';
+import '../data.dart';
 
 class Release {
   final String version;

@@ -1,9 +1,4 @@
-import 'dart:async';
-
-import 'package:inter_knot/api/is_discussion_available.dart';
-
-import 'common.dart';
-import '../data.dart';
+part of 'api_user.dart';
 
 Future<Report> getAllReports(int number) async {
   final res = <({String login, Set<int> numbers, String bodyHTML})>[];

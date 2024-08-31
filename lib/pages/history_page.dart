@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/data.dart';
+import '../data.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../widget/discussion_card.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/data.dart';
-import 'package:inter_knot/gen/assets.gen.dart';
+import '../data.dart';
+import '../gen/assets.gen.dart';
 
 class PartitionPage extends StatelessWidget {
   const PartitionPage({super.key});

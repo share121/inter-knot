@@ -3,21 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/api/get_discussion.dart';
-import 'package:inter_knot/api/get_new_version.dart';
+import 'package:logger/logger.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import 'api/common.dart';
-import 'api/get_all_reports.dart';
-import 'api/get_comments.dart';
-import 'api/get_discussions.dart';
-import 'api/get_pinned_discussions.dart';
-import 'api/get_user_info.dart';
-import 'api/search.dart';
+import 'pages/login_page.dart';
 import 'widget/feedback_btn.dart';
+import 'api_user/api_user.dart' as api_user;
+
+final logger = Logger();
 
 final isDesktop = !kIsWeb && GetPlatform.isDesktop;
 
@@ -53,6 +48,9 @@ class Controller extends GetxController {
   String? searchEndCur;
   final searchHasNextPage = true.obs;
 
+  String getRootToken() => pref.getString('root_token') ?? '';
+  Future<void> setRootToken(String v) => pref.setString('root_token', v);
+
   String getToken() => pref.getString('access_token') ?? '';
   Future<void> setToken(String v) => pref.setString('access_token', v);
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
@@ -60,19 +58,25 @@ class Controller extends GetxController {
 
   Future<Set<Article>> getBookmarks() async {
     final discussionNumber = pref.getStringList('bookmarks') ?? [];
-    final futures =
-        discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
+    final futures = discussionNumber
+        .map((e) => api_user.getDiscussion(int.parse(e)))
+        .toList();
     return (await Future.wait(futures)).whereType<Article>().toSet();
   }
 
-  final report = <int, Set<ReportComment>>{}.obs;
+  final isLogin = false.obs;
+
+  final user = Rx<Author?>(null);
+
+  final report = <int, Set<api_user.ReportComment>>{}.obs;
 
   final bookmarks = <Article>{}.obs;
 
   Future<Set<Article>> getHistory() async {
     final discussionNumber = pref.getStringList('history') ?? [];
-    final futures =
-        discussionNumber.map((e) => getDiscussion(int.parse(e))).toList();
+    final futures = discussionNumber
+        .map((e) => api_user.getDiscussion(int.parse(e)))
+        .toList();
     return (await Future.wait(futures)).whereType<Article>().toSet();
   }
 
@@ -92,6 +96,16 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
+    ever(isLogin, (v) async {
+      if (v) {
+        if (!getToken().startsWith('ghu_')) {
+          await Get.to(() => const LoginPage());
+        }
+      }
+    });
+    if (isLogin()) {
+      // getUserInfo(login);
+    }
     debounce(searchQuery, (query) {
       searchController.text = query;
       searchResult.clear();
@@ -115,8 +129,8 @@ class Controller extends GetxController {
             'history', v.map((e) => e.number.toString()).toList());
       }
     });
-    getAllReports(reportDiscussionNumber).then(report.call);
-    getNewVersion().then((release) async {
+    api_user.getAllReports(reportDiscussionNumber).then(report.call);
+    api_user.getNewVersion().then((release) async {
       if (release == null) {
         showDialog(
           context: Get.context!,
@@ -235,11 +249,11 @@ class Controller extends GetxController {
   Future<void> fetchData() async {
     if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
     cache.add(endCur);
-    late final Nodes<Article> res;
+    late final api_user.Nodes<Article> res;
     if (isFetchPinDiscussions) {
-      res = await getPinnedDiscussions(endCur);
+      res = await api_user.getPinnedDiscussions(endCur);
     } else {
-      res = await getDiscussions(endCur);
+      res = await api_user.getDiscussions(endCur);
     }
     final (:endCursor, :hasNextPage, res: articles) = res;
     endCur = endCursor;
@@ -254,7 +268,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshData() async {
-    getAllReports(reportDiscussionNumber).then(report.call);
+    api_user.getAllReports(reportDiscussionNumber).then(report.call);
     isFetchPinDiscussions = true;
     hasNextPage.value = true;
     endCur = null;
@@ -264,7 +278,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshSearchData() async {
-    getAllReports(reportDiscussionNumber).then(report.call);
+    api_user.getAllReports(reportDiscussionNumber).then(report.call);
     searchHasNextPage.value = true;
     searchEndCur = null;
     searchCache.clear();
@@ -283,7 +297,7 @@ class Controller extends GetxController {
     if (searchHasNextPage.isFalse || searchCache.contains(searchEndCur)) return;
     searchCache.add(searchEndCur);
     final (:endCursor, :hasNextPage, :res) =
-        await search(searchQuery(), searchEndCur);
+        await api_user.search(searchQuery(), searchEndCur);
     searchEndCur = endCursor;
     searchHasNextPage.value = hasNextPage;
     searchResult.addAll(res);
@@ -319,7 +333,7 @@ class Article extends GetxController {
       return;
     }
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
-        await getComments(number, endCursor);
+        await api_user.getComments(number, endCursor);
     comments.addAll(res);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
@@ -435,7 +449,7 @@ class Author {
 
   Author({required this.login, required this.avatar, int? level}) {
     if (level == null) {
-      getUserInfo(login).then((v) {
+      api_user.getUserInfo(login).then((v) {
         if (v.totalCount != null) this.level.value = v.totalCount!;
         if (v.name != null) name.value = v.name!;
       });

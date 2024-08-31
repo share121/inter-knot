@@ -76,6 +76,19 @@ class Messages extends Translations {
           'A total of @count reports': '共 @count 次举报',
           'Error: API rate limit reached': '错误：API 速率限制已到达',
           'Please try again later': '请稍后再试',
+          'Login': '登录',
+          'Login out': '退出登录',
+          'Login out successfully': '退出登录成功',
+          'User Code': '用户码',
+          ' . Then enter the 「user code」': '。然后输入「用户码」',
+          'User code has been copied': '用户码已复制',
+          'Jump to the authorization page after 3 seconds': '3 秒后跳转到授权页',
+          'Copy and open': '复制并打开',
+          '@s seconds left': '还剩 @s 秒',
+          'User code has expired': '用户码已过期',
+          'Error: Failed to get access token': '错误：获取访问令牌失败',
+          'Common Api': '公共接口',
+          'User Api': '用户接口',
         }
       };
 }

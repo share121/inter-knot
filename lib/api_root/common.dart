@@ -33,7 +33,8 @@ final dio = Dio(BaseOptions(
       onResponse: (response, handler) async {
         logger.d(
             'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
-        if (response.data['errors']?[0]?['type'] == 'RATE_LIMITED') {
+        // ignore: avoid_dynamic_calls
+        if (response.data?['errors']?[0]?['type'] == 'RATE_LIMITED') {
           showDialog(
             context: Get.context!,
             builder: (context) {
@@ -94,7 +95,7 @@ Future<Response<T>> request<T>(
   options.headers ??= {};
   var delay = 0.5.s;
   while (true) {
-    options.headers!['Authorization'] = 'Bearer ${c.getToken()}';
+    options.headers!['Authorization'] = 'Bearer ${c.getRootToken()}';
     try {
       return await dio.request<T>(
         url,
@@ -106,7 +107,7 @@ Future<Response<T>> request<T>(
       if (e.response?.statusCode == 401) {
         try {
           final accessToken = await getAccessToken();
-          await c.setToken(accessToken);
+          await c.setRootToken(accessToken);
           continue;
         } catch (e, s) {
           logger.e('Failed to get access token', error: e, stackTrace: s);

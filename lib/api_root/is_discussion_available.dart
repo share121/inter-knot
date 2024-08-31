@@ -1,8 +1,9 @@
-import 'package:inter_knot/api/common.dart';
-import 'package:inter_knot/data.dart';
+import 'common.dart';
+import '../data.dart';
 
 Future<bool> isDiscussionAvailable(int number) async {
   final res = await graphql(
       '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { number } } }');
-  return res.data?['data']['repository']['discussion'] != null;
+  // ignore: avoid_dynamic_calls
+  return res.data?['data']?['repository']?['discussion'] != null;
 }

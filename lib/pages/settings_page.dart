@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inter_knot/api/get_new_version.dart';
-import 'package:inter_knot/data.dart';
+import '../api_user/api_user.dart';
+import '../data.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final c = Get.find<Controller>();
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
-            [SliverAppBar(title: Text('About'.tr))],
+            [SliverAppBar(title: Text('Settings'.tr))],
         floatHeaderSlivers: true,
         body: SingleChildScrollView(
           child: Column(
@@ -68,6 +69,31 @@ class AboutPage extends StatelessWidget {
                     subtitle: const LinearProgressIndicator(),
                   );
                 },
+              ),
+              // Obx(() {
+              //   return RadioListTile(
+              //     value: true,
+              //     groupValue: c.isLogin(),
+              //     title: Text('User Api'.tr),
+              //     onChanged: c.isLogin.call,
+              //   );
+              // }),
+              // Obx(() {
+              //   return RadioListTile(
+              //     value: false,
+              //     groupValue: c.isLogin(),
+              //     title: Text('Common Api'.tr),
+              //     onChanged: c.isLogin.call,
+              //   );
+              // }),
+              ListTile(
+                onTap: () async {
+                  await c.pref.remove('root_token');
+                  await c.pref.remove('access_token');
+                  await c.pref.remove('refresh_token');
+                  Get.rawSnackbar(message: 'Login out successfully'.tr);
+                },
+                title: Text('Login out'.tr),
               ),
             ],
           ),
