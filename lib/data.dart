@@ -11,8 +11,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'common.dart';
 import 'interface.dart';
 import 'widget/feedback_btn.dart';
-import 'api_user/api_user.dart' as api_user;
-import 'api_root/api_root.dart' as api_root;
+import 'api/api_root.dart' as api_root;
 
 const reportDiscussionNumber = 1685;
 const owner = 'share121';
@@ -26,6 +25,23 @@ const docLink = 'https://d.inot.top/';
 const issuesLink = '$githubLink/issues';
 const releasesLink = '$githubLink/releases';
 
+class HData {
+  final int number;
+  late final article = api_root.getDiscussion(number);
+
+  HData(this.number);
+  HData.fromStr(String number) : this(int.parse(number));
+  HData.fromArtilce(Article article) : this(article.number);
+
+  @override
+  operator ==(Object other) {
+    return other is HData && other.number == number;
+  }
+
+  @override
+  int get hashCode => number;
+}
+
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
 
@@ -36,41 +52,15 @@ class Controller extends GetxController {
 
   String getRootToken() => pref.getString('root_token') ?? '';
   Future<void> setRootToken(String v) => pref.setString('root_token', v);
-
   String getToken() => pref.getString('access_token') ?? '';
   Future<void> setToken(String v) => pref.setString('access_token', v);
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
   Future<void> setRefreshToken(String v) => pref.setString('refresh_token', v);
 
-  Future<Set<Article>> getBookmarks() async {
-    final discussionNumber = pref.getStringList('bookmarks') ?? [];
-    final futures = discussionNumber
-        .map((e) => isLogin()
-            ? api_user.getDiscussion(int.parse(e))
-            : api_root.getDiscussion(int.parse(e)))
-        .toList();
-    return (await Future.wait(futures)).whereType<Article>().toSet();
-  }
-
-  final isLogin = false.obs;
-
-  final user = Rx<Author?>(null);
-
   final report = <int, Set<ReportComment>>{}.obs;
 
-  final bookmarks = <Article>{}.obs;
-
-  Future<Set<Article>> getHistory() async {
-    final discussionNumber = pref.getStringList('history') ?? [];
-    final futures = discussionNumber
-        .map((e) => isLogin()
-            ? api_user.getDiscussion(int.parse(e))
-            : api_root.getDiscussion(int.parse(e)))
-        .toList();
-    return (await Future.wait(futures)).whereType<Article>().toSet();
-  }
-
-  final history = <Article>{}.obs;
+  final bookmarks = <HData>{}.obs;
+  final history = <HData>{}.obs;
 
   late final info = PackageInfo.fromPlatform();
 
@@ -86,11 +76,6 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
-    ever(isLogin, (v) async {
-      pref.setBool('isLogin', v);
-    });
-    isLogin(pref.getBool('isLogin') ?? false);
-    if (isLogin()) api_user.getSelfUserInfo().then(user.call);
     debounce(searchQuery, (query) {
       searchController.text = query;
       searchResult.clear();
@@ -100,30 +85,17 @@ class Controller extends GetxController {
       searchData();
     }, time: 500.ms);
     fetchData().then((_) => searchResult.addAll(data));
-    getBookmarks().then(bookmarks.call);
-    getHistory().then(history.call);
+    bookmarks.addAll(pref.getStringList('bookmarks')?.map(HData.fromStr) ?? []);
+    history.addAll(pref.getStringList('history')?.map(HData.fromStr) ?? []);
     ever(bookmarks, (v) {
       pref.setStringList(
           'bookmarks', v.map((e) => e.number.toString()).toList());
     });
     ever(history, (v) {
-      if (v.length > 20) {
-        history(history.take(20).toSet());
-      } else {
-        pref.setStringList(
-            'history', v.map((e) => e.number.toString()).toList());
-      }
+      pref.setStringList('history', v.map((e) => e.number.toString()).toList());
     });
-    if (isLogin()) {
-      api_user.getAllReports(reportDiscussionNumber).then(report.call);
-    } else {
-      api_root.getAllReports(reportDiscussionNumber).then(report.call);
-    }
-    if (isLogin()) {
-      api_user.getNewVersion().then(getVersionHandle);
-    } else {
-      api_root.getNewVersion().then(getVersionHandle);
-    }
+    api_root.getAllReports(reportDiscussionNumber).then(report.call);
+    api_root.getNewVersion().then(getVersionHandle);
   }
 
   FutureOr<Null> getVersionHandle(Release? release) async {
@@ -245,13 +217,9 @@ class Controller extends GetxController {
     cache.add(endCur);
     late final Nodes<Article> res;
     if (isFetchPinDiscussions) {
-      res = isLogin()
-          ? await api_user.getPinnedDiscussions(endCur)
-          : await api_root.getPinnedDiscussions(endCur);
+      res = await api_root.getPinnedDiscussions(endCur);
     } else {
-      res = isLogin()
-          ? await api_user.getDiscussions(endCur)
-          : await api_root.getDiscussions(endCur);
+      res = await api_root.getDiscussions(endCur);
     }
     final (:endCursor, :hasNextPage, res: articles) = res;
     endCur = endCursor;
@@ -266,11 +234,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshData() async {
-    if (isLogin()) {
-      api_user.getAllReports(reportDiscussionNumber).then(report.call);
-    } else {
-      api_root.getAllReports(reportDiscussionNumber).then(report.call);
-    }
+    api_root.getAllReports(reportDiscussionNumber).then(report.call);
     isFetchPinDiscussions = true;
     hasNextPage.value = true;
     endCur = null;
@@ -280,11 +244,7 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshSearchData() async {
-    if (isLogin()) {
-      api_user.getAllReports(reportDiscussionNumber).then(report.call);
-    } else {
-      api_root.getAllReports(reportDiscussionNumber).then(report.call);
-    }
+    api_root.getAllReports(reportDiscussionNumber).then(report.call);
     searchHasNextPage.value = true;
     searchEndCur = null;
     searchCache.clear();
@@ -302,9 +262,8 @@ class Controller extends GetxController {
     }
     if (searchHasNextPage.isFalse || searchCache.contains(searchEndCur)) return;
     searchCache.add(searchEndCur);
-    final (:endCursor, :hasNextPage, :res) = isLogin()
-        ? await api_user.search(searchQuery(), searchEndCur)
-        : await api_root.search(searchQuery(), searchEndCur);
+    final (:endCursor, :hasNextPage, :res) =
+        await api_root.search(searchQuery(), searchEndCur);
     searchEndCur = endCursor;
     searchHasNextPage.value = hasNextPage;
     searchResult.addAll(res);

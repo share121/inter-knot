@@ -34,11 +34,42 @@ class _HistoryPageState extends State<HistoryPage>
             itemCount: c.history.length,
             itemBuilder: (context, index) {
               return Obx(() {
-                return DiscussionCard(
-                  article: c.history.elementAt(index),
-                  onTap: (heroKey) {
-                    Get.to<void>(() => ArticlePage(
-                        heroKey: heroKey, article: c.history.elementAt(index)));
+                final item = c.history.elementAt(index);
+                return FutureBuilder(
+                  future: item.article,
+                  builder: (context, snaphost) {
+                    if (snaphost.hasData) {
+                      return DiscussionCard(
+                        article: snaphost.data!,
+                        onTap: (heroKey) {
+                          Get.to<void>(() => ArticlePage(
+                              heroKey: heroKey, article: snaphost.data!));
+                        },
+                      );
+                    }
+                    if (snaphost.hasError) {
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: AspectRatio(
+                          aspectRatio: 5 / 6,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Center(
+                                child: SelectableText('${snaphost.error}')),
+                          ),
+                        ),
+                      );
+                    }
+                    return const Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: AspectRatio(
+                        aspectRatio: 5 / 6,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      ),
+                    );
                   },
                 );
               });

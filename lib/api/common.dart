@@ -1,6 +1,7 @@
-part of 'api_user.dart';
+part of 'api_root.dart';
 
 var canRequest = true;
+var count = 0;
 
 final dio = Dio(BaseOptions(
   responseType: ResponseType.json,
@@ -10,6 +11,7 @@ final dio = Dio(BaseOptions(
   ..interceptors.addAll([
     InterceptorsWrapper(
       onRequest: (options, handler) {
+        print(++count);
         if (canRequest) {
           logger.d('Request: ${options.uri}\nData: ${options.data}');
           return handler.next(options);
@@ -39,13 +41,8 @@ final dio = Dio(BaseOptions(
             },
           );
           canRequest = false;
-          Future.delayed(60.s).then((_) => canRequest = true);
-          return handler.reject(
-            DioException.requestCancelled(
-              requestOptions: response.requestOptions,
-              reason: 'RATE_LIMITED',
-            ),
-          );
+          await Future.delayed(60.s);
+          canRequest = true;
         }
         return handler.next(response);
       },
@@ -78,47 +75,6 @@ final dio = Dio(BaseOptions(
     ),
   ]);
 
-class DeviceLogin {
-  final String deviceCode;
-  final String userCode;
-  final String verificationUri;
-  final int expiresIn;
-  final int interval;
-  final DateTime expiresAt;
-
-  Stream<int> getExpiresIn() {
-    final expiresAt = this.expiresAt;
-    return Stream.periodic(1.s).map((_) {
-      final now = DateTime.now();
-      final diff = expiresAt.difference(now);
-      return diff.inSeconds.clamp(0, expiresIn);
-    });
-  }
-
-  DeviceLogin.fromJson(Map<String, dynamic> json)
-      : deviceCode = json['device_code'],
-        userCode = json['user_code'],
-        verificationUri = json['verification_uri'],
-        expiresIn = json['expires_in'],
-        interval = json['interval'],
-        expiresAt = DateTime.now().add(Duration(seconds: json['expires_in']));
-}
-
-Future<DeviceLogin> getDeviceLogin() async {
-  final r = await dio.post<Map<String, dynamic>>(
-      'https://github.com/login/device/code',
-      queryParameters: {'client_id': clientId});
-  if (r.data == null) throw Exception('Failed to get device code');
-  return DeviceLogin.fromJson(r.data!);
-}
-
-enum DeviceLoginStatus {
-  authorizationPending,
-  expiredToken,
-  accessDenied,
-  finished,
-}
-
 Future<Response<T>> request<T>(
   String url, {
   Object? data,
@@ -127,16 +83,10 @@ Future<Response<T>> request<T>(
 }) async {
   options ??= Options();
   options.headers ??= {};
-  var delay = 1.s;
+  var delay = 0.5.s;
   while (true) {
-    options.headers!['Authorization'] = 'Bearer ${c.getToken()}';
+    options.headers!['Authorization'] = 'Bearer ${c.getRootToken()}';
     try {
-      if (!c.getToken().startsWith('ghu_')) {
-        throw DioException(
-          requestOptions: RequestOptions(),
-          error: 'NOT_LOGGED_IN',
-        );
-      }
       return await dio.request<T>(
         url,
         data: data,
@@ -144,22 +94,18 @@ Future<Response<T>> request<T>(
         options: options,
       );
     } on DioException catch (e) {
-      if (e.error == 'NOT_LOGGED_IN') {
-        await Future(() => Get.to(() => const LoginPage()));
-      }
       if (e.response?.statusCode == 401) {
         try {
-          if (!await refreshToken()) {
-            await Future(() => Get.to(() => const LoginPage()));
-          }
+          final accessToken = await getAccessToken();
+          await c.setRootToken(accessToken);
+          continue;
         } catch (e, s) {
-          logger.e('Failed to refresh token', error: e, stackTrace: s);
-          await Future(() => Get.to(() => const LoginPage()));
+          logger.e('Failed to get access token', error: e, stackTrace: s);
         }
       }
     }
     await Future.delayed(delay);
-    delay += 1.s;
+    delay += 0.5.s;
   }
 }
 

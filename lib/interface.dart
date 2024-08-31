@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 
-import 'api_user/api_user.dart' as api_user;
-import 'api_root/api_root.dart' as api_root;
-import 'common.dart';
+import 'api/api_root.dart' as api_root;
 import 'data.dart';
 
 typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
@@ -96,9 +94,7 @@ class Article extends GetxController {
       return;
     }
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
-        c.isLogin()
-            ? await api_user.getComments(number, endCursor)
-            : await api_root.getComments(number, endCursor);
+        await api_root.getComments(number, endCursor);
     comments.addAll(res);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
@@ -179,27 +175,10 @@ class Reply {
 
 class Author {
   final String login;
-  late final name = login.obs;
   final String avatar;
   late final url = 'https://github.com/$login';
-  final level = 0.obs;
 
-  Author({
-    required this.login,
-    required this.avatar,
-    int? level,
-    String? name,
-  }) {
-    if (name != null) this.name(name);
-    if (level != null) this.level(level);
-    if (level == null || name == null) {
-      (c.isLogin() ? api_user.getUserInfo(login) : api_root.getUserInfo(login))
-          .then((v) {
-        if (v.totalCount != null && level == null) this.level(v.totalCount);
-        if (v.name != null && name == null) this.name(v.name);
-      });
-    }
-  }
+  Author({required this.login, required this.avatar});
 
   @override
   operator ==(Object other) => other is Author && other.login == login;

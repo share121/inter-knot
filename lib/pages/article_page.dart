@@ -32,7 +32,7 @@ class _ArticlePageState extends State<ArticlePage> {
   void initState() {
     super.initState();
     Future(() {
-      c.history({widget.article, ...c.history});
+      c.history({HData.fromArtilce(widget.article), ...c.history});
     });
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -155,7 +155,8 @@ class _ArticlePageState extends State<ArticlePage> {
                   c.bookmarks
                       .removeWhere((e) => e.number == widget.article.number);
                 } else {
-                  c.bookmarks({widget.article, ...c.bookmarks});
+                  c.bookmarks(
+                      {HData.fromArtilce(widget.article), ...c.bookmarks});
                 }
               },
               tooltip: isLiked ? 'Unlike'.tr : 'Like'.tr,
@@ -303,15 +304,14 @@ class MainArticle extends StatelessWidget {
           minVerticalPadding: 0,
           onTap: () => launchUrlString(article.author.url),
           leading: Avatar(article.author.avatar),
-          title: Obx(() => Text(
-                article.author.name(),
-                style: Theme.of(context).textTheme.titleMedium,
-              )),
+          title: Text(
+            article.author.login,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           subtitle: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Obx(() => MyChip('Lv${article.author.level()}')),
                 if (article.author.login == owner)
                   MyChip('Founder of Inter-Knot'.tr),
                 if (collaborators.contains(article.author.login))
@@ -364,7 +364,7 @@ class Comments extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () => launchUrlString(comment.author.url),
-                    child: Obx(() => Text(comment.author.name())),
+                    child: Text(comment.author.login),
                   ),
                   const SizedBox(width: 8),
                   Flexible(
@@ -372,7 +372,6 @@ class Comments extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          Obx(() => MyChip('Lv${comment.author.level()}')),
                           if (comment.author.login == article.author.login)
                             MyChip('landlord'.tr),
                           if (comment.author.login == owner)
@@ -451,7 +450,7 @@ class Replies extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () => launchUrlString(reply.author.url),
-                  child: Obx(() => Text(reply.author.name())),
+                  child: Text(reply.author.login),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
@@ -459,7 +458,6 @@ class Replies extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        Obx(() => MyChip('Lv${reply.author.level()}')),
                         if (reply.author.login == article.author.login)
                           MyChip('landlord'.tr),
                         if (reply.author.login == comment.author.login)

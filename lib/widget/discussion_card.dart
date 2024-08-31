@@ -104,10 +104,10 @@ class _DiscussionCardState extends State<DiscussionCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 4),
-                            Obx(() => Text(
-                                  widget.article.author.name(),
-                                  overflow: TextOverflow.ellipsis,
-                                )),
+                            Text(
+                              widget.article.author.login,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             const SizedBox(height: 4),
                             const Divider(height: 1),
                           ],

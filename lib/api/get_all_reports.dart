@@ -1,6 +1,7 @@
 part of 'api_root.dart';
 
 Future<Report> getAllReports(int number) async {
+  return {};
   final res = <({String login, Set<int> numbers, String bodyHTML})>[];
   String? after;
   while (true) {

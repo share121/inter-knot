@@ -35,13 +35,42 @@ class _LikedPageState extends State<LikedPage>
             itemCount: c.bookmarks.length,
             itemBuilder: (context, index) {
               return Obx(() {
-                return DiscussionCard(
-                  article: c.bookmarks.elementAt(index),
-                  onTap: (heroKey) {
-                    Get.to<void>(() => ArticlePage(
-                          heroKey: heroKey,
-                          article: c.bookmarks.elementAt(index),
-                        ));
+                final item = c.bookmarks.elementAt(index);
+                return FutureBuilder(
+                  future: item.article,
+                  builder: (context, snaphost) {
+                    if (snaphost.hasData) {
+                      return DiscussionCard(
+                        article: snaphost.data!,
+                        onTap: (heroKey) {
+                          Get.to<void>(() => ArticlePage(
+                              heroKey: heroKey, article: snaphost.data!));
+                        },
+                      );
+                    }
+                    if (snaphost.hasError) {
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: AspectRatio(
+                          aspectRatio: 5 / 6,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Center(
+                                child: SelectableText('${snaphost.error}')),
+                          ),
+                        ),
+                      );
+                    }
+                    return const Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: AspectRatio(
+                        aspectRatio: 5 / 6,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      ),
+                    );
                   },
                 );
               });

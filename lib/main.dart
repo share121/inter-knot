@@ -138,21 +138,9 @@ class MyHomePage extends StatelessWidget {
                   image: Assets.images.drawerCover.provider(),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Inter-Knot'.tr,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  Obx(() {
-                    if (c.user() == null) return const SizedBox.shrink();
-                    return Text(
-                      '${c.user()!.name}',
-                      style: const TextStyle(color: Colors.white),
-                    );
-                  })
-                ],
+              child: Text(
+                'Inter-Knot'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
             ...destinations.indexed.map((e) => Obx(() => ListTile(
