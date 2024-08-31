@@ -71,7 +71,7 @@ jobs:
           channel: stable
           cache: true
 
-      - run: flutter build ipa --no-codesign
+      - run: flutter build ipa
 
       - run: ls -R
 
