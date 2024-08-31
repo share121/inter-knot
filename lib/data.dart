@@ -234,7 +234,6 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshData() async {
-    api_root.getAllReports(reportDiscussionNumber).then(report.call);
     isFetchPinDiscussions = true;
     hasNextPage.value = true;
     endCur = null;
@@ -244,7 +243,6 @@ class Controller extends GetxController {
   }
 
   Future<void> refreshSearchData() async {
-    api_root.getAllReports(reportDiscussionNumber).then(report.call);
     searchHasNextPage.value = true;
     searchEndCur = null;
     searchCache.clear();
