@@ -2,11 +2,8 @@ import 'package:html/parser.dart';
 
 import 'interface.dart';
 
-({
-  String html,
-  String? cover,
-  String? partition,
-}) parseHtml(String html, [bool isComment = false]) {
+({String? cover, String html}) parseHtml(String html,
+    [bool isComment = false]) {
   final document = parseFragment(html);
   if (!isComment) {
     final img = document.querySelector('img');
@@ -17,26 +14,11 @@ import 'interface.dart';
       parent.remove();
       parent = parent.parent;
     }
-    var partition = '';
-    document.querySelectorAll('h3').forEach((e) {
-      if (e.text.trim() == '分区') {
-        if (e.nextElementSibling?.text is String) {
-          partition = e.nextElementSibling!.text;
-          e.nextElementSibling!.remove();
-        }
-        e.remove();
-      }
-      if (e.text.trim() == '封面') e.remove();
-      if (e.text.trim() == '内容') e.remove();
-    });
-    document.querySelectorAll('p>em:only-child').forEach((e) {
-      if (e.text.trim() == 'No response') e.parent!.remove();
-    });
-    return (html: document.outerHtml, cover: cover, partition: partition);
+    return (html: document.outerHtml, cover: cover);
   }
   document.querySelectorAll('.email-hidden-toggle').forEach((e) => e.remove());
   document.querySelectorAll('.email-hidden-reply').forEach((e) => e.remove());
-  return (html: document.outerHtml, cover: null, partition: null);
+  return (html: document.outerHtml, cover: null);
 }
 
 String encode(String text) => text

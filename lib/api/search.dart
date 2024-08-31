@@ -35,7 +35,7 @@ Future<Nodes<Article>> search(String query, String? after) async {
                     'totalCount': final int commentsCount,
                   },
                 }) {
-              final (:html, :cover, :partition) = parseHtml(bodyHTML);
+              final (:html, :cover) = parseHtml(bodyHTML);
               return Article(
                 title: title,
                 bodyHTML: html,
@@ -50,7 +50,6 @@ Future<Nodes<Article>> search(String query, String? after) async {
                     : DateTime.tryParse(lastEditedAt),
                 commentsCount: commentsCount,
                 isPin: false,
-                partition: partition!,
               );
             }
           })

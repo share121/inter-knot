@@ -89,6 +89,8 @@ class Messages extends Translations {
           'Error: Failed to get access token': '错误：获取访问令牌失败',
           'Common Api': '公共接口',
           'User Api': '用户接口',
+          'Announcement': '公告',
+          'Polls': '投票',
         }
       };
 }

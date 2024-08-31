@@ -36,7 +36,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                     'nodes': final List<dynamic> replies,
                   },
                 }) {
-              final (:html, :cover, :partition) = parseHtml(bodyHTML, true);
+              final (:html, :cover) = parseHtml(bodyHTML, true);
               return Comment(
                 author: Author(avatar: avatar, login: name),
                 bodyHTML: html,
@@ -57,8 +57,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                             'createdAt': final String createdAt,
                             'lastEditedAt': final String? lastEditedAt,
                           }) {
-                        final (:html, :cover, :partition) =
-                            parseHtml(bodyHTML, true);
+                        final (:html, :cover) = parseHtml(bodyHTML, true);
                         return Reply(
                           author: Author(avatar: avatar, login: name),
                           bodyHTML: html,

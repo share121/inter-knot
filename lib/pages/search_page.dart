@@ -61,7 +61,16 @@ class _SearchPageState extends State<SearchPage>
             Expanded(
               child: Obx(() {
                 if (c.searchResult.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  if (c.searchHasNextPage()) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('Empty'.tr),
+                      ),
+                    );
+                  }
                 }
                 return WaterfallFlow.builder(
                   padding: const EdgeInsets.all(8),

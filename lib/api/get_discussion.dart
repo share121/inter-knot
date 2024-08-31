@@ -26,7 +26,7 @@ Future<Article?> getDiscussion(int number) async {
           },
         }
       }) {
-    final (:html, :cover, :partition) = parseHtml(bodyHTML);
+    final (:html, :cover) = parseHtml(bodyHTML);
     return Article(
       title: title,
       bodyHTML: html,
@@ -40,7 +40,6 @@ Future<Article?> getDiscussion(int number) async {
           lastEditedAt == null ? null : DateTime.tryParse(lastEditedAt),
       commentsCount: commentsCount,
       isPin: false,
-      partition: partition!,
     );
   }
   return null;

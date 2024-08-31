@@ -140,7 +140,7 @@ class _ArticlePageState extends State<ArticlePage> {
                 );
               },
               tooltip: 'Report'.tr,
-              child: const Icon(Icons.report),
+              child: const Icon(Icons.report_outlined),
             ),
           ],
           const SizedBox(height: 8),
@@ -169,7 +169,7 @@ class _ArticlePageState extends State<ArticlePage> {
             onPressed: () =>
                 launchUrlString('${widget.article.url}#new_comment_form'),
             tooltip: 'Write a review'.tr,
-            child: const Icon(Icons.add_comment),
+            child: const Icon(Icons.add_comment_outlined),
           ),
         ],
       ),

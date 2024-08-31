@@ -83,7 +83,7 @@ class _NotificationsPageState extends State<NotificationsPage>
           FloatingActionButton(
             heroTag: null,
             onPressed: () => launchUrlString(
-                'https://github.com/$owner/$repo/discussions/new?category=general'),
+                'https://github.com/$owner/$repo/discussions/new/choose'),
             tooltip: 'Create a new discussion'.tr,
             child: const Icon(Icons.add),
           ),

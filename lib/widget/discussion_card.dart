@@ -121,10 +121,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  (widget.article.partition.isEmpty
-                          ? ''
-                          : '[${widget.article.partition}] ') +
-                      widget.article.title,
+                  widget.article.title,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
@@ -135,11 +132,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    widget.article.rawBodyText
-                        .replaceAll(RegExp(r'\s+'), ' ')
-                        .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
-                        .replaceAll('No response', '')
-                        .trim(),
+                    widget.article.bodyText,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),

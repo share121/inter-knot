@@ -81,12 +81,7 @@ class Article extends GetxController {
   var hasNextPage = true.obs;
   String? endCursor;
   final bool isPin;
-  final String partition;
-  late final bodyText = rawBodyText
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .replaceFirst(RegExp(r'^分区.+?封面.+?内容'), '')
-      .replaceAll('No response', '')
-      .trim();
+  late final bodyText = rawBodyText.replaceAll(RegExp(r'\s+'), ' ').trim();
 
   final cache = <String?>{};
   Future<void> fetchComments() async {
@@ -112,7 +107,6 @@ class Article extends GetxController {
     required this.commentsCount,
     this.lastEditedAt,
     required this.isPin,
-    required this.partition,
   });
 
   @override
