@@ -35,7 +35,6 @@ class _SearchPageState extends State<SearchPage>
                   child: Icon(Icons.search),
                 ),
                 hintText: 'Search for articles'.tr,
-                autoFocus: true,
               ),
             ),
             Expanded(
