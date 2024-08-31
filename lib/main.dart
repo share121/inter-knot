@@ -63,7 +63,6 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      themeMode: ThemeMode.dark,
       supportedLocales: const [Locale('zh', 'CN'), Locale('en', 'US')],
       translations: Messages(),
       locale: Get.deviceLocale,
