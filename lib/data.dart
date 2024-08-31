@@ -22,7 +22,7 @@ const clientSecret = '3ea999c0e2d7283f602ab4994cc684ada2eeec2b';
 const collaborators = ['VacuolePaoo'];
 const githubLink = 'https://github.com/$owner/$repo';
 const discordLink = 'https://disboard.org/zh-cn/server/1273078781241987134';
-const docLink = 'https://docs.xn--5o0anh.top/';
+const docLink = 'https://d.inot.top/';
 const issuesLink = '$githubLink/issues';
 const releasesLink = '$githubLink/releases';
 
