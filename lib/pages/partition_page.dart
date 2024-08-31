@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../data.dart';
+import '../common.dart';
 import '../gen/assets.gen.dart';
 
 class PartitionPage extends StatelessWidget {
@@ -8,8 +8,6 @@ class PartitionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<Controller>();
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
@@ -22,232 +20,94 @@ class PartitionPage extends StatelessWidget {
           crossAxisSpacing: 4,
           childAspectRatio: 5 / 6,
           children: [
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '绝区零';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.zzz.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Zenless Zone Zero'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '绝区零',
+              img: Assets.images.zzz.provider(),
+              text: 'Zenless Zone Zero'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '原神';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.yuanshen.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Genshin Impact'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '原神',
+              img: Assets.images.yuanshen.provider(),
+              text: 'Genshin Impact'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '崩坏：星穹铁道';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.sr.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Honkai: Star Rail'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '崩坏：星穹铁道',
+              img: Assets.images.sr.provider(),
+              text: 'Honkai: Star Rail'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '崩坏3';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.bh3.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Honkai Impact 3'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '崩坏3',
+              img: Assets.images.bh3.provider(),
+              text: 'Honkai Impact 3'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '科技';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.defaultCover.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Technology'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '科技',
+              img: Assets.images.defaultCover.provider(),
+              text: 'Technology'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '教程';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.defaultCover.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Tutorial'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '教程',
+              img: Assets.images.defaultCover.provider(),
+              text: 'Tutorial'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '委托';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.defaultCover.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Delegate'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '委托',
+              img: Assets.images.defaultCover.provider(),
+              text: 'Delegate'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '其他';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.defaultCover.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Other'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '其他',
+              img: Assets.images.defaultCover.provider(),
+              text: 'Other'.tr,
             ),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () {
-                  c.searchQuery.value = '灌水';
-                  c.animateToPage(1);
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Assets.images.defaultCover.provider(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Irrigation'.tr,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ),
-              ),
+            MyCard(
+              searchQuery: '灌水',
+              img: Assets.images.defaultCover.provider(),
+              text: 'Irrigation'.tr,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyCard extends StatelessWidget {
+  const MyCard({
+    super.key,
+    required this.searchQuery,
+    required this.img,
+    required this.text,
+  });
+
+  final String searchQuery;
+  final ImageProvider img;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          c.searchQuery.value = searchQuery;
+          c.animateToPage(1);
+        },
+        child: Container(
+          alignment: Alignment.bottomCenter,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: img,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              searchQuery.tr,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
         ),
       ),
     );

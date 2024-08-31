@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../common.dart';
 import 'article_page.dart';
 import '../widget/discussion_card.dart';
-import '../data.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -15,12 +15,9 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
-  final c = Get.find<Controller>();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
@@ -28,9 +25,8 @@ class _SearchPageState extends State<SearchPage>
         floatHeaderSlivers: true,
         body: Column(
           children: [
-            const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(16),
               child: SearchBar(
                 controller: c.searchController,
                 onSubmitted: c.searchQuery.call,
@@ -42,7 +38,6 @@ class _SearchPageState extends State<SearchPage>
                 autoFocus: true,
               ),
             ),
-            const SizedBox(height: 16),
             Expanded(
               child: Obx(() {
                 if (c.searchResult.isEmpty) {

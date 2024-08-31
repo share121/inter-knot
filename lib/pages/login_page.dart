@@ -3,20 +3,17 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../api_user/api_user.dart';
-import '../data.dart';
+import '../api_user/api_user.dart' as api_user;
+import '../common.dart';
 import '../widget/discord_button.dart';
 import '../widget/doc_button.dart';
 import '../widget/feedback_btn.dart';
 import '../widget/github_button.dart';
 import '../widget/window_buttons.dart';
-
-final logger = Logger();
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,7 +23,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  DeviceLogin? deviceLogin;
+  api_user.DeviceLogin? deviceLogin;
   Object? error;
   final getDeviceSch = LazyScheduler(latency: 5.s);
   var count = 0;
@@ -34,16 +31,16 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> poll() async {
     if (deviceLogin == null) return;
     try {
-      final r = await getAccessToken(deviceLogin!);
+      final r = await api_user.getAccessToken(deviceLogin!);
       switch (r.status) {
-        case DeviceLoginStatus.expiredToken:
-        case DeviceLoginStatus.accessDenied:
+        case api_user.DeviceLoginStatus.expiredToken:
+        case api_user.DeviceLoginStatus.accessDenied:
           return refresh();
-        case DeviceLoginStatus.finished:
+        case api_user.DeviceLoginStatus.finished:
           await c.setToken(r.accessToken!);
           await c.setRefreshToken(r.refreshToken!);
           Get.back();
-        case DeviceLoginStatus.authorizationPending:
+        case api_user.DeviceLoginStatus.authorizationPending:
       }
     } catch (e) {
       showDialog(
@@ -73,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     Future<void> fn() async {
       try {
-        final data = await getDeviceLogin();
+        final data = await api_user.getDeviceLogin();
         if (mounted) {
           Timer.run(() async {
             final inner = count;

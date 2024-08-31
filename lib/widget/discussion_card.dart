@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../common.dart';
 import '../gen/assets.gen.dart';
-import '../data.dart';
+import '../interface.dart';
 import 'avatar.dart';
 import 'comment_count.dart';
 
@@ -21,7 +22,6 @@ class DiscussionCard extends StatefulWidget {
 class _DiscussionCardState extends State<DiscussionCard> {
   var elevation = 1.0;
   final heroKey = UniqueKey();
-  final c = Get.find<Controller>();
 
   @override
   Widget build(BuildContext context) {

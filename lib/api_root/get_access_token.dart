@@ -1,9 +1,4 @@
-import 'dart:async';
-import 'package:dio/dio.dart';
-
-import 'common.dart';
-import 'gen_token.dart';
-import '../data.dart';
+part of 'api_root.dart';
 
 Future<String>? promise;
 Future<String> getAccessToken() async {

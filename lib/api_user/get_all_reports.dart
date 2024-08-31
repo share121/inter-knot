@@ -63,37 +63,3 @@ Future<Report> getAllReports(int number) async {
       .toList());
   return Map.fromEntries(t.whereType<MapEntry<int, Set<ReportComment>>>());
 }
-
-typedef Report = Map<int, Set<ReportComment>>;
-
-class ReportComment {
-  final String login;
-  final String bodyHTML;
-  late final url = 'https://github.com/$login';
-
-  ReportComment({required this.login, required this.bodyHTML});
-
-  @override
-  operator ==(Object other) =>
-      other is ReportComment &&
-      other.login == login &&
-      other.bodyHTML == bodyHTML;
-
-  @override
-  int get hashCode => login.hashCode ^ bodyHTML.hashCode;
-}
-
-Report transformReports(
-    List<({String login, Set<int> numbers, String bodyHTML})> arr) {
-  final Report obj = {};
-  for (final i in arr) {
-    for (final num in i.numbers) {
-      if (obj[num] == null) {
-        obj[num] = {ReportComment(login: i.login, bodyHTML: i.bodyHTML)};
-      } else if (!obj[num]!.map((e) => e.login).contains(i.login)) {
-        obj[num]!.add(ReportComment(login: i.login, bodyHTML: i.bodyHTML));
-      }
-    }
-  }
-  return obj;
-}

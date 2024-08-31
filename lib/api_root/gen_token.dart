@@ -1,9 +1,4 @@
-import 'dart:async';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:flutter/services.dart';
-
-import '../gen/assets.gen.dart';
-import '../data.dart';
+part of 'api_root.dart';
 
 final pem = rootBundle.loadString(Assets.privateKey);
 Future<String> genToken() async {

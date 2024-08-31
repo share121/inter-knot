@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../data.dart';
+import '../interface.dart';
 
 class CommentCount extends StatelessWidget {
   const CommentCount({super.key, required this.article, this.color});

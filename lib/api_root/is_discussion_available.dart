@@ -1,5 +1,4 @@
-import 'common.dart';
-import '../data.dart';
+part of 'api_root.dart';
 
 Future<bool> isDiscussionAvailable(int number) async {
   final res = await graphql(

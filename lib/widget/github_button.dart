@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../data.dart';
-import '../gen/assets.gen.dart';
+import 'github_icon.dart';
 
 class GithubButton extends StatelessWidget {
   const GithubButton({super.key});
@@ -13,13 +12,7 @@ class GithubButton extends StatelessWidget {
     return IconButton(
       onPressed: () => launchUrlString(githubLink),
       tooltip: 'Github',
-      icon: SvgPicture.asset(
-        Assets.images.github,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).colorScheme.onSurfaceVariant,
-          BlendMode.srcIn,
-        ),
-      ),
+      icon: const GithubIcon(),
     );
   }
 }

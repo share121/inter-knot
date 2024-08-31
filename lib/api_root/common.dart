@@ -1,16 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide Response;
-import 'package:html/parser.dart';
-import 'package:logger/logger.dart';
-
-import 'get_access_token.dart';
-import '../data.dart';
-
-final c = Get.find<Controller>();
-final logger = Logger();
+part of 'api_root.dart';
 
 var canRequest = true;
 
@@ -31,8 +19,8 @@ final dio = Dio(BaseOptions(
         }
       },
       onResponse: (response, handler) async {
-        logger.d(
-            'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
+        // logger.d(
+        //     'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
         // ignore: avoid_dynamic_calls
         if (response.data?['errors']?[0]?['type'] == 'RATE_LIMITED') {
           showDialog(
@@ -122,48 +110,3 @@ Future<Response<T>> request<T>(
 Future<Response<Map<String, dynamic>>> graphql(String data) async =>
     request('/graphql',
         data: jsonEncode({'query': data}), options: Options(method: 'POST'));
-
-String encode(String text) => text
-    .replaceAll('\\', '\\\\')
-    .replaceAll('"', '\\"')
-    .replaceAll('\r', '\\r')
-    .replaceAll('\n', '\\n');
-
-typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
-
-({
-  String html,
-  String? cover,
-  String? partition,
-}) parseHtml(String html, [bool isComment = false]) {
-  final document = parseFragment(html);
-  if (!isComment) {
-    final img = document.querySelector('img');
-    final cover = img?.attributes['src'];
-    img?.remove();
-    var parent = img?.parent;
-    while (parent != null && parent.nodes.isEmpty) {
-      parent.remove();
-      parent = parent.parent;
-    }
-    var partition = '';
-    document.querySelectorAll('h3').forEach((e) {
-      if (e.text.trim() == '分区') {
-        if (e.nextElementSibling?.text is String) {
-          partition = e.nextElementSibling!.text;
-          e.nextElementSibling!.remove();
-        }
-        e.remove();
-      }
-      if (e.text.trim() == '封面') e.remove();
-      if (e.text.trim() == '内容') e.remove();
-    });
-    document.querySelectorAll('p>em:only-child').forEach((e) {
-      if (e.text.trim() == 'No response') e.parent!.remove();
-    });
-    return (html: document.outerHtml, cover: cover, partition: partition);
-  }
-  document.querySelectorAll('.email-hidden-toggle').forEach((e) => e.remove());
-  document.querySelectorAll('.email-hidden-reply').forEach((e) => e.remove());
-  return (html: document.outerHtml, cover: null, partition: null);
-}

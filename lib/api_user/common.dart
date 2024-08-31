@@ -1,8 +1,5 @@
 part of 'api_user.dart';
 
-final c = Get.find<Controller>();
-final logger = Logger();
-
 var canRequest = true;
 
 final dio = Dio(BaseOptions(
@@ -14,7 +11,7 @@ final dio = Dio(BaseOptions(
     InterceptorsWrapper(
       onRequest: (options, handler) {
         if (canRequest) {
-          // logger.d('Request: ${options.uri}\nData: ${options.data}');
+          logger.d('Request: ${options.uri}\nData: ${options.data}');
           return handler.next(options);
         } else {
           return handler.reject(DioException.requestCancelled(
@@ -22,8 +19,8 @@ final dio = Dio(BaseOptions(
         }
       },
       onResponse: (response, handler) async {
-        logger.d(
-            'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
+        // logger.d(
+        //     'Response: ${response.requestOptions.uri}\nResponse: ${response.data}');
         // ignore: avoid_dynamic_calls
         if (response.data?['errors']?[0]?['type'] == 'RATE_LIMITED') {
           showDialog(
@@ -122,51 +119,6 @@ enum DeviceLoginStatus {
   finished,
 }
 
-Future<({DeviceLoginStatus status, String? accessToken, String? refreshToken})>
-    getAccessToken(DeviceLogin deviceLogin) async {
-  final res = await dio.post<Map<String, dynamic>>(
-      'https://github.com/login/oauth/access_token',
-      queryParameters: {
-        'client_id': clientId,
-        'device_code': deviceLogin.deviceCode,
-        'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
-      });
-  if (res.data == null) throw Exception('Failed to get access token');
-  if (res.data!['error'] == 'authorization_pending') {
-    return (
-      status: DeviceLoginStatus.authorizationPending,
-      accessToken: null,
-      refreshToken: null,
-    );
-  }
-  if (res.data!['error'] == 'expired_token') {
-    return (
-      status: DeviceLoginStatus.expiredToken,
-      accessToken: null,
-      refreshToken: null,
-    );
-  }
-  if (res.data!['error'] == 'access_denied') {
-    return (
-      status: DeviceLoginStatus.accessDenied,
-      accessToken: null,
-      refreshToken: null,
-    );
-  }
-  if (res.data
-      case {
-        'access_token': String accessToken,
-        'refresh_token': String refreshToken
-      }) {
-    return (
-      status: DeviceLoginStatus.finished,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    );
-  }
-  throw Exception('Invalid response: $res');
-}
-
 Future<Response<T>> request<T>(
   String url, {
   Object? data,
@@ -214,48 +166,3 @@ Future<Response<T>> request<T>(
 Future<Response<Map<String, dynamic>>> graphql(String data) async =>
     request('/graphql',
         data: jsonEncode({'query': data}), options: Options(method: 'POST'));
-
-String encode(String text) => text
-    .replaceAll('\\', '\\\\')
-    .replaceAll('"', '\\"')
-    .replaceAll('\r', '\\r')
-    .replaceAll('\n', '\\n');
-
-typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
-
-({
-  String html,
-  String? cover,
-  String? partition,
-}) parseHtml(String html, [bool isComment = false]) {
-  final document = parseFragment(html);
-  if (!isComment) {
-    final img = document.querySelector('img');
-    final cover = img?.attributes['src'];
-    img?.remove();
-    var parent = img?.parent;
-    while (parent != null && parent.nodes.isEmpty) {
-      parent.remove();
-      parent = parent.parent;
-    }
-    var partition = '';
-    document.querySelectorAll('h3').forEach((e) {
-      if (e.text.trim() == '分区') {
-        if (e.nextElementSibling?.text is String) {
-          partition = e.nextElementSibling!.text;
-          e.nextElementSibling!.remove();
-        }
-        e.remove();
-      }
-      if (e.text.trim() == '封面') e.remove();
-      if (e.text.trim() == '内容') e.remove();
-    });
-    document.querySelectorAll('p>em:only-child').forEach((e) {
-      if (e.text.trim() == 'No response') e.parent!.remove();
-    });
-    return (html: document.outerHtml, cover: cover, partition: partition);
-  }
-  document.querySelectorAll('.email-hidden-toggle').forEach((e) => e.remove());
-  document.querySelectorAll('.email-hidden-reply').forEach((e) => e.remove());
-  return (html: document.outerHtml, cover: null, partition: null);
-}

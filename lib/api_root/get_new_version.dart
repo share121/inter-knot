@@ -1,46 +1,4 @@
-import 'common.dart';
-import '../data.dart';
-
-class Release {
-  final String version;
-  final List<ReleaseAsset> releaseAssets;
-  final String? descriptionHTML;
-
-  Release({
-    required this.version,
-    required this.releaseAssets,
-    this.descriptionHTML,
-  });
-
-  @override
-  operator ==(Object other) => other is Release && other.version == version;
-
-  @override
-  int get hashCode => version.hashCode;
-}
-
-class ReleaseAsset {
-  final String downloadUrl;
-  final String name;
-  final int downloadCount;
-  final int size;
-  final DateTime updatedAt;
-
-  ReleaseAsset({
-    required this.downloadUrl,
-    required this.name,
-    required this.downloadCount,
-    required this.size,
-    required this.updatedAt,
-  });
-
-  @override
-  operator ==(Object other) =>
-      other is ReleaseAsset && other.downloadUrl == downloadUrl;
-
-  @override
-  int get hashCode => downloadUrl.hashCode;
-}
+part of 'api_root.dart';
 
 Future<Release?> getNewVersion() async {
   final res = await graphql(

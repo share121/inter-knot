@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'common.dart';
+part of 'api_root.dart';
 
 Future<({int? totalCount, String? name})> getUserInfo(String login) async {
   final res = await graphql(

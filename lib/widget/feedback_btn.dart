@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../data.dart';
+import '../common.dart';
 
 class FeedbackBtn extends StatelessWidget {
   const FeedbackBtn(this.error, {super.key});

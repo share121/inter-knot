@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../common.dart';
 import 'article_page.dart';
 import '../widget/discussion_card.dart';
 import '../data.dart';
@@ -16,12 +17,9 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage>
     with AutomaticKeepAliveClientMixin {
-  final c = Get.find<Controller>();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>

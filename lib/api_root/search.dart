@@ -1,7 +1,4 @@
-import 'dart:async';
-
-import 'common.dart';
-import '../data.dart';
+part of 'api_root.dart';
 
 Future<Nodes<Article>> search(String query, String? after) async {
   final res = await graphql(

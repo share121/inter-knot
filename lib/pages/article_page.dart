@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
-import '../widget/avatar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../common.dart';
+import '../interface.dart';
+import '../widget/avatar.dart';
 import '../widget/comment_count.dart';
 import '../gen/assets.gen.dart';
 import '../data.dart';
@@ -24,7 +27,6 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   final scrollController = ScrollController();
-  final c = Get.find<Controller>();
 
   @override
   void initState() {
@@ -206,7 +208,6 @@ class ReportArticleComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<Controller>();
     return Obx(() {
       return Column(
         children: [

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../data.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../common.dart';
 import '../widget/discussion_card.dart';
 import 'article_page.dart';
 
@@ -18,7 +18,6 @@ class _LikedPageState extends State<LikedPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final c = Get.find<Controller>();
 
     return Scaffold(
       body: NestedScrollView(

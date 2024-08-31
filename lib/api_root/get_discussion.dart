@@ -1,7 +1,4 @@
-import 'dart:async';
-
-import 'common.dart';
-import '../data.dart';
+part of 'api_root.dart';
 
 Future<Article?> getDiscussion(int number) async {
   final res = await graphql(

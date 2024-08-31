@@ -1,25 +1,26 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:get/get.dart';
-import 'gen/assets.gen.dart';
-import 'pages/history_page.dart';
-import 'pages/liked_page.dart';
-import 'pages/partition_page.dart';
-import 'widget/discord_button.dart';
-import 'widget/doc_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'common.dart';
 import 'data.dart';
 import 'l10n.dart';
 import 'pages/settings_page.dart';
 import 'pages/search_page.dart';
+import 'pages/history_page.dart';
+import 'pages/liked_page.dart';
+import 'pages/partition_page.dart';
 import 'pages/notifications_page.dart';
 import 'widget/github_button.dart';
+import 'widget/discord_button.dart';
+import 'widget/doc_button.dart';
+import 'widget/github_icon.dart';
 import 'widget/window_buttons.dart';
+import 'gen/assets.gen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,10 +64,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       themeMode: ThemeMode.dark,
-      supportedLocales: const [
-        Locale('zh', 'CN'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('zh', 'CN'), Locale('en', 'US')],
       translations: Messages(),
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
@@ -113,8 +111,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<Controller>();
-
     return Scaffold(
       appBar: AppBar(
         title: DragToMoveArea(child: Text('Inter-Knot'.tr)),
@@ -142,9 +138,21 @@ class MyHomePage extends StatelessWidget {
                   image: Assets.images.drawerCover.provider(),
                 ),
               ),
-              child: Text(
-                'Inter-Knot'.tr,
-                style: const TextStyle(color: Colors.white),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Inter-Knot'.tr,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  Obx(() {
+                    if (c.user() == null) return const SizedBox.shrink();
+                    return Text(
+                      '${c.user()!.name}',
+                      style: const TextStyle(color: Colors.white),
+                    );
+                  })
+                ],
               ),
             ),
             ...destinations.indexed.map((e) => Obx(() => ListTile(
@@ -160,13 +168,7 @@ class MyHomePage extends StatelessWidget {
             const Divider(),
             ListTile(
               title: const Text('Github'),
-              leading: SvgPicture.asset(
-                Assets.images.github,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurfaceVariant,
-                  BlendMode.srcIn,
-                ),
-              ),
+              leading: const GithubIcon(),
               onTap: () => launchUrlString(githubLink),
             ),
             ListTile(
