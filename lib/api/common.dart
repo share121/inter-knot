@@ -11,7 +11,6 @@ final dio = Dio(BaseOptions(
   ..interceptors.addAll([
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        print(++count);
         if (canRequest) {
           logger.d('Request: ${options.uri}\nData: ${options.data}');
           return handler.next(options);
