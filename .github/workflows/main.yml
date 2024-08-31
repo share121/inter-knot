@@ -134,7 +134,7 @@ jobs:
           channel: stable
           cache: true
 
-      - run: flutter build web --base-href / --web-renderer html
+      - run: flutter build web --web-renderer html
 
       - uses: actions/upload-artifact@v4
         with:
