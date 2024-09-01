@@ -133,6 +133,7 @@ class Controller extends GetxController {
           final descriptionHTML = release.descriptionHTML ?? '';
           showDialog(
             context: Get.context!,
+            barrierDismissible: !mustUpdate(newVersion, curVersion),
             builder: (context) {
               return AlertDialog(
                 title: Text('New version available'.tr),
@@ -178,10 +179,11 @@ class Controller extends GetxController {
                   ],
                 ),
                 actions: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text('OK'.tr),
-                  ),
+                  if (!mustUpdate(newVersion, curVersion))
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: Text('OK'.tr),
+                    ),
                 ],
               );
             },
@@ -192,6 +194,9 @@ class Controller extends GetxController {
       }
     }
   }
+
+  bool mustUpdate(Version newVer, Version curVer) =>
+      newVer.major > curVer.major || newVer.minor > curVer.minor;
 
   final selectedIndex = 0.obs;
   final pageController = PageController();

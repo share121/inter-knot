@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
       translations: Messages(),
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
-      home: const MyHomePage(),
+      home: const DragToResizeArea(child: MyHomePage()),
       debugShowCheckedModeBanner: false,
     );
   }
