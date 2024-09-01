@@ -122184,7 +122184,7 @@ r=A.b1("Report template copied")
 A.wb("\u8fdd\u89c4\u6587\u7ae0\uff1a#"+s.cy+"\n\u4e3e\u62a5\u539f\u56e0\uff1a",A.b1("Jump to the report page after 3 seconds"),r)},
 $S:0}
 A.aXF.prototype={
-$1(a){return A.eI("https://github.com/share121/inter-knot/discussions/1685#new_comment_form")},
+$1(a){return A.eI("https://github.com/share121/inter-knot/discussions/3916#new_comment_form")},
 $S:266}
 A.aXJ.prototype={
 $0(){var s=null,r=$.dK().db,q=this.a,p=new A.kJ(r,new A.aXD(),r.$ti.h("kJ<cQ.E,n>")).t(0,q.a.c.cy)
