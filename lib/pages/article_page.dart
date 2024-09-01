@@ -132,7 +132,7 @@ class _ArticlePageState extends State<ArticlePage> {
               heroTag: null,
               onPressed: () {
                 Future.delayed(3.s).then((_) => launchUrlString(
-                    'https://github.com/share121/inter-knot/discussions/1685#new_comment_form'));
+                    'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
                 copyText(
                   '违规文章：#${widget.article.number}\n举报原因：',
                   title: 'Report template copied'.tr,

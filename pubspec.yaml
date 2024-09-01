@@ -1,7 +1,7 @@
 name: inter_knot
 description: 绳网是一个游戏、技术交流平台
 publish_to: none
-version: 2.10.0+12
+version: 2.10.1+13
 repository: https://github.com/share121/inter_knot
 
 environment:
