@@ -158,7 +158,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          cname: inot.top
+          cname: www.inot.top
 
   release:
     name: Release

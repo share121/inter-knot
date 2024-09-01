@@ -11,7 +11,7 @@ Future<Nodes<Article>> getDiscussions(String? after) async {
               'nodes': final List<dynamic> nodes,
               'pageInfo': {
                 'hasNextPage': final bool hasNextPage,
-                'endCursor': final String endCursor
+                'endCursor': final String? endCursor
               },
             },
           },

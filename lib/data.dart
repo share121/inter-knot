@@ -13,11 +13,11 @@ import 'interface.dart';
 import 'widget/feedback_btn.dart';
 import 'api/api_root.dart' as api_root;
 
-const reportDiscussionNumber = 1685;
+const reportDiscussionNumber = 3916;
 const owner = 'share121';
 const repo = 'inter-knot';
-const clientId = 'Iv23li8gf1MxGAgvw5lU';
-const clientSecret = '3ea999c0e2d7283f602ab4994cc684ada2eeec2b';
+const clientId = 'Iv23liot0kj0B7aTc2rl';
+const clientSecret = '5457935f3cca6309f34cab92ce6b0b47f0b37ac9';
 const collaborators = ['VacuolePaoo'];
 const githubLink = 'https://github.com/$owner/$repo';
 const discordLink = 'https://disboard.org/zh-cn/server/1273078781241987134';
