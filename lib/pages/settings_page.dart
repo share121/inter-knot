@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../api/api_root.dart' as api_root;
+import '../api_root/api_root.dart' as api_root;
+import '../api_user/api_user.dart' as api_user;
 import '../common.dart';
 import '../data.dart';
 
@@ -47,7 +48,9 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
               FutureBuilder(
-                future: api_root.getNewVersion(),
+                future: c.isLogin()
+                    ? api_user.getNewVersion()
+                    : api_root.getNewVersion(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final fullVer = 'v${snapshot.data!.version}';
@@ -71,6 +74,22 @@ class SettingsPage extends StatelessWidget {
                   );
                 },
               ),
+              Obx(() {
+                return RadioListTile(
+                  value: true,
+                  groupValue: c.isLogin(),
+                  title: Text('User Api'.tr),
+                  onChanged: c.isLogin.call,
+                );
+              }),
+              Obx(() {
+                return RadioListTile(
+                  value: false,
+                  groupValue: c.isLogin(),
+                  title: Text('Common Api'.tr),
+                  onChanged: c.isLogin.call,
+                );
+              }),
               ListTile(
                 onTap: () async {
                   await c.pref.remove('root_token');

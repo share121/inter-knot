@@ -11,7 +11,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'common.dart';
 import 'interface.dart';
 import 'widget/feedback_btn.dart';
-import 'api/api_root.dart' as api_root;
+import 'api_root/api_root.dart' as api_root;
+import 'api_user/api_user.dart' as api_user;
 
 const reportDiscussionNumber = 3916;
 const owner = 'share121';
@@ -27,7 +28,9 @@ const releasesLink = '$githubLink/releases';
 
 class HData {
   final int number;
-  late final article = api_root.getDiscussion(number);
+  late final article = c.isLogin()
+      ? api_user.getDiscussion(number)
+      : api_root.getDiscussion(number);
 
   HData(this.number);
   HData.fromStr(String number) : this(int.parse(number));
@@ -57,6 +60,9 @@ class Controller extends GetxController {
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
   Future<void> setRefreshToken(String v) => pref.setString('refresh_token', v);
 
+  final isLogin = false.obs;
+  final user = Rx<Author?>(null);
+
   final report = <int, Set<ReportComment>>{}.obs;
 
   final bookmarks = <HData>{}.obs;
@@ -76,6 +82,11 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
+    ever(isLogin, (v) async {
+      pref.setBool('isLogin', v);
+    });
+    isLogin(pref.getBool('isLogin') ?? false);
+    if (isLogin()) api_user.getSelfUserInfo().then(user.call);
     debounce(searchQuery, (query) {
       searchController.text = query;
       searchResult.clear();
@@ -94,8 +105,13 @@ class Controller extends GetxController {
     ever(history, (v) {
       pref.setStringList('history', v.map((e) => e.number.toString()).toList());
     });
-    api_root.getAllReports(reportDiscussionNumber).then(report.call);
-    api_root.getNewVersion().then(getVersionHandle);
+    if (c.isLogin()) {
+      api_user.getAllReports(reportDiscussionNumber).then(report.call);
+      api_user.getNewVersion().then(getVersionHandle);
+    } else {
+      api_root.getAllReports(reportDiscussionNumber).then(report.call);
+      api_root.getNewVersion().then(getVersionHandle);
+    }
   }
 
   FutureOr<Null> getVersionHandle(Release? release) async {
@@ -222,9 +238,13 @@ class Controller extends GetxController {
     cache.add(endCur);
     late final Nodes<Article> res;
     if (isFetchPinDiscussions) {
-      res = await api_root.getPinnedDiscussions(endCur);
+      res = isLogin()
+          ? await api_user.getPinnedDiscussions(endCur)
+          : await api_root.getPinnedDiscussions(endCur);
     } else {
-      res = await api_root.getDiscussions(endCur);
+      res = isLogin()
+          ? await api_user.getDiscussions(endCur)
+          : await api_root.getDiscussions(endCur);
     }
     final (:endCursor, :hasNextPage, res: articles) = res;
     endCur = endCursor;
@@ -265,8 +285,9 @@ class Controller extends GetxController {
     }
     if (searchHasNextPage.isFalse || searchCache.contains(searchEndCur)) return;
     searchCache.add(searchEndCur);
-    final (:endCursor, :hasNextPage, :res) =
-        await api_root.search(searchQuery(), searchEndCur);
+    final (:endCursor, :hasNextPage, :res) = isLogin()
+        ? await api_user.search(searchQuery(), searchEndCur)
+        : await api_root.search(searchQuery(), searchEndCur);
     searchEndCur = endCursor;
     searchHasNextPage.value = hasNextPage;
     searchResult.addAll(res);

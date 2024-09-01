@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
-import 'api/api_root.dart' as api_root;
+import 'api_root/api_root.dart' as api_root;
+import 'api_user/api_user.dart' as api_user;
+import 'common.dart';
 import 'data.dart';
 
 typedef Nodes<T> = ({List<T> res, bool hasNextPage, String? endCursor});
@@ -89,7 +91,9 @@ class Article extends GetxController {
       return;
     }
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
-        await api_root.getComments(number, endCursor);
+        c.isLogin()
+            ? await api_user.getComments(number, endCursor)
+            : await api_root.getComments(number, endCursor);
     comments.addAll(res);
     hasNextPage.value = newHasNextPage;
     endCursor = newEndCursor;
