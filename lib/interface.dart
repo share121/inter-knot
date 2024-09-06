@@ -184,3 +184,23 @@ class Author {
   @override
   int get hashCode => login.hashCode;
 }
+
+class HData {
+  final int number;
+  late final article = c.isLogin()
+      ? api_user.getDiscussion(number)
+      : api_root.getDiscussion(number);
+  late final url = 'https://github.com/$owner/$repo/discussions/$number';
+
+  HData(this.number);
+  HData.fromStr(String number) : this(int.parse(number));
+  HData.fromArtilce(Article article) : this(article.number);
+
+  @override
+  operator ==(Object other) {
+    return other is HData && other.number == number;
+  }
+
+  @override
+  int get hashCode => number;
+}

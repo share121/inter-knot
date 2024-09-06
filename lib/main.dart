@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('zh', 'CN'), Locale('en', 'US')],
       translations: Messages(),
       locale: Get.deviceLocale,
+      themeMode: ThemeMode.dark,
       fallbackLocale: const Locale('en', 'US'),
       home: const DragToResizeArea(child: MyHomePage()),
       debugShowCheckedModeBanner: false,
@@ -194,18 +195,18 @@ class MyHomePage extends StatelessWidget {
                 );
               }),
             Expanded(
-              child: PageView(
+              child: PageView.builder(
                 controller: c.pageController,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                children: const [
+                itemBuilder: (context, index) => const [
                   NotificationsPage(),
                   SearchPage(),
                   PartitionPage(),
                   LikedPage(),
                   HistoryPage(),
                   SettingsPage(),
-                ],
+                ][index],
               ),
             )
           ],

@@ -14,7 +14,7 @@ import 'widget/feedback_btn.dart';
 import 'api_root/api_root.dart' as api_root;
 import 'api_user/api_user.dart' as api_user;
 
-const reportDiscussionNumber = 3916;
+const reportDiscussionNumber = 4497;
 const owner = 'share121';
 const repo = 'inter-knot';
 const clientId = 'Iv23liot0kj0B7aTc2rl';
@@ -25,25 +25,6 @@ const discordLink = 'https://dc.inot.top';
 const docLink = 'https://d.inot.top/';
 const issuesLink = '$githubLink/issues';
 const releasesLink = '$githubLink/releases';
-
-class HData {
-  final int number;
-  late final article = c.isLogin()
-      ? api_user.getDiscussion(number)
-      : api_root.getDiscussion(number);
-
-  HData(this.number);
-  HData.fromStr(String number) : this(int.parse(number));
-  HData.fromArtilce(Article article) : this(article.number);
-
-  @override
-  operator ==(Object other) {
-    return other is HData && other.number == number;
-  }
-
-  @override
-  int get hashCode => number;
-}
 
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
@@ -82,10 +63,9 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
-    ever(isLogin, (v) async {
-      pref.setBool('isLogin', v);
-    });
+    ever(isLogin, (v) => pref.setBool('isLogin', v));
     isLogin(pref.getBool('isLogin') ?? false);
+    logger.i(isLogin());
     if (isLogin()) api_user.getSelfUserInfo().then(user.call);
     debounce(searchQuery, (query) {
       searchController.text = query;
@@ -256,24 +236,27 @@ class Controller extends GetxController {
       this.hasNextPage.value = hasNextPage;
     }
     data.addAll(res.res);
+    if (res.res.isEmpty) {
+      fetchData();
+    }
   }
 
-  Future<void> refreshData() async {
+  late final refreshData = throttle(() async {
     isFetchPinDiscussions = true;
     hasNextPage.value = true;
     endCur = null;
     cache.clear();
     data.clear();
     await fetchData();
-  }
+  });
 
-  Future<void> refreshSearchData() async {
+  late final refreshSearchData = throttle(() async {
     searchHasNextPage.value = true;
     searchEndCur = null;
     searchCache.clear();
     searchResult.clear();
     await searchData();
-  }
+  });
 
   final searchCache = <String?>{};
   Future<void> searchData() async {

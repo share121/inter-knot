@@ -14,7 +14,7 @@ Future<Report> getAllReports(int number) async {
                 'comments': {
                   'pageInfo': {
                     'hasNextPage': final bool hasNextPage,
-                    'endCursor': final String endCursor
+                    'endCursor': final String? endCursor
                   },
                   'nodes': final List<dynamic> nodes
                 }

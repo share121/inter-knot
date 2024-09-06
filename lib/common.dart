@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -44,4 +46,18 @@ Future<bool> copyText(String text, {String? msg, String? title}) async {
     Get.rawSnackbar(message: 'Copy failed'.tr);
     return false;
   }
+}
+
+/// 节流
+Future<void> Function() throttle(
+  FutureOr<void> Function() func, [
+  Duration delay = const Duration(seconds: 5),
+]) {
+  var flag = false;
+  return () async {
+    if (flag) return;
+    flag = true;
+    await func();
+    Timer(delay, () => flag = false);
+  };
 }

@@ -13,7 +13,7 @@ final dio = Dio(BaseOptions(
       onRequest: (options, handler) {
         if (canRequest) {
           logger.d(
-              'count:${++count}\nRequest: ${options.uri}\nData: ${options.data}');
+              'count: ${++count}\nRequest: ${options.uri}\nData: ${options.data}');
           return handler.next(options);
         } else {
           return handler.reject(DioException.requestCancelled(
@@ -105,7 +105,7 @@ Future<Response<T>> request<T>(
       }
     }
     await Future.delayed(delay);
-    delay += 0.5.s;
+    delay += 1.s;
   }
 }
 

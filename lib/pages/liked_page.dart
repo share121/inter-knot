@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../common.dart';
@@ -61,13 +62,31 @@ class _LikedPageState extends State<LikedPage>
                         ),
                       );
                     }
-                    return const Card(
+                    if (snaphost.connectionState == ConnectionState.done) {
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: () => launchUrlString(item.url),
+                          child: const AspectRatio(
+                            aspectRatio: 5 / 6,
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Center(child: Text('文章已删除')),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return Card(
                       clipBehavior: Clip.antiAlias,
-                      child: AspectRatio(
-                        aspectRatio: 5 / 6,
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(child: CircularProgressIndicator()),
+                      child: InkWell(
+                        onTap: () => launchUrlString(item.url),
+                        child: const AspectRatio(
+                          aspectRatio: 5 / 6,
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
                         ),
                       ),
                     );

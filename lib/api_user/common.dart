@@ -1,6 +1,7 @@
 part of 'api_user.dart';
 
 var canRequest = true;
+var count = 0;
 
 final dio = Dio(BaseOptions(
   responseType: ResponseType.json,
@@ -11,7 +12,8 @@ final dio = Dio(BaseOptions(
     InterceptorsWrapper(
       onRequest: (options, handler) {
         if (canRequest) {
-          logger.d('Request: ${options.uri}\nData: ${options.data}');
+          logger.d(
+              'count: ${++count}\nRequest: ${options.uri}\nData: ${options.data}');
           return handler.next(options);
         } else {
           return handler.reject(DioException.requestCancelled(
