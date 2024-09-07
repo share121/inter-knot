@@ -92,7 +92,7 @@ BEGIN
             VALUE "CompanyName", "com.share121" "\0"
             VALUE "FileDescription", "inter_knot" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "com.share121.inter-knot" "\0"
+            VALUE "InternalName", "com.share121.inter_knot" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.share121. All rights reserved." "\0"
             VALUE "OriginalFilename", "inter_knot.exe" "\0"
             VALUE "ProductName", "inter_knot" "\0"
