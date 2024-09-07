@@ -19,7 +19,7 @@ const owner = 'share121';
 const repo = 'inter-knot';
 const clientId = 'Iv23liot0kj0B7aTc2rl';
 const clientSecret = '5457935f3cca6309f34cab92ce6b0b47f0b37ac9';
-const collaborators = ['VacuolePaoo'];
+const collaborators = ['VacuolePaoo', 'nostalgiatan'];
 const githubLink = 'https://github.com/$owner/$repo';
 const discordLink = 'https://dc.inot.top';
 const docLink = 'https://d.inot.top/';
@@ -237,7 +237,7 @@ class Controller extends GetxController {
     }
     data.addAll(res.res);
     if (res.res.isEmpty) {
-      fetchData();
+      await fetchData();
     }
   }
 
