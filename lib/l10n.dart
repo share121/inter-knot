@@ -75,7 +75,8 @@ class Messages extends Translations {
           'Articles that have been reported: ': '被举报的文章：',
           'A total of @count reports': '共 @count 次举报',
           'Error: API rate limit reached': '错误：API 速率限制已到达',
-          'Please try again later': '请稍后再试',
+          'Please try again later\nYou can switch to User API in Settings':
+              '请稍后再试\n你可以在设置中切换到「用户接口」',
           'Login': '登录',
           'Login out': '退出登录',
           'Login out successfully': '退出登录成功',

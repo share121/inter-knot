@@ -15,6 +15,8 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage>
     with AutomaticKeepAliveClientMixin {
+  final fetchData = retryThrottle(c.fetchData, 3.s);
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -27,7 +29,7 @@ class _NotificationsPageState extends State<NotificationsPage>
           return ArticleGrid(
             list: c.data(),
             hasNextPage: c.hasNextPage(),
-            fetchData: c.fetchData,
+            fetchData: fetchData,
           );
         }),
       ),

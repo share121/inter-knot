@@ -34,6 +34,8 @@ class _SearchPageState extends State<SearchPage>
     super.dispose();
   }
 
+  final fetchData = retryThrottle(c.searchData, 3.s);
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -61,7 +63,7 @@ class _SearchPageState extends State<SearchPage>
                 return ArticleGrid(
                   list: c.searchResult(),
                   hasNextPage: c.searchHasNextPage(),
-                  fetchData: c.searchData,
+                  fetchData: fetchData,
                 );
               }),
             ),

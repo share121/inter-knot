@@ -30,7 +30,9 @@ final dio = Dio(BaseOptions(
             builder: (context) {
               return AlertDialog(
                 title: Text('Error: API rate limit reached'.tr),
-                content: SelectableText('Please try again later'.tr),
+                content: SelectableText(
+                    'Please try again later\nYou can switch to User API in Settings'
+                        .tr),
                 actions: [
                   TextButton(
                     onPressed: () => Get.back(),
