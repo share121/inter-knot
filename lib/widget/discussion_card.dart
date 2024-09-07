@@ -10,9 +10,11 @@ import 'avatar.dart';
 import 'comment_count.dart';
 
 class DiscussionCard extends StatefulWidget {
-  const DiscussionCard({super.key, this.onTap, required this.article});
+  const DiscussionCard(
+      {super.key, this.onTap, required this.article, required this.isPin});
 
   final Article article;
+  final bool isPin;
   final void Function(Object heroKey)? onTap;
 
   @override
@@ -29,7 +31,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
       clipBehavior: Clip.antiAlias,
       elevation: elevation,
       child: Obx(() {
-        if (!c.canVisit(widget.article)) {
+        if (!c.canVisit(widget.article, widget.isPin)) {
           return AspectRatio(
             aspectRatio: 5 / 6,
             child: InkWell(
@@ -75,7 +77,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                       color: Colors.white,
                     ),
                   ),
-                  if (widget.article.isPin)
+                  if (widget.isPin)
                     Positioned(
                       top: 8,
                       right: 12,

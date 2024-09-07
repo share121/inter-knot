@@ -38,7 +38,6 @@ Future<Article?> getDiscussion(int number) async {
       lastEditedAt:
           lastEditedAt == null ? null : DateTime.tryParse(lastEditedAt),
       commentsCount: commentsCount,
-      isPin: false,
     );
   }
   return null;

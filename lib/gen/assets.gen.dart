@@ -26,9 +26,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/github.svg
   String get github => 'assets/images/github.svg';
 
-  /// File path: assets/images/icon.webp
-  AssetGenImage get icon => const AssetGenImage('assets/images/icon.webp');
-
   /// File path: assets/images/profile-photo.webp
   AssetGenImage get profilePhoto =>
       const AssetGenImage('assets/images/profile-photo.webp');
@@ -44,17 +41,8 @@ class $AssetsImagesGen {
   AssetGenImage get zzz => const AssetGenImage('assets/images/zzz.webp');
 
   /// List of all assets
-  List<dynamic> get values => [
-        bh3,
-        defaultCover,
-        drawerCover,
-        github,
-        icon,
-        profilePhoto,
-        sr,
-        yuanshen,
-        zzz
-      ];
+  List<dynamic> get values =>
+      [bh3, defaultCover, drawerCover, github, profilePhoto, sr, yuanshen, zzz];
 }
 
 class Assets {

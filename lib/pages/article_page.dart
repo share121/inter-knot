@@ -16,10 +16,16 @@ import '../data.dart';
 import '../widget/window_buttons.dart';
 
 class ArticlePage extends StatefulWidget {
-  const ArticlePage({super.key, required this.article, required this.heroKey});
+  const ArticlePage({
+    super.key,
+    required this.article,
+    required this.heroKey,
+    required this.isPin,
+  });
 
   final Article article;
   final Object heroKey;
+  final bool isPin;
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();
@@ -126,7 +132,7 @@ class _ArticlePageState extends State<ArticlePage> {
             ),
             child: const Icon(Icons.arrow_upward),
           ),
-          if (canReport(widget.article)) ...[
+          if (canReport(widget.article, widget.isPin)) ...[
             const SizedBox(height: 8),
             FloatingActionButton(
               heroTag: null,

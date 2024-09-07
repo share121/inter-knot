@@ -82,7 +82,6 @@ class Article extends GetxController {
   final comments = <Comment>{}.obs;
   var hasNextPage = true.obs;
   String? endCursor;
-  final bool isPin;
   late final bodyText = rawBodyText.replaceAll(RegExp(r'\s+'), ' ').trim();
 
   final cache = <String?>{};
@@ -108,7 +107,6 @@ class Article extends GetxController {
     required this.createdAt,
     required this.commentsCount,
     this.lastEditedAt,
-    required this.isPin,
   });
 
   @override
@@ -202,8 +200,7 @@ class HData {
 
   HData(this.number, {this.isPin = false});
   HData.fromStr(String number) : this(int.parse(number));
-  HData.fromArtilce(Article article)
-      : this(article.number, isPin: article.isPin);
+  HData.fromArtilce(Article article) : this(article.number);
 
   @override
   operator ==(Object other) => other is HData && other.number == number;

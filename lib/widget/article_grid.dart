@@ -58,9 +58,13 @@ class ArticleGrid extends StatelessWidget {
             if (snaphost.hasData) {
               return DiscussionCard(
                 article: snaphost.data!,
+                isPin: item.isPin,
                 onTap: (heroKey) {
-                  Get.to(() =>
-                      ArticlePage(heroKey: heroKey, article: snaphost.data!));
+                  Get.to(() => ArticlePage(
+                        heroKey: heroKey,
+                        article: snaphost.data!,
+                        isPin: item.isPin,
+                      ));
                 },
               );
             }

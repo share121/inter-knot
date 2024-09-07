@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get/get.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -15,6 +16,7 @@ import 'pages/history_page.dart';
 import 'pages/liked_page.dart';
 import 'pages/partition_page.dart';
 import 'pages/notifications_page.dart';
+import 'pages/toolkit_page.dart';
 import 'widget/github_button.dart';
 import 'widget/discord_button.dart';
 import 'widget/doc_button.dart';
@@ -72,7 +74,7 @@ class MyApp extends StatelessWidget {
       locale: Get.deviceLocale,
       themeMode: ThemeMode.dark,
       fallbackLocale: const Locale('en'),
-      home: const DragToResizeArea(child: MyHomePage()),
+      home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -102,6 +104,11 @@ final destinations = [
     icon: const Icon(Icons.history_outlined),
     selectedIcon: const Icon(Icons.history),
     label: Text('History'.tr),
+  ),
+  NavigationRailDestination(
+    icon: Icon(MdiIcons.toolboxOutline),
+    selectedIcon: Icon(MdiIcons.toolbox),
+    label: Text('Toolkit'.tr),
   ),
   NavigationRailDestination(
     icon: const Icon(Icons.settings_outlined),
@@ -183,14 +190,14 @@ class MyHomePage extends StatelessWidget {
               LayoutBuilder(builder: (context, con) {
                 return SingleChildScrollView(
                   child: SizedBox(
-                    height: max(con.maxHeight, 292),
+                    height: max(con.maxHeight, 336),
                     child: Obx(() {
                       return NavigationRail(
                         destinations: destinations,
                         selectedIndex: c.selectedIndex(),
                         onDestinationSelected: (index) =>
                             c.animateToPage(index),
-                        labelType: con.maxHeight < 392
+                        labelType: con.maxHeight < 456
                             ? NavigationRailLabelType.selected
                             : NavigationRailLabelType.all,
                       );
@@ -209,6 +216,7 @@ class MyHomePage extends StatelessWidget {
                   PartitionPage(),
                   LikedPage(),
                   HistoryPage(),
+                  ToolkitPage(),
                   SettingsPage(),
                 ][index],
               ),

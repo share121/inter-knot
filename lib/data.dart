@@ -51,10 +51,10 @@ class Controller extends GetxController {
 
   late final info = PackageInfo.fromPlatform();
 
-  bool canVisit(Article article) =>
+  bool canVisit(Article article, bool isPin) =>
       report[article.number] == null ||
       [owner, ...collaborators].contains(article.author.login) ||
-      article.isPin ||
+      isPin ||
       report[article.number]!.length < 6;
 
   @override
@@ -277,5 +277,5 @@ class Controller extends GetxController {
   }
 }
 
-bool canReport(Article article) =>
-    ![owner, ...collaborators].contains(article.author.login) && !article.isPin;
+bool canReport(Article article, bool isPin) =>
+    ![owner, ...collaborators].contains(article.author.login) && !isPin;

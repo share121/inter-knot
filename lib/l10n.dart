@@ -92,6 +92,7 @@ class Messages extends Translations {
           'User Api': '用户接口',
           'Announcement': '公告',
           'Polls': '投票',
+          'Toolkit': '工具',
         },
         'zh_TC': {
           'Inter-Knot': '绳网',
@@ -180,6 +181,7 @@ class Messages extends Translations {
           'User Api': '用户接口',
           'Announcement': '公告',
           'Polls': '投票',
+          'Toolkit': '工具',
         },
       };
 }
