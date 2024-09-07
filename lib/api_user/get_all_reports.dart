@@ -57,9 +57,5 @@ Future<Report> getAllReports(int number) async {
       after = endCursor;
     }
   }
-  final t = await Future.wait(transformReports(res)
-      .entries
-      .map((e) => isDiscussionAvailable(e.key).then((v) => v ? e : null))
-      .toList());
-  return Map.fromEntries(t.whereType<MapEntry<int, Set<ReportComment>>>());
+  return transformReports(res);
 }

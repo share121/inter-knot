@@ -2,7 +2,7 @@ part of 'api_user.dart';
 
 Future<Article?> getDiscussion(int number) async {
   final res = await graphql(
-      '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } }');
+      '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } }');
   if (res.data
       case {
         'data': {
@@ -16,7 +16,6 @@ Future<Article?> getDiscussion(int number) async {
               'bodyHTML': final String bodyHTML,
               'bodyText': final String bodyText,
               'title': final String title,
-              'number': final int number,
               'createdAt': final String createdAt,
               'lastEditedAt': final String? lastEditedAt,
               'comments': {

@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:schedulers/schedulers.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../api_user/api_user.dart' as api_user;
+import '../api_user/api_user.dart';
 import '../common.dart';
 import '../widget/discord_button.dart';
 import '../widget/doc_button.dart';
@@ -23,24 +22,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  api_user.DeviceLogin? deviceLogin;
+  DeviceLogin? deviceLogin;
   Object? error;
-  final getDeviceSch = LazyScheduler(latency: 5.s);
   var count = 0;
 
   Future<void> poll() async {
     if (deviceLogin == null) return;
     try {
-      final r = await api_user.getAccessToken(deviceLogin!);
+      final r = await getAccessToken(deviceLogin!);
       switch (r.status) {
-        case api_user.DeviceLoginStatus.expiredToken:
-        case api_user.DeviceLoginStatus.accessDenied:
+        case DeviceLoginStatus.expiredToken:
+        case DeviceLoginStatus.accessDenied:
           return refresh();
-        case api_user.DeviceLoginStatus.finished:
+        case DeviceLoginStatus.finished:
           await c.setToken(r.accessToken!);
           await c.setRefreshToken(r.refreshToken!);
           Get.back();
-        case api_user.DeviceLoginStatus.authorizationPending:
+          break;
+        case DeviceLoginStatus.authorizationPending:
       }
     } catch (e) {
       showDialog(
@@ -62,54 +61,45 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void refresh([bool isFirst = false]) {
-    count++;
+  late final refresh = throttle(() async {
     setState(() {
       error = null;
       deviceLogin = null;
     });
-    Future<void> fn() async {
-      try {
-        final data = await api_user.getDeviceLogin();
-        if (mounted) {
-          Timer.run(() async {
-            final inner = count;
-            while (true) {
-              if (inner != count) return;
-              try {
-                await poll();
-                await Future.delayed(5.s);
-              } catch (e, s) {
-                logger.e('Poll failed', error: e, stackTrace: s);
-              }
+    try {
+      final data = await getDeviceLogin();
+      if (mounted) {
+        Timer.run(() async {
+          final inner = count;
+          while (true) {
+            if (inner != count) return;
+            try {
+              await poll();
+              await Future.delayed(5.s);
+            } catch (e, s) {
+              logger.e('Poll failed', error: e, stackTrace: s);
             }
-          });
-          setState(() {
-            error = null;
-            deviceLogin = data;
-          });
-        }
-      } catch (e) {
-        if (mounted) {
-          setState(() {
-            error = e;
-            deviceLogin = null;
-          });
-        }
+          }
+        });
+        setState(() {
+          error = null;
+          deviceLogin = data;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = e;
+          deviceLogin = null;
+        });
       }
     }
-
-    if (isFirst) {
-      fn();
-    } else {
-      getDeviceSch.run(fn);
-    }
-  }
+  });
 
   @override
   void initState() {
     super.initState();
-    refresh(true);
+    refresh();
   }
 
   @override

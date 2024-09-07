@@ -87,15 +87,13 @@ class Article extends GetxController {
 
   final cache = <String?>{};
   Future<void> fetchComments() async {
-    if (hasNextPage.isFalse || cache.contains(endCursor)) {
-      return;
-    }
+    if (hasNextPage.isFalse || cache.contains(endCursor)) return;
     final (:res, hasNextPage: newHasNextPage, endCursor: newEndCursor) =
         c.isLogin()
             ? await api_user.getComments(number, endCursor)
             : await api_root.getComments(number, endCursor);
     comments.addAll(res);
-    hasNextPage.value = newHasNextPage;
+    hasNextPage(newHasNextPage);
     endCursor = newEndCursor;
   }
 
@@ -185,21 +183,30 @@ class Author {
   int get hashCode => login.hashCode;
 }
 
+final hDataCache = <int, Future<Article?>>{};
+
 class HData {
   final int number;
-  late final article = c.isLogin()
-      ? api_user.getDiscussion(number)
-      : api_root.getDiscussion(number);
+  final bool isPin;
+  Future<Article?> get article {
+    var t = hDataCache[number];
+    if (t != null) return t;
+    t = c.isLogin()
+        ? api_user.getDiscussion(number)
+        : api_root.getDiscussion(number);
+    hDataCache[number] = t;
+    return t;
+  }
+
   late final url = 'https://github.com/$owner/$repo/discussions/$number';
 
-  HData(this.number);
+  HData(this.number, {this.isPin = false});
   HData.fromStr(String number) : this(int.parse(number));
-  HData.fromArtilce(Article article) : this(article.number);
+  HData.fromArtilce(Article article)
+      : this(article.number, isPin: article.isPin);
 
   @override
-  operator ==(Object other) {
-    return other is HData && other.number == number;
-  }
+  operator ==(Object other) => other is HData && other.number == number;
 
   @override
   int get hashCode => number;

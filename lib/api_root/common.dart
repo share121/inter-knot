@@ -41,8 +41,13 @@ final dio = Dio(BaseOptions(
             },
           );
           canRequest = false;
-          await Future.delayed(60.s);
-          canRequest = true;
+          Future.delayed(60.s).then((_) => canRequest = true);
+          return handler.reject(
+            DioException.requestCancelled(
+              requestOptions: response.requestOptions,
+              reason: 'RATE_LIMITED',
+            ),
+          );
         }
         return handler.next(response);
       },
@@ -83,7 +88,7 @@ Future<Response<T>> request<T>(
 }) async {
   options ??= Options();
   options.headers ??= {};
-  var delay = 0.5.s;
+  var delay = 1.s;
   while (true) {
     options.headers!['Authorization'] = 'Bearer ${c.getRootToken()}';
     try {

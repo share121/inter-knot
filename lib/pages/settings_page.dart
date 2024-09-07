@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
+        headerSliverBuilder: (context, innerBoxIsScrolled) =>
             [SliverAppBar(title: Text('Settings'.tr))],
         floatHeaderSlivers: true,
         body: SingleChildScrollView(
@@ -35,9 +35,8 @@ class SettingsPage extends StatelessWidget {
                   }
                   if (snapshot.hasError) {
                     return ListTile(
-                      onTap: () => copyText(snapshot.error.toString()),
                       title: Text('Current version'.tr),
-                      subtitle: Text(snapshot.error.toString()),
+                      subtitle: SelectableText(snapshot.error.toString()),
                     );
                   }
                   return ListTile(

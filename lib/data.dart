@@ -17,8 +17,8 @@ import 'api_user/api_user.dart' as api_user;
 const reportDiscussionNumber = 4497;
 const owner = 'share121';
 const repo = 'inter-knot';
-const clientId = 'Iv23liot0kj0B7aTc2rl';
-const clientSecret = '5457935f3cca6309f34cab92ce6b0b47f0b37ac9';
+const clientId = 'Iv23li8HcExa5MEDTxpu';
+const clientSecret = 'b2d111e59524cf3a990d1b7b21803f9edac659aa';
 const collaborators = ['VacuolePaoo', 'nostalgiatan'];
 const githubLink = 'https://github.com/$owner/$repo';
 const discordLink = 'https://dc.inot.top';
@@ -30,7 +30,7 @@ class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;
 
   final searchQuery = ''.obs;
-  final searchResult = <Article>{}.obs;
+  final searchResult = <HData>{}.obs;
   String? searchEndCur;
   final searchHasNextPage = true.obs;
 
@@ -206,7 +206,7 @@ class Controller extends GetxController {
     );
   }
 
-  final data = <Article>{}.obs;
+  final data = <HData>{}.obs;
   String? endCur;
   final hasNextPage = true.obs;
   var isFetchPinDiscussions = true;
@@ -216,7 +216,7 @@ class Controller extends GetxController {
   Future<void> fetchData() async {
     if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
     cache.add(endCur);
-    late final Nodes<Article> res;
+    late final Nodes<HData> res;
     if (isFetchPinDiscussions) {
       res = isLogin()
           ? await api_user.getPinnedDiscussions(endCur)

@@ -1,8 +1,8 @@
 part of 'api_root.dart';
 
-Future<Nodes<Article>> search(String query, String? after) async {
+Future<Nodes<HData>> search(String query, String? after) async {
   final res = await graphql(
-      '{ search(first: 20, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } } }');
+      '{ search(first: 20, type: DISCUSSION, query: "repo:$owner/$repo ${encode(query)}", after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { ... on Discussion { number } } } }');
   if (res.data
       case {
         'data': {
@@ -20,44 +20,16 @@ Future<Nodes<Article>> search(String query, String? after) async {
           .map((e) {
             if (e
                 case {
-                  'author': {
-                    'avatarUrl': final String avatar,
-                    'login': final String name,
-                  },
-                  'id': final String id,
-                  'bodyHTML': final String bodyHTML,
-                  'bodyText': final String bodyText,
-                  'title': final String title,
                   'number': final int number,
-                  'createdAt': final String createdAt,
-                  'lastEditedAt': final String? lastEditedAt,
-                  'comments': {
-                    'totalCount': final int commentsCount,
-                  },
                 }) {
-              final (:html, :cover) = parseHtml(bodyHTML);
-              return Article(
-                title: title,
-                bodyHTML: html,
-                rawBodyText: bodyText,
-                author: Author(avatar: avatar, login: name),
-                cover: cover,
-                number: number,
-                id: id,
-                createdAt: DateTime.parse(createdAt),
-                lastEditedAt: lastEditedAt == null
-                    ? null
-                    : DateTime.tryParse(lastEditedAt),
-                commentsCount: commentsCount,
-                isPin: false,
-              );
+              return HData(number);
             }
           })
-          .whereType<Article>()
+          .whereType<HData>()
           .toList(),
       hasNextPage: hasNextPage,
       endCursor: endCursor
     );
   }
-  return (res: <Article>[], hasNextPage: false, endCursor: null);
+  return (res: <HData>[], hasNextPage: false, endCursor: null);
 }

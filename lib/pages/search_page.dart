@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
+import '../widget/article_grid.dart';
 import '../common.dart';
-import 'article_page.dart';
-import '../widget/discussion_card.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -25,7 +23,7 @@ class _SearchPageState extends State<SearchPage>
     super.initState();
     final keyboardVisibilityController = KeyboardVisibilityController();
     keyboardSubscription =
-        keyboardVisibilityController.onChange.listen((bool visible) {
+        keyboardVisibilityController.onChange.listen((visible) {
       if (!visible) FocusManager.instance.primaryFocus?.unfocus();
     });
   }
@@ -41,7 +39,7 @@ class _SearchPageState extends State<SearchPage>
     super.build(context);
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
+        headerSliverBuilder: (context, innerBoxIsScrolled) =>
             [SliverAppBar(title: Text('Search'.tr))],
         floatHeaderSlivers: true,
         body: Column(
@@ -60,60 +58,10 @@ class _SearchPageState extends State<SearchPage>
             ),
             Expanded(
               child: Obx(() {
-                if (c.searchResult.isEmpty) {
-                  if (c.searchHasNextPage()) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text('Empty'.tr),
-                      ),
-                    );
-                  }
-                }
-                return WaterfallFlow.builder(
-                  padding: const EdgeInsets.all(8),
-                  gridDelegate:
-                      SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 270,
-                    lastChildLayoutTypeBuilder: (index) =>
-                        index == c.searchResult.length
-                            ? LastChildLayoutType.foot
-                            : LastChildLayoutType.none,
-                    viewportBuilder: (firstIndex, lastIndex) {
-                      if (lastIndex == c.searchResult.length) c.searchData();
-                    },
-                  ),
-                  itemCount: c.searchResult.length + 1,
-                  itemBuilder: (context, index) {
-                    return Obx(() {
-                      if (index == c.searchResult.length) {
-                        if (c.searchHasNextPage.isFalse) {
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text('No more data'.tr),
-                            ),
-                          );
-                        }
-                        return const SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-                      return DiscussionCard(
-                        article: c.searchResult.elementAt(index),
-                        onTap: (heroKey) {
-                          Get.to<void>(() => ArticlePage(
-                                heroKey: heroKey,
-                                article: c.searchResult.elementAt(index),
-                              ));
-                        },
-                      );
-                    });
-                  },
+                return ArticleGrid(
+                  list: c.searchResult(),
+                  hasNextPage: c.searchHasNextPage(),
+                  fetchData: c.searchData,
                 );
               }),
             ),
@@ -121,7 +69,6 @@ class _SearchPageState extends State<SearchPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: null,
         onPressed: () => c.refreshSearchData(),
         tooltip: 'Refresh'.tr,
         child: const Icon(Icons.refresh),

@@ -63,11 +63,15 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('zh', 'CN'), Locale('en', 'US')],
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('zh', 'TC'),
+        Locale('en'),
+      ],
       translations: Messages(),
       locale: Get.deviceLocale,
       themeMode: ThemeMode.dark,
-      fallbackLocale: const Locale('en', 'US'),
+      fallbackLocale: const Locale('en'),
       home: const DragToResizeArea(child: MyHomePage()),
       debugShowCheckedModeBanner: false,
     );
