@@ -15,7 +15,7 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage>
     with AutomaticKeepAliveClientMixin {
-  final fetchData = retryThrottle(c.fetchData, 3.s);
+  final fetchData = retryThrottle(c.fetchData);
 
   @override
   Widget build(BuildContext context) {
