@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../common.dart';
 import '../interface.dart';
 import '../pages/article_page.dart';
 import 'discussion_card.dart';
@@ -60,11 +61,33 @@ class ArticleGrid extends StatelessWidget {
                 article: snaphost.data!,
                 isPin: item.isPin,
                 onTap: (heroKey) {
-                  Get.to(() => ArticlePage(
+                  showGeneralDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: 'Close'.tr,
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return ArticlePage(
                         heroKey: heroKey,
                         article: snaphost.data!,
                         isPin: item.isPin,
-                      ));
+                      );
+                    },
+                    transitionDuration: 300.ms,
+                    transitionBuilder:
+                        (context, animaton1, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animaton1,
+                        child: SlideTransition(
+                          position: Tween(
+                            begin: const Offset(0.1, 0.0),
+                            end: const Offset(0.0, 0.0),
+                          ).animate(CurvedAnimation(
+                              parent: animaton1, curve: Curves.ease)),
+                          child: child,
+                        ),
+                      );
+                    },
+                  );
                 },
               );
             }

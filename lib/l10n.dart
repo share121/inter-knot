@@ -182,6 +182,7 @@ class Messages extends Translations {
           'Announcement': '公告',
           'Polls': '投票',
           'Toolkit': '工具',
+          'Close': '关闭'
         },
       };
 }

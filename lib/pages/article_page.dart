@@ -13,7 +13,6 @@ import '../widget/avatar.dart';
 import '../widget/comment_count.dart';
 import '../gen/assets.gen.dart';
 import '../data.dart';
-import '../widget/window_buttons.dart';
 
 class ArticlePage extends StatefulWidget {
   const ArticlePage({
@@ -67,117 +66,166 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: DragToMoveArea(child: Text(widget.article.title)),
-        flexibleSpace: const DragToMoveArea(child: SizedBox.expand()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.open_in_new),
-            tooltip: 'Open in Browser'.tr,
-            onPressed: () => launchUrlString(widget.article.url),
-          ),
-          const SizedBox(width: 8),
-          if (isDesktop) const WindowButtons(),
-        ],
-        elevation: 4,
-      ),
-      body: LayoutBuilder(builder: (context, con) {
-        if (con.maxWidth < 800) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                Container(
-                  constraints: const BoxConstraints(maxHeight: 600),
-                  width: double.infinity,
-                  child:
-                      Cover(heroKey: widget.heroKey, article: widget.article),
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: MediaQuery.of(context).size.width < 900 ? 1 : 0.8,
+        heightFactor: MediaQuery.of(context).size.width < 900 ? 1 : 0.9,
+        child: ClipRRect(
+          borderRadius: MediaQuery.of(context).size.width < 900
+              ? BorderRadius.zero
+              : const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
                 ),
-                RightBox(article: widget.article),
-              ],
-            ),
-          );
-        }
-        return SizedBox.expand(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 4,
-                child: Cover(heroKey: widget.heroKey, article: widget.article),
-              ),
-              Expanded(
-                flex: 5,
-                child: SizedBox.expand(
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: RightBox(article: widget.article),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              flexibleSpace: const DragToMoveArea(child: SizedBox.expand()),
+              title: DragToMoveArea(
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  horizontalTitleGap: 8,
+                  minVerticalPadding: 0,
+                  dense: true,
+                  leading:
+                      FittedBox(child: Avatar(widget.article.author.avatar)),
+                  title: Text(
+                    widget.article.author.login,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  subtitle: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        CommentCount(article: widget.article),
+                        if (widget.article.author.login == owner)
+                          MyChip('Founder of Inter-Knot'.tr),
+                        if (collaborators.contains(widget.article.author.login))
+                          MyChip('Inter-Knot collaborator'.tr),
+                      ],
+                    ),
                   ),
                 ),
-              )
-            ],
-          ),
-        );
-      }),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: null,
-            tooltip: 'Back to Top'.tr,
-            onPressed: () => scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.open_in_new),
+                  tooltip: 'Open in Browser'.tr,
+                  onPressed: () => launchUrlString(widget.article.url),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: 'Close'.tr,
+                  onPressed: Get.back,
+                ),
+                const SizedBox(width: 8),
+              ],
+              elevation: 4,
             ),
-            child: const Icon(Icons.arrow_upward),
-          ),
-          if (canReport(widget.article, widget.isPin)) ...[
-            const SizedBox(height: 8),
-            FloatingActionButton(
-              heroTag: null,
-              onPressed: () {
-                Future.delayed(3.s).then((_) => launchUrlString(
-                    'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
-                copyText(
-                  '违规文章：#${widget.article.number}\n举报原因：',
-                  title: 'Report template copied'.tr,
-                  msg: 'Jump to the report page after 3 seconds'.tr,
+            body: LayoutBuilder(builder: (context, con) {
+              if (con.maxWidth < 800) {
+                return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    children: [
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 600),
+                        width: double.infinity,
+                        child: Cover(
+                            heroKey: widget.heroKey, article: widget.article),
+                      ),
+                      RightBox(article: widget.article),
+                    ],
+                  ),
                 );
-              },
-              tooltip: 'Report'.tr,
-              child: const Icon(Icons.report_outlined),
+              }
+              return SizedBox.expand(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Cover(
+                          heroKey: widget.heroKey, article: widget.article),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: SizedBox.expand(
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: RightBox(article: widget.article),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }),
+            floatingActionButton: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton(
+                  heroTag: null,
+                  tooltip: 'Back to Top'.tr,
+                  onPressed: () => scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  ),
+                  child: const Icon(Icons.arrow_upward),
+                ),
+                if (canReport(widget.article, widget.isPin)) ...[
+                  const SizedBox(height: 8),
+                  FloatingActionButton(
+                    heroTag: null,
+                    onPressed: () {
+                      Future.delayed(3.s).then((_) => launchUrlString(
+                          'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
+                      copyText(
+                        '违规文章：#${widget.article.number}\n举报原因：',
+                        title: 'Report template copied'.tr,
+                        msg: 'Jump to the report page after 3 seconds'.tr,
+                      );
+                    },
+                    tooltip: 'Report'.tr,
+                    child: const Icon(Icons.report_outlined),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Obx(() {
+                  final isLiked = c.bookmarks
+                      .map((e) => e.number)
+                      .contains(widget.article.number);
+                  return FloatingActionButton(
+                    heroTag: null,
+                    onPressed: () {
+                      if (isLiked) {
+                        c.bookmarks.removeWhere(
+                            (e) => e.number == widget.article.number);
+                      } else {
+                        c.bookmarks({
+                          HData.fromArtilce(widget.article),
+                          ...c.bookmarks
+                        });
+                      }
+                    },
+                    tooltip: isLiked ? 'Unlike'.tr : 'Like'.tr,
+                    child:
+                        Icon(isLiked ? Icons.favorite : Icons.favorite_outline),
+                  );
+                }),
+                const SizedBox(height: 8),
+                FloatingActionButton(
+                  heroTag: null,
+                  onPressed: () =>
+                      launchUrlString('${widget.article.url}#new_comment_form'),
+                  tooltip: 'Write a review'.tr,
+                  child: const Icon(Icons.add_comment_outlined),
+                ),
+              ],
             ),
-          ],
-          const SizedBox(height: 8),
-          Obx(() {
-            final isLiked = c.bookmarks
-                .map((e) => e.number)
-                .contains(widget.article.number);
-            return FloatingActionButton(
-              heroTag: null,
-              onPressed: () {
-                if (isLiked) {
-                  c.bookmarks
-                      .removeWhere((e) => e.number == widget.article.number);
-                } else {
-                  c.bookmarks(
-                      {HData.fromArtilce(widget.article), ...c.bookmarks});
-                }
-              },
-              tooltip: isLiked ? 'Unlike'.tr : 'Like'.tr,
-              child: Icon(isLiked ? Icons.favorite : Icons.favorite_outline),
-            );
-          }),
-          const SizedBox(height: 8),
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: () =>
-                launchUrlString('${widget.article.url}#new_comment_form'),
-            tooltip: 'Write a review'.tr,
-            child: const Icon(Icons.add_comment_outlined),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -287,45 +335,11 @@ class MainArticle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(
-                article.title,
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: CommentCount(article: article),
-            ),
-          ],
+        Text(
+          article.title,
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
         const SizedBox(height: 8),
-        ListTile(
-          contentPadding: const EdgeInsets.all(0),
-          horizontalTitleGap: 8,
-          minVerticalPadding: 0,
-          onTap: () => launchUrlString(article.author.url),
-          leading: Avatar(article.author.avatar),
-          title: Text(
-            article.author.login,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          subtitle: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                if (article.author.login == owner)
-                  MyChip('Founder of Inter-Knot'.tr),
-                if (collaborators.contains(article.author.login))
-                  MyChip('Inter-Knot collaborator'.tr),
-              ],
-            ),
-          ),
-        ),
         const SizedBox(height: 8),
         Text('Published on: '.tr + article.createdAt.toLocal().toString()),
         if (article.lastEditedAt != null)
@@ -510,6 +524,7 @@ class MyChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.only(left: 4),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Text(text, style: const TextStyle(fontSize: 10)),
