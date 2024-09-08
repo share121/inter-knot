@@ -3,17 +3,16 @@ library ApiRoot;
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import '../common.dart';
-import '../gen/assets.gen.dart';
 import '../data.dart';
 import '../api_common.dart';
 import '../interface.dart';
+import '../secret.dart';
 
 part 'common.dart';
 part 'delete_discussion.dart';

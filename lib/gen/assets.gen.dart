@@ -49,10 +49,6 @@ class Assets {
   Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
-  static const String privateKey = 'assets/private_key.pem';
-
-  /// List of all assets
-  static List<String> get values => [privateKey];
 }
 
 class AssetGenImage {

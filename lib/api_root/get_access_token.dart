@@ -6,7 +6,7 @@ Future<String> getAccessToken() async {
   final comp = Completer<String>();
   promise = comp.future.whenComplete(() => promise = null);
   try {
-    final token = await genToken();
+    final token = genToken();
     var res = await dio.get<Map<String, dynamic>>(
       '/repos/$owner/$repo/installation',
       options: Options(

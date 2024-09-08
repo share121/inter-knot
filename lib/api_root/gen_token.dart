@@ -1,10 +1,8 @@
 part of 'api_root.dart';
 
-final pem = rootBundle.loadString(Assets.privateKey);
-Future<String> genToken() async {
+String genToken() {
   final time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final jwt = JWT({'iat': time, 'exp': time + 60, 'iss': clientId});
-  final token =
-      jwt.sign(RSAPrivateKey(await pem), algorithm: JWTAlgorithm.RS256);
+  final token = jwt.sign(RSAPrivateKey(pem), algorithm: JWTAlgorithm.RS256);
   return token;
 }
