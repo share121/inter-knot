@@ -15,4 +15,4 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ secrets.PWD }}"
+      - run: echo "${{ secrets.CLIENT_ID }}"
