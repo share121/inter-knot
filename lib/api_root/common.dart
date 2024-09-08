@@ -92,7 +92,7 @@ Future<Response<T>> request<T>(
   options.headers ??= {};
   var delay = 1.s;
   while (true) {
-    options.headers!['Authorization'] = 'Bearer ${c.getRootToken()}';
+    options.headers!['Authorization'] = 'Bearer ${c.rootToken}';
     try {
       return await dio.request<T>(
         url,
@@ -104,7 +104,7 @@ Future<Response<T>> request<T>(
       if (e.response?.statusCode == 401) {
         try {
           final accessToken = await getAccessToken();
-          await c.setRootToken(accessToken);
+          c.rootToken = accessToken;
           continue;
         } catch (e, s) {
           logger.e('Failed to get access token', error: e, stackTrace: s);

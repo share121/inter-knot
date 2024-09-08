@@ -376,14 +376,14 @@ class Comments extends StatelessWidget {
               leading: ClipOval(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(50),
-                  onTap: () => launchUrlString(comment.author.url),
+                  onTap: () => launchUrlString(comment.url),
                   child: Avatar(comment.author.avatar),
                 ),
               ),
               title: Row(
                 children: [
                   InkWell(
-                    onTap: () => launchUrlString(comment.author.url),
+                    onTap: () => launchUrlString(comment.url),
                     child: Text(comment.author.login),
                   ),
                   const SizedBox(width: 8),
@@ -461,7 +461,7 @@ class Replies extends StatelessWidget {
                 ? ClipOval(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: () => launchUrlString(reply.author.url),
+                      onTap: () => launchUrlString(reply.url),
                       child: Avatar(reply.author.avatar),
                     ),
                   )
@@ -469,7 +469,7 @@ class Replies extends StatelessWidget {
             title: Row(
               children: [
                 InkWell(
-                  onTap: () => launchUrlString(reply.author.url),
+                  onTap: () => launchUrlString(reply.url),
                   child: Text(reply.author.login),
                 ),
                 const SizedBox(width: 8),

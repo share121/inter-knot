@@ -32,8 +32,8 @@ class Controller extends GetxController {
   String? searchEndCur;
   final searchHasNextPage = true.obs;
 
-  String getRootToken() => pref.getString('root_token') ?? '';
-  Future<void> setRootToken(String v) => pref.setString('root_token', v);
+  var rootToken = '';
+
   String getToken() => pref.getString('access_token') ?? '';
   Future<void> setToken(String v) => pref.setString('access_token', v);
   String getRefreshToken() => pref.getString('refresh_token') ?? '';
@@ -61,6 +61,7 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
+    c.pref.remove('root_token');
     ever(isLogin, (v) => pref.setBool('isLogin', v));
     isLogin(pref.getBool('isLogin') ?? false);
     logger.i(isLogin());

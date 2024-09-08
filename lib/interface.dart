@@ -123,6 +123,7 @@ class Comment extends GetxController {
   final DateTime? lastEditedAt;
   final replies = <Reply>{}.obs;
   final String id;
+  final String url;
 
   Comment({
     required this.author,
@@ -131,6 +132,7 @@ class Comment extends GetxController {
     this.lastEditedAt,
     required Iterable<Reply> replies,
     required this.id,
+    required this.url,
   }) {
     this.replies.addAll(replies);
   }
@@ -147,12 +149,14 @@ class Reply {
   final String bodyHTML;
   final DateTime createdAt;
   final DateTime? lastEditedAt;
+  final String url;
 
   Reply({
     required this.author,
     required this.bodyHTML,
     required this.createdAt,
     this.lastEditedAt,
+    required this.url,
   });
 
   @override

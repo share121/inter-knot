@@ -2,7 +2,7 @@ part of 'api_user.dart';
 
 Future<Nodes<Comment>> getComments(int number, String? after) async {
   final res = await graphql(
-      '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } id bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } bodyHTML createdAt lastEditedAt } } } } } } } }');
+      '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { comments(first: 20, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { author { avatarUrl(size: 50) login } url id bodyHTML createdAt lastEditedAt replies(first: 100) { nodes { author { avatarUrl(size: 50) login } url bodyHTML createdAt lastEditedAt } } } } } } } }');
   if (res.data
       case {
         'data': {
@@ -32,12 +32,14 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                   'createdAt': final String createdAt,
                   'lastEditedAt': final String? lastEditedAt,
                   'id': final String id,
+                  'url': final String url,
                   'replies': {
                     'nodes': final List<dynamic> replies,
                   },
                 }) {
               final (:html, :cover) = parseHtml(bodyHTML, true);
               return Comment(
+                url: url,
                 author: Author(avatar: avatar, login: name),
                 bodyHTML: html,
                 createdAt: DateTime.parse(createdAt),
@@ -54,6 +56,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                               'login': final String name,
                             },
                             'bodyHTML': final String bodyHTML,
+                            'url': final String url,
                             'createdAt': final String createdAt,
                             'lastEditedAt': final String? lastEditedAt,
                           }) {
@@ -65,6 +68,7 @@ Future<Nodes<Comment>> getComments(int number, String? after) async {
                           lastEditedAt: lastEditedAt == null
                               ? null
                               : DateTime.tryParse(lastEditedAt),
+                          url: url,
                         );
                       }
                     })
