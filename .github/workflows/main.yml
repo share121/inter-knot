@@ -58,6 +58,7 @@ jobs:
           channel: stable
           cache: true
 
+      - run: echo -e "storePassword=${{ secrets.PWD }}\nkeyPassword=${{ secrets.PWD }}\nkeyAlias=upload\nstoreFile=../../upload-keystore.jks" > android/key.properties
       - run: dart gen_secrets.dart
 
       - run: flutter build apk
