@@ -6,7 +6,7 @@ void main() {
   final clientId = Platform.environment['CLIENT_ID'];
   final clientSecret = Platform.environment['CLIENT_SECRET'];
   File('lib/secret.dart').writeAsString(
-      "const pem = '''$pem'''; const clientId = '$clientId'; const clientSecret = '$clientSecret';");
+      "const pem = '''$pem''';\nconst clientId = '$clientId';\nconst clientSecret = '$clientSecret';");
   File('android/key.properties').writeAsString(
       'storePassword=$pwd\nkeyPassword=$pwd\nkeyAlias=upload\nstoreFile=../../upload-keystore.jks');
 }
