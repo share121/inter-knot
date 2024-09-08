@@ -71,6 +71,3 @@ msix_config:
   logo_path: icon.webp
   capabilities: internetClient
   languages: zh-CN, zh-TC, en-US
-
-false_secrets:
-  - assets/private_key.pem
