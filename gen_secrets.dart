@@ -5,5 +5,5 @@ void main() {
   final clientId = Platform.environment['CLIENT_ID'];
   final clientSecret = Platform.environment['CLIENT_SECRET'];
   File('lib/secret.dart').writeAsString(
-      "final pem = String.fromCharCodes(base64Decode('$pem')); final clientId = String.fromCharCodes(base64Decode('$clientId')); final clientSecret = String.fromCharCodes(base64Decode('$clientSecret'));");
+      "import 'dart:convert'; final pem = String.fromCharCodes(base64Decode('$pem')); final clientId = String.fromCharCodes(base64Decode('$clientId')); final clientSecret = String.fromCharCodes(base64Decode('$clientSecret'));");
 }
