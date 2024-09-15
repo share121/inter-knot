@@ -27,7 +27,7 @@ class DiscussionGrid extends StatelessWidget {
       return WaterfallFlow.builder(
         padding: const EdgeInsets.all(8),
         gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 270,
+          maxCrossAxisExtent: 250,
           lastChildLayoutTypeBuilder: (index) => index == list.length
               ? LastChildLayoutType.foot
               : LastChildLayoutType.none,

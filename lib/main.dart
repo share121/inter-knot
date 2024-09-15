@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(Controller());
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return GetMaterialApp(
       title: 'Inter-Knot',
       onGenerateTitle: (context) => 'Inter-Knot'.tr,
@@ -60,6 +62,7 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           const MyAppBar(),
+          const SizedBox(height: 16),
           Expanded(
             child: PageView(
               controller: c.pageController,
@@ -69,7 +72,7 @@ class MyHomePage extends StatelessWidget {
                 HomePage(),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

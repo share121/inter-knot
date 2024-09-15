@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage>
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SearchBar(
             controller: c.searchController,
             onSubmitted: c.searchQuery.call,
@@ -54,6 +54,7 @@ class _SearchPageState extends State<SearchPage>
             hintText: 'Search for discussions'.tr,
           ),
         ),
+        const SizedBox(height: 8),
         Expanded(
           child: Obx(() {
             return DiscussionGrid(

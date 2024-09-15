@@ -64,26 +64,15 @@ class _DiscussionPageState extends State<DiscussionPage> {
   @override
   Widget build(BuildContext context) {
     final screenW = MediaQuery.of(context).size.width;
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: screenW < 800 ? 1 : 0.8,
-        heightFactor: screenW < 800 ? 1 : 0.9,
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(59, 255, 255, 255),
-            borderRadius: screenW < 800
-                ? BorderRadius.zero
-                : const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                  ),
-          ),
+    return SafeArea(
+      child: Center(
+        child: FractionallySizedBox(
+          widthFactor: screenW < 800 ? 1 : 0.8,
+          heightFactor: screenW < 800 ? 1 : 0.9,
           child: Container(
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: const Color.fromARGB(59, 255, 255, 255),
               borderRadius: screenW < 800
                   ? BorderRadius.zero
                   : const BorderRadius.only(
@@ -92,191 +81,206 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       bottomRight: Radius.circular(16),
                     ),
             ),
-            child: ClipRRect(
-              borderRadius: screenW < 800
-                  ? BorderRadius.zero
-                  : const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
-                    ),
-              child: Scaffold(
-                backgroundColor: const Color(0xff121212),
-                body: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: Assets.images.discussionPageBgPoint.provider(),
-                          repeat: ImageRepeat.repeat,
-                        ),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xff161616), Color(0xff080808)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomLeft,
-                        ),
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: screenW < 800
+                    ? BorderRadius.zero
+                    : const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xff2D2D2D),
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(maxRadius),
-                            ),
-                            child: Avatar(widget.discussion.author.avatar),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.discussion.author.login,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xff808080),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      CommentCount(
-                                        discussion: widget.discussion,
-                                        color: const Color(0xff808080),
-                                      ),
-                                      if (widget.discussion.author.login ==
-                                          owner)
-                                        MyChip('Founder of Inter-Knot'.tr),
-                                      if (collaborators.contains(
-                                          widget.discussion.author.login))
-                                        MyChip('Inter-Knot collaborator'.tr),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ClickRegion(
-                            child: Assets.images.closeBtn.image(),
-                            onTap: () => Get.back(),
-                          )
-                        ],
+              ),
+              child: ClipRRect(
+                borderRadius: screenW < 800
+                    ? BorderRadius.zero
+                    : const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
                       ),
-                    ),
-                    Expanded(
-                      child: LayoutBuilder(builder: (context, con) {
-                        if (con.maxWidth < 600) {
-                          return ListView(
-                            controller: scrollController,
-                            children: [
-                              Container(
-                                constraints:
-                                    const BoxConstraints(maxHeight: 500),
-                                width: double.infinity,
-                                child: Cover(discussion: widget.discussion),
-                              ),
-                              RightBox(discussion: widget.discussion),
-                            ],
-                          );
-                        }
-                        return Row(
+                child: Scaffold(
+                  backgroundColor: const Color(0xff121212),
+                  body: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                                Assets.images.discussionPageBgPoint.provider(),
+                            repeat: ImageRepeat.repeat,
+                          ),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xff161616), Color(0xff080808)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomLeft,
+                          ),
+                        ),
+                        child: Row(
                           children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xff2D2D2D),
+                                  width: 3,
+                                ),
+                                borderRadius: BorderRadius.circular(maxRadius),
+                              ),
+                              child: Avatar(widget.discussion.author.avatar),
+                            ),
+                            const SizedBox(width: 8),
                             Expanded(
-                              flex: 4,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    top: 16, left: 16, right: 8, bottom: 16),
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: const Color(0xff313132),
-                                    width: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.discussion.author.login,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xff808080),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Cover(discussion: widget.discussion),
-                                ),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        CommentCount(
+                                          discussion: widget.discussion,
+                                          color: const Color(0xff808080),
+                                        ),
+                                        if (widget.discussion.author.login ==
+                                            owner)
+                                          MyChip('Founder of Inter-Knot'.tr),
+                                        if (collaborators.contains(
+                                            widget.discussion.author.login))
+                                          MyChip('Inter-Knot collaborator'.tr),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    top: 16, left: 8, right: 16, bottom: 16),
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff070707),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: SingleChildScrollView(
-                                  controller: scrollController,
-                                  child:
-                                      RightBox(discussion: widget.discussion),
-                                ),
-                              ),
+                            const SizedBox(width: 8),
+                            ClickRegion(
+                              child: Assets.images.closeBtn.image(),
+                              onTap: () => Get.back(),
                             )
                           ],
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-                floatingActionButton: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (canReport(widget.discussion, widget.isPin)) ...[
-                      const SizedBox(height: 8),
-                      FloatingActionButton(
-                        heroTag: null,
-                        onPressed: () {
-                          Future.delayed(3.s).then((_) => launchUrlString(
-                              'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
-                          copyText(
-                            '违规讨论：#${widget.discussion.number}\n举报原因：',
-                            title: 'Report template copied'.tr,
-                            msg: 'Jump to the report page after 3 seconds'.tr,
+                        ),
+                      ),
+                      Expanded(
+                        child: LayoutBuilder(builder: (context, con) {
+                          if (con.maxWidth < 600) {
+                            return ListView(
+                              controller: scrollController,
+                              children: [
+                                Container(
+                                  constraints:
+                                      const BoxConstraints(maxHeight: 500),
+                                  width: double.infinity,
+                                  child: Cover(discussion: widget.discussion),
+                                ),
+                                RightBox(discussion: widget.discussion),
+                              ],
+                            );
+                          }
+                          return Row(
+                            children: [
+                              Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 16, left: 16, right: 8, bottom: 16),
+                                  height: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: const Color(0xff313132),
+                                      width: 4,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Cover(discussion: widget.discussion),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 5,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 16, left: 8, right: 16, bottom: 16),
+                                  height: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff070707),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    controller: scrollController,
+                                    child:
+                                        RightBox(discussion: widget.discussion),
+                                  ),
+                                ),
+                              )
+                            ],
                           );
-                        },
-                        tooltip: 'Report'.tr,
-                        child: const Icon(Icons.report_outlined),
+                        }),
                       ),
                     ],
-                    const SizedBox(height: 8),
-                    Obx(() {
-                      final isLiked = c.bookmarks
-                          .map((e) => e.number)
-                          .contains(widget.discussion.number);
-                      return FloatingActionButton(
-                        heroTag: null,
-                        onPressed: () {
-                          if (isLiked) {
-                            c.bookmarks.removeWhere(
-                                (e) => e.number == widget.discussion.number);
-                          } else {
-                            c.bookmarks({
-                              HData.fromDiscussion(widget.discussion),
-                              ...c.bookmarks
-                            });
-                          }
-                        },
-                        tooltip: isLiked ? 'Dislike'.tr : 'Like'.tr,
-                        child: Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_outline),
-                      );
-                    }),
-                  ],
+                  ),
+                  floatingActionButton: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (canReport(widget.discussion, widget.isPin)) ...[
+                        const SizedBox(height: 8),
+                        FloatingActionButton(
+                          heroTag: null,
+                          onPressed: () {
+                            Future.delayed(3.s).then((_) => launchUrlString(
+                                'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
+                            copyText(
+                              '违规讨论：#${widget.discussion.number}\n举报原因：',
+                              title: 'Report template copied'.tr,
+                              msg: 'Jump to the report page after 3 seconds'.tr,
+                            );
+                          },
+                          tooltip: 'Report'.tr,
+                          child: const Icon(Icons.report_outlined),
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                      Obx(() {
+                        final isLiked = c.bookmarks
+                            .map((e) => e.number)
+                            .contains(widget.discussion.number);
+                        return FloatingActionButton(
+                          heroTag: null,
+                          onPressed: () {
+                            if (isLiked) {
+                              c.bookmarks.removeWhere(
+                                  (e) => e.number == widget.discussion.number);
+                            } else {
+                              c.bookmarks({
+                                HData.fromDiscussion(widget.discussion),
+                                ...c.bookmarks
+                              });
+                            }
+                          },
+                          tooltip: isLiked ? 'Dislike'.tr : 'Like'.tr,
+                          child: Icon(isLiked
+                              ? Icons.favorite
+                              : Icons.favorite_outline),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ),
             ),

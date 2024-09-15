@@ -17,7 +17,7 @@ class MyAppBar extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SizedBox(
-        width: max(MediaQuery.of(context).size.width, 634),
+        width: max(MediaQuery.of(context).size.width, 640),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           color: Colors.black,

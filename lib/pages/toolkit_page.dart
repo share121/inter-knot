@@ -7,7 +7,7 @@ class ToolkitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WaterfallFlow.extent(
-      maxCrossAxisExtent: 270,
+      maxCrossAxisExtent: 250,
       padding: const EdgeInsets.all(8),
       children: [
         Card(
