@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'api_root/api_root.dart' as api_root;
@@ -67,7 +68,7 @@ class ReleaseAsset {
   int get hashCode => downloadUrl.hashCode;
 }
 
-class Article extends GetxController {
+class Discussion extends GetxController {
   final String title;
   final String bodyHTML;
   final String rawBodyText;
@@ -83,6 +84,7 @@ class Article extends GetxController {
   var hasNextPage = true.obs;
   String? endCursor;
   late final bodyText = rawBodyText.replaceAll(RegExp(r'\s+'), ' ').trim();
+  final imageRawSize = const Size(double.infinity, double.infinity).obs;
 
   final cache = <String?>{};
   Future<void> fetchComments() async {
@@ -96,7 +98,7 @@ class Article extends GetxController {
     endCursor = newEndCursor;
   }
 
-  Article({
+  Discussion({
     required this.title,
     required this.bodyHTML,
     required this.rawBodyText,
@@ -110,7 +112,7 @@ class Article extends GetxController {
   });
 
   @override
-  operator ==(Object other) => other is Article && other.number == number;
+  operator ==(Object other) => other is Discussion && other.number == number;
 
   @override
   int get hashCode => number;
@@ -185,12 +187,12 @@ class Author {
   int get hashCode => login.hashCode;
 }
 
-final hDataCache = <int, Future<Article?>>{};
+final hDataCache = <int, Future<Discussion?>>{};
 
 class HData {
   final int number;
   final bool isPin;
-  Future<Article?> get article {
+  Future<Discussion?> get discussion {
     var t = hDataCache[number];
     if (t != null) return t;
     t = c.isLogin()
@@ -204,7 +206,7 @@ class HData {
 
   HData(this.number, {this.isPin = false});
   HData.fromStr(String number) : this(int.parse(number));
-  HData.fromArtilce(Article article) : this(article.number);
+  HData.fromDiscussion(Discussion discussion) : this(discussion.number);
 
   @override
   operator ==(Object other) => other is HData && other.number == number;

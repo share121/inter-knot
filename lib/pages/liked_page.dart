@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../common.dart';
-import '../widget/article_grid.dart';
+import '../widget/discussions_grid.dart';
 
 class LikedPage extends StatefulWidget {
   const LikedPage({super.key});
@@ -16,14 +16,10 @@ class _LikedPageState extends State<LikedPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) =>
-            [SliverAppBar(title: Text('Like'.tr))],
-        floatHeaderSlivers: true,
-        body: Obx(() => ArticleGrid(list: c.bookmarks(), hasNextPage: false)),
-      ),
+      backgroundColor: const Color(0xff121212),
+      appBar: AppBar(title: Text('Like'.tr)),
+      body: Obx(() => DiscussionGrid(list: c.bookmarks(), hasNextPage: false)),
     );
   }
 

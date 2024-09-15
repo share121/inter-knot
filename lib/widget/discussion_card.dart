@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -11,41 +10,44 @@ import 'comment_count.dart';
 
 class DiscussionCard extends StatefulWidget {
   const DiscussionCard(
-      {super.key, this.onTap, required this.article, required this.isPin});
+      {super.key, this.onTap, required this.discussion, required this.isPin});
 
-  final Article article;
+  final Discussion discussion;
   final bool isPin;
-  final void Function(Object heroKey)? onTap;
+  final void Function()? onTap;
 
   @override
   State<DiscussionCard> createState() => _DiscussionCardState();
 }
 
-class _DiscussionCardState extends State<DiscussionCard> {
+class _DiscussionCardState extends State<DiscussionCard>
+    with AutomaticKeepAliveClientMixin {
   var elevation = 1.0;
-  final heroKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: elevation,
+      color: const Color(0xff222222),
       child: Obx(() {
-        if (!c.canVisit(widget.article, widget.isPin)) {
+        if (!c.canVisit(widget.discussion, widget.isPin)) {
           return AspectRatio(
             aspectRatio: 5 / 6,
             child: InkWell(
-              onTap: () => launchUrlString(widget.article.url),
+              onTap: () => launchUrlString(widget.discussion.url),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('This article is suspected of violating regulations'
+                    Text('This discussion is suspected of violating regulations'
                         .tr),
-                    Text('This article was reported by @count people'.trParams({
+                    Text('This discussion was reported by @count people'
+                        .trParams({
                       'count':
-                          c.report[widget.article.number]!.length.toString(),
+                          c.report[widget.discussion.number]!.length.toString(),
                     })),
                   ],
                 ),
@@ -54,7 +56,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
           );
         }
         return InkWell(
-          onTap: () => widget.onTap?.call(heroKey),
+          onTap: () => widget.onTap?.call(),
           onTapDown: (_) => setState(() => elevation = 4),
           onTapUp: (_) => setState(() => elevation = 1),
           onTapCancel: () => setState(() => elevation = 1),
@@ -67,13 +69,13 @@ class _DiscussionCardState extends State<DiscussionCard> {
                   ConstrainedBox(
                     constraints:
                         const BoxConstraints(maxHeight: 600, minHeight: 100),
-                    child: Cover(heroKey: heroKey, article: widget.article),
+                    child: Cover(discussion: widget.discussion),
                   ),
                   Positioned(
                     top: 8,
                     left: 12,
                     child: CommentCount(
-                      article: widget.article,
+                      discussion: widget.discussion,
                       color: Colors.white,
                     ),
                   ),
@@ -98,7 +100,10 @@ class _DiscussionCardState extends State<DiscussionCard> {
                     children: [
                       Positioned(
                         top: -26,
-                        child: Avatar(widget.article.author.avatar),
+                        child: Avatar(
+                          widget.discussion.author.avatar,
+                          size: 50,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 54),
@@ -107,7 +112,12 @@ class _DiscussionCardState extends State<DiscussionCard> {
                           children: [
                             const SizedBox(height: 4),
                             Text(
-                              widget.article.author.login,
+                              widget.discussion.author.login,
+                              style: const TextStyle(
+                                color: Color(0xff626262),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
@@ -123,18 +133,22 @@ class _DiscussionCardState extends State<DiscussionCard> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  widget.article.title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  widget.discussion.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
               ),
-              if (widget.article.rawBodyText.trim().isNotEmpty) ...[
+              if (widget.discussion.rawBodyText.trim().isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    widget.article.bodyText,
+                    widget.discussion.bodyText,
+                    style: const TextStyle(color: Color(0xffB3B3B1)),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),
@@ -147,43 +161,44 @@ class _DiscussionCardState extends State<DiscussionCard> {
       }),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class Cover extends StatelessWidget {
-  const Cover({super.key, required this.heroKey, required this.article});
+  const Cover({super.key, required this.discussion});
 
-  final Object heroKey;
-  final Article article;
+  final Discussion discussion;
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: heroKey,
-      child: article.cover == null
-          ? Assets.images.defaultCover.image(
-              width: double.infinity,
-              fit: BoxFit.cover,
-            )
-          : CachedNetworkImage(
-              imageUrl: article.cover!,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              progressIndicatorBuilder: (context, url, downloadProgress) {
-                return AspectRatio(
-                  aspectRatio: 643 / 408,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: downloadProgress.progress,
-                    ),
+    return discussion.cover == null
+        ? Assets.images.defaultCover.image(
+            width: double.infinity,
+            fit: BoxFit.cover,
+          )
+        : Image.network(
+            discussion.cover!,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, p) {
+              if (p == null) return child;
+              final total = p.expectedTotalBytes;
+              final cur = p.cumulativeBytesLoaded;
+              return AspectRatio(
+                aspectRatio: 643 / 408,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: total == null || cur == 0 ? null : cur / total,
                   ),
-                );
-              },
-              errorWidget: (context, url, error) =>
-                  Assets.images.defaultCover.image(
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+                ),
+              );
+            },
+            errorBuilder: (context, e, s) => Assets.images.defaultCover.image(
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-    );
+          );
   }
 }

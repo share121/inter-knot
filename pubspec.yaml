@@ -1,7 +1,7 @@
 name: inter_knot
 description: 绳网是一个游戏、技术交流平台
 publish_to: none
-version: 2.16.0+27
+version: 2.16.1+28
 repository: https://github.com/share121/inter_knot
 
 environment:
@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   get: ^4.6.6
   url_launcher: ^6.3.0
-  window_manager: ^0.4.2
   flutter_localizations:
     sdk: flutter
   intl: ^0.19.0
@@ -23,12 +22,9 @@ dependencies:
   flutter_gen: ^5.6.0
   html: ^0.15.4
   flutter_widget_from_html: ^0.15.2
-  fwfh_cached_network_image: ^0.14.3
   fwfh_svg: ^0.8.3
   fwfh_url_launcher: ^0.9.1
-  cached_network_image: ^3.4.1
   logger: ^2.4.0
-  flutter_svg: ^2.0.10+1
   package_info_plus: ^8.0.2
   pub_semver: ^2.1.4
   flutter_keyboard_visibility: ^6.0.0

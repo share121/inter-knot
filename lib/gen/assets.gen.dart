@@ -15,16 +15,17 @@ class $AssetsImagesGen {
   /// File path: assets/images/bh3.webp
   AssetGenImage get bh3 => const AssetGenImage('assets/images/bh3.webp');
 
+  /// File path: assets/images/close-btn.webp
+  AssetGenImage get closeBtn =>
+      const AssetGenImage('assets/images/close-btn.webp');
+
   /// File path: assets/images/default-cover.webp
   AssetGenImage get defaultCover =>
       const AssetGenImage('assets/images/default-cover.webp');
 
-  /// File path: assets/images/drawer-cover.webp
-  AssetGenImage get drawerCover =>
-      const AssetGenImage('assets/images/drawer-cover.webp');
-
-  /// File path: assets/images/github.svg
-  String get github => 'assets/images/github.svg';
+  /// File path: assets/images/discussion-page-bg-point.webp
+  AssetGenImage get discussionPageBgPoint =>
+      const AssetGenImage('assets/images/discussion-page-bg-point.webp');
 
   /// File path: assets/images/profile-photo.webp
   AssetGenImage get profilePhoto =>
@@ -32,6 +33,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/sr.webp
   AssetGenImage get sr => const AssetGenImage('assets/images/sr.webp');
+
+  /// File path: assets/images/tab-bg-point.webp
+  AssetGenImage get tabBgPoint =>
+      const AssetGenImage('assets/images/tab-bg-point.webp');
 
   /// File path: assets/images/yuanshen.webp
   AssetGenImage get yuanshen =>
@@ -41,8 +46,17 @@ class $AssetsImagesGen {
   AssetGenImage get zzz => const AssetGenImage('assets/images/zzz.webp');
 
   /// List of all assets
-  List<dynamic> get values =>
-      [bh3, defaultCover, drawerCover, github, profilePhoto, sr, yuanshen, zzz];
+  List<AssetGenImage> get values => [
+        bh3,
+        closeBtn,
+        defaultCover,
+        discussionPageBgPoint,
+        profilePhoto,
+        sr,
+        tabBgPoint,
+        yuanshen,
+        zzz
+      ];
 }
 
 class Assets {

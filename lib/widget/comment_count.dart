@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../interface.dart';
 
 class CommentCount extends StatelessWidget {
-  const CommentCount({super.key, required this.article, this.color});
+  const CommentCount({super.key, required this.discussion, this.color});
 
-  final Article article;
+  final Discussion discussion;
   final Color? color;
 
   @override
@@ -17,7 +17,7 @@ class CommentCount extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
           child: Text(
-            article.commentsCount.toString(),
+            discussion.commentsCount.toString(),
             style: TextStyle(color: color),
           ),
         ),

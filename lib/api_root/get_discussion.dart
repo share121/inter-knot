@@ -1,6 +1,6 @@
 part of 'api_root.dart';
 
-Future<Article?> getDiscussion(int number) async {
+Future<Discussion?> getDiscussion(int number) async {
   final res = await graphql(
       '{ repository(owner: "$owner", name: "$repo") { discussion(number: $number) { author { avatarUrl(size: 50) login } createdAt lastEditedAt bodyHTML id bodyText title comments { totalCount } } } }');
   if (res.data
@@ -26,7 +26,7 @@ Future<Article?> getDiscussion(int number) async {
         }
       }) {
     final (:html, :cover) = parseHtml(bodyHTML);
-    return Article(
+    return Discussion(
       title: title,
       bodyHTML: html,
       rawBodyText: bodyText,

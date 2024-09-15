@@ -15,15 +15,12 @@ import '../interface.dart';
 import '../secret.dart';
 
 part 'common.dart';
-part 'delete_discussion.dart';
 part 'gen_token.dart';
 part 'get_access_token.dart';
 part 'get_all_reports.dart';
 part 'get_comments.dart';
 part 'get_discussion.dart';
-part 'get_discussions.dart';
 part 'get_new_version.dart';
 part 'get_pinned_discussions.dart';
 part 'get_user_info.dart';
-part 'is_discussion_available.dart';
 part 'search.dart';

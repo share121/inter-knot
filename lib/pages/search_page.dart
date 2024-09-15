@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-import '../widget/article_grid.dart';
+import '../widget/discussions_grid.dart';
 import '../common.dart';
 
 class SearchPage extends StatefulWidget {
@@ -39,42 +39,31 @@ class _SearchPageState extends State<SearchPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) =>
-            [SliverAppBar(title: Text('Search'.tr))],
-        floatHeaderSlivers: true,
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SearchBar(
-                controller: c.searchController,
-                onSubmitted: c.searchQuery.call,
-                leading: const Padding(
-                  padding: EdgeInsets.only(left: 8),
-                  child: Icon(Icons.search),
-                ),
-                hintText: 'Search for articles'.tr,
-              ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SearchBar(
+            controller: c.searchController,
+            onSubmitted: c.searchQuery.call,
+            backgroundColor: const WidgetStatePropertyAll(Color(0xff222222)),
+            leading: const Padding(
+              padding: EdgeInsets.only(left: 8),
+              child: Icon(Icons.search),
             ),
-            Expanded(
-              child: Obx(() {
-                return ArticleGrid(
-                  list: c.searchResult(),
-                  hasNextPage: c.searchHasNextPage(),
-                  fetchData: fetchData,
-                );
-              }),
-            ),
-          ],
+            hintText: 'Search for discussions'.tr,
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => c.refreshSearchData(),
-        tooltip: 'Refresh'.tr,
-        child: const Icon(Icons.refresh),
-      ),
+        Expanded(
+          child: Obx(() {
+            return DiscussionGrid(
+              list: c.searchResult(),
+              hasNextPage: c.searchHasNextPage(),
+              fetchData: fetchData,
+            );
+          }),
+        ),
+      ],
     );
   }
 

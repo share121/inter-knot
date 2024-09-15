@@ -4,15 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../api_user/api_user.dart';
 import '../common.dart';
-import '../widget/discord_button.dart';
-import '../widget/doc_button.dart';
 import '../widget/feedback_btn.dart';
-import '../widget/github_button.dart';
-import '../widget/window_buttons.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -111,22 +106,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: DragToMoveArea(child: Text('Login'.tr)),
-        flexibleSpace: const DragToMoveArea(child: SizedBox.expand()),
-        actions: [
-          if (MediaQuery.sizeOf(context).width > 410 - (isDesktop ? 0 : 138))
-            const DocButton(),
-          if (MediaQuery.sizeOf(context).width > 370 - (isDesktop ? 0 : 138))
-            const DiscordButton(),
-          if (MediaQuery.sizeOf(context).width > 330 - (isDesktop ? 0 : 138))
-            const GithubButton(),
-          if (MediaQuery.sizeOf(context).width > 322 - (isDesktop ? 0 : 138))
-            const SizedBox(width: 8),
-          if (isDesktop) const WindowButtons(),
-        ],
-        elevation: 4,
-      ),
+      appBar: AppBar(title: Text('Login'.tr)),
       body: Builder(
         builder: (context) {
           if (deviceLogin != null) {

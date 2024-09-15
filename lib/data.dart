@@ -49,11 +49,13 @@ class Controller extends GetxController {
 
   late final info = PackageInfo.fromPlatform();
 
-  bool canVisit(Article article, bool isPin) =>
-      report[article.number] == null ||
-      [owner, ...collaborators].contains(article.author.login) ||
+  bool canVisit(Discussion discussion, bool isPin) =>
+      report[discussion.number] == null ||
+      [owner, ...collaborators].contains(discussion.author.login) ||
       isPin ||
-      report[article.number]!.length < 6;
+      report[discussion.number]!.length < 6;
+
+  final curPage = 0.obs;
 
   @override
   Future<void> onInit() async {
@@ -61,6 +63,8 @@ class Controller extends GetxController {
     pref = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
+    pageController
+        .addListener(() => curPage(pageController.page?.round() ?? 0));
     c.pref.remove('root_token');
     ever(isLogin, (v) => pref.setBool('isLogin', v));
     isLogin(pref.getBool('isLogin') ?? false);
@@ -74,7 +78,7 @@ class Controller extends GetxController {
       searchCache.clear();
       searchData();
     }, time: 500.ms);
-    fetchData().then((_) => searchResult.addAll(data));
+    searchData();
     bookmarks.addAll(pref.getStringList('bookmarks')?.map(HData.fromStr) ?? []);
     history.addAll(pref.getStringList('history')?.map(HData.fromStr) ?? []);
     ever(bookmarks, (v) {
@@ -205,49 +209,8 @@ class Controller extends GetxController {
     );
   }
 
-  final data = <HData>{}.obs;
-  String? endCur;
-  final hasNextPage = true.obs;
   var isFetchPinDiscussions = true;
   final searchController = SearchController();
-
-  final cache = <String?>{};
-  Future<void> fetchData() async {
-    if (this.hasNextPage.isFalse || cache.contains(endCur)) return;
-    cache.add(endCur);
-    late final Nodes<HData> res;
-    if (isFetchPinDiscussions) {
-      res = isLogin()
-          ? await api_user.getPinnedDiscussions(endCur)
-          : await api_root.getPinnedDiscussions(endCur);
-    } else {
-      res = isLogin()
-          ? await api_user.getDiscussions(endCur)
-          : await api_root.getDiscussions(endCur);
-    }
-    final (:endCursor, :hasNextPage, res: articles) = res;
-    endCur = endCursor;
-    if (isFetchPinDiscussions && !hasNextPage) {
-      isFetchPinDiscussions = false;
-      endCur = null;
-      cache.clear();
-    } else {
-      this.hasNextPage.value = hasNextPage;
-    }
-    data.addAll(res.res);
-    if (res.res.isEmpty) {
-      await fetchData();
-    }
-  }
-
-  late final refreshData = throttle(() async {
-    isFetchPinDiscussions = true;
-    hasNextPage.value = true;
-    endCur = null;
-    cache.clear();
-    data.clear();
-    await fetchData();
-  });
 
   late final refreshSearchData = throttle(() async {
     searchHasNextPage.value = true;
@@ -259,12 +222,6 @@ class Controller extends GetxController {
 
   final searchCache = <String?>{};
   Future<void> searchData() async {
-    if (searchQuery.isEmpty) {
-      await fetchData();
-      searchResult.clear();
-      searchResult.addAll(data);
-      return;
-    }
     if (searchHasNextPage.isFalse || searchCache.contains(searchEndCur)) return;
     searchCache.add(searchEndCur);
     final (:endCursor, :hasNextPage, :res) = isLogin()
@@ -276,5 +233,5 @@ class Controller extends GetxController {
   }
 }
 
-bool canReport(Article article, bool isPin) =>
-    ![owner, ...collaborators].contains(article.author.login) && !isPin;
+bool canReport(Discussion discussion, bool isPin) =>
+    ![owner, ...collaborators].contains(discussion.author.login) && !isPin;

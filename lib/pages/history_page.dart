@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../common.dart';
-import '../widget/article_grid.dart';
+import '../widget/discussions_grid.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -17,12 +17,9 @@ class _HistoryPageState extends State<HistoryPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) =>
-            [SliverAppBar(title: Text('History'.tr))],
-        floatHeaderSlivers: true,
-        body: Obx(() => ArticleGrid(list: c.history(), hasNextPage: false)),
-      ),
+      backgroundColor: const Color(0xff121212),
+      appBar: AppBar(title: Text('History'.tr)),
+      body: Obx(() => DiscussionGrid(list: c.history(), hasNextPage: false)),
     );
   }
 
