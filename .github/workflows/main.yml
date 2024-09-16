@@ -158,7 +158,7 @@ jobs:
 
       - run: flutter build web --web-renderer html
 
-      - run: mv -r public/* build/web
+      - run: mv public build/web
 
       - run: gzip -rk9 build/web
 
