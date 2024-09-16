@@ -156,7 +156,7 @@ jobs:
 
       - run: dart gen_secrets.dart
 
-      - run: flutter build web --web-renderer html
+      - run: flutter build web --web-renderer canvaskit
 
       - run: gzip -rk9 build/web
 
