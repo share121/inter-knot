@@ -94,6 +94,8 @@ class Messages extends Translations {
           'Discussion deleted': '讨论已删除',
           'Not logged in': '未登录',
           'Home': '我的',
+          'Advanced Search Tips': '高级搜索技巧',
+          'A total of @count items': '共 @count 项'
         },
       };
 }

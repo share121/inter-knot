@@ -23,6 +23,8 @@ const discordLink = 'https://dc.inot.top';
 const docLink = 'https://d.inot.top/';
 const issuesLink = '$githubLink/issues';
 const releasesLink = '$githubLink/releases';
+const advancedSearchTipsLink =
+    'https://docs.github.com/zh/search-github/searching-on-github/searching-discussions';
 
 class Controller extends GetxController {
   late final SharedPreferencesWithCache pref;

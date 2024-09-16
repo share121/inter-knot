@@ -29,7 +29,10 @@ class Replies extends StatelessWidget {
                 ? ClipOval(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: () => launchUrlString(reply.url),
+                      onTap: () => launchUrlString(
+                        reply.url,
+                        mode: LaunchMode.inAppWebView,
+                      ),
                       child: Avatar(reply.author.avatar),
                     ),
                   )
@@ -38,12 +41,15 @@ class Replies extends StatelessWidget {
               children: [
                 Flexible(
                   child: InkWell(
-                    onTap: () => launchUrlString(reply.url),
-                    child: Text(
-                      reply.author.login,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    onTap: () => launchUrlString(
+                      reply.url,
+                      mode: LaunchMode.inAppWebView,
                     ),
+                    child: Obx(() => Text(
+                          reply.author.name(),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )),
                   ),
                 ),
                 const SizedBox(width: 8),

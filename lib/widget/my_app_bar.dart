@@ -47,7 +47,7 @@ class MyAppBar extends StatelessWidget {
                       children: [
                         Obx(() {
                           return Text(
-                            c.user()?.login ?? 'Not logged in'.tr,
+                            c.user()?.name() ?? 'Not logged in'.tr,
                             style: const TextStyle(
                               fontSize: 18,
                               height: 1,
@@ -69,7 +69,7 @@ class MyAppBar extends StatelessWidget {
                               clipBehavior: Clip.antiAlias,
                               alignment: Alignment.topLeft,
                               child: FractionallySizedBox(
-                                widthFactor: 0.9,
+                                widthFactor: 502 / 1145,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius:
@@ -86,7 +86,7 @@ class MyAppBar extends StatelessWidget {
                             const Positioned(
                               left: 4,
                               child: Text(
-                                '100/1000',
+                                '502/1145',
                                 style: TextStyle(fontSize: 12, height: 1),
                               ),
                             ),
@@ -95,18 +95,18 @@ class MyAppBar extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(width: 4),
-                    const Column(
+                    Column(
                       children: [
-                        Text(
-                          '4',
-                          style: TextStyle(
-                            fontSize: 24,
-                            height: 1,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
+                        Obx(() => Text(
+                              c.user()?.level().toString() ?? '0',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                height: 1,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                        const SizedBox(height: 4),
+                        const Text(
                           'LEVEL',
                           style: TextStyle(
                             fontSize: 12,

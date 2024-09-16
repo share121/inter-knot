@@ -36,7 +36,10 @@ class _DiscussionCardState extends State<DiscussionCard>
           return AspectRatio(
             aspectRatio: 5 / 6,
             child: InkWell(
-              onTap: () => launchUrlString(widget.discussion.url),
+              onTap: () => launchUrlString(
+                widget.discussion.url,
+                mode: LaunchMode.inAppWebView,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -111,15 +114,15 @@ class _DiscussionCardState extends State<DiscussionCard>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 4),
-                            Text(
-                              widget.discussion.author.login,
-                              style: const TextStyle(
-                                color: Color(0xff626262),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            Obx(() => Text(
+                                  widget.discussion.author.name(),
+                                  style: const TextStyle(
+                                    color: Color(0xff626262),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                )),
                             const SizedBox(height: 4),
                             const Divider(height: 1),
                           ],

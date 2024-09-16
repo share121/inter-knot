@@ -173,12 +173,26 @@ class Reply {
   int get hashCode => Object.hash(author, bodyHTML, createdAt, lastEditedAt);
 }
 
+final authorInfoCache = <String, Future<({String? name, int? totalCount})>>{};
+
 class Author {
   final String login;
   final String avatar;
+  late final name = login.obs;
+  final level = 0.obs;
+
   late final url = 'https://github.com/$login';
 
-  Author({required this.login, required this.avatar});
+  Author({required this.login, required this.avatar}) {
+    if (c.isLogin()) {
+      var t = authorInfoCache[login];
+      t ??= authorInfoCache[login] = api_user.getUserInfo(login);
+      t.then((v) {
+        if (v.name != null) name.value = v.name!;
+        if (v.totalCount != null) level.value = v.totalCount!;
+      });
+    }
+  }
 
   @override
   operator ==(Object other) => other is Author && other.login == login;

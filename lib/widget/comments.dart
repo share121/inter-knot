@@ -31,7 +31,10 @@ class Comments extends StatelessWidget {
                 leading: ClipOval(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(50),
-                    onTap: () => launchUrlString(comment.url),
+                    onTap: () => launchUrlString(
+                      comment.url,
+                      mode: LaunchMode.inAppWebView,
+                    ),
                     child: Avatar(comment.author.avatar),
                   ),
                 ),
@@ -39,12 +42,15 @@ class Comments extends StatelessWidget {
                   children: [
                     Flexible(
                       child: InkWell(
-                        onTap: () => launchUrlString(comment.url),
-                        child: Text(
-                          comment.author.login,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                        onTap: () => launchUrlString(
+                          comment.url,
+                          mode: LaunchMode.inAppWebView,
                         ),
+                        child: Obx(() => Text(
+                              comment.author.name(),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )),
                       ),
                     ),
                     const SizedBox(width: 8),

@@ -1,8 +1,7 @@
 part of 'api_user.dart';
 
 Future<Author?> getSelfUserInfo() async {
-  final res = await graphql(
-      '{ viewer { avatarUrl login name repositories { totalCount } } }');
+  final res = await graphql('{ viewer { avatarUrl login } }');
   if (res.data
       case {
         'data': {
