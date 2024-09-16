@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +12,7 @@ import 'interface.dart';
 import 'widget/feedback_btn.dart';
 import 'api_root/api_root.dart' as api_root;
 import 'api_user/api_user.dart' as api_user;
+import 'widget/updata.dart';
 
 const reportDiscussionNumber = 4497;
 const owner = 'share121';
@@ -59,6 +59,8 @@ class Controller extends GetxController {
 
   final curPage = 0.obs;
 
+  final accelerator = ''.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -68,9 +70,11 @@ class Controller extends GetxController {
     pageController
         .addListener(() => curPage(pageController.page?.round() ?? 0));
     c.pref.remove('root_token');
-    ever(isLogin, (v) => pref.setBool('isLogin', v));
     isLogin(pref.getBool('isLogin') ?? false);
+    ever(isLogin, (v) => pref.setBool('isLogin', v));
     logger.i(isLogin());
+    accelerator(pref.getString('accelerator') ?? '');
+    ever(accelerator, (v) => pref.setString('accelerator', v));
     if (isLogin()) api_user.getSelfUserInfo().then(user.call);
     debounce(searchQuery, (query) {
       searchController.text = query;
@@ -135,59 +139,13 @@ class Controller extends GetxController {
           showDialog(
             context: Get.context!,
             barrierDismissible: !mustUpdate(newVersion, curVersion),
-            builder: (context) {
-              return AlertDialog(
-                title: Text('New version available'.tr),
-                scrollable: true,
-                content: Column(
-                  children: [
-                    ListTile(
-                      onTap: () => copyText(curFullVer),
-                      title: Text('Current version'.tr),
-                      subtitle: Text(curFullVer),
-                    ),
-                    ListTile(
-                      onTap: () => copyText(newFullVer),
-                      title: Text('Latest version'.tr),
-                      subtitle: Text(newFullVer),
-                    ),
-                    ListTile(
-                      onTap: () {},
-                      title: Text('Update content'.tr),
-                      subtitle: descriptionHTML.trim().isEmpty
-                          ? Text('Empty'.tr)
-                          : HtmlWidget(descriptionHTML),
-                    ),
-                    const Divider(),
-                    for (final item in release.releaseAssets)
-                      ListTile(
-                        title: Text(item.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Last edited on: '.tr +
-                                item.updatedAt.toLocal().toString()),
-                            Text('Size: @size bytes'
-                                .trParams({'size': item.size.toString()})),
-                            Text('Download count: '.tr +
-                                item.downloadCount.toString()),
-                          ],
-                        ),
-                        onTap: () async {
-                          launchUrlString(item.downloadUrl);
-                        },
-                      ),
-                  ],
-                ),
-                actions: [
-                  if (!mustUpdate(newVersion, curVersion))
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: Text('OK'.tr),
-                    ),
-                ],
-              );
-            },
+            builder: (context) => Updata(
+              newFullVer: newFullVer,
+              curFullVer: curFullVer,
+              descriptionHTML: descriptionHTML,
+              mustUpdate: mustUpdate(newVersion, curVersion),
+              release: release,
+            ),
           );
         }
       } catch (e, s) {

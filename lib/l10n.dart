@@ -95,7 +95,8 @@ class Messages extends Translations {
           'Not logged in': '未登录',
           'Home': '我的',
           'Advanced Search Tips': '高级搜索技巧',
-          'A total of @count items': '共 @count 项'
+          'A total of @count items': '共 @count 项',
+          'Accelerator': '加速源'
         },
       };
 }
