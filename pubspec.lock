@@ -166,6 +166,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb98c0f6d12c920a02ee2d998da788bca066ca5f148492b7085ee23372b12306
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.3.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -294,6 +302,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.14.0"
+  dart_quill_delta:
+    dependency: transitive
+    description:
+      name: dart_quill_delta
+      sha256: "4e8e949cfa18fd29978e11b7077f655b73ac00ebbcaaf95880391a7375872f28"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "10.6.1"
   dart_style:
     dependency: transitive
     description:
@@ -350,6 +366,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.0.3"
+  diff_match_patch:
+    dependency: transitive
+    description:
+      name: diff_match_patch
+      sha256: "2efc9e6e8f449d0abe15be240e2c2a3bcd977c8d126cfd70598aee60af35c0a4"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.1"
   dio:
     dependency: "direct main"
     description:
@@ -435,6 +459,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.4.1"
+  flutter_colorpicker:
+    dependency: transitive
+    description:
+      name: flutter_colorpicker
+      sha256: "969de5f6f9e2a570ac660fb7b501551451ea2a1ab9e2097e89475f60e07816ea"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   flutter_gen:
     dependency: "direct main"
     description:
@@ -528,6 +560,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_quill:
+    dependency: "direct main"
+    description:
+      name: flutter_quill
+      sha256: fea5c213ab5f0c7af42cdb815a735ad0f18aa453bd7ac28da666f9878165ea46
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "10.6.1"
+  flutter_quill_delta_from_html:
+    dependency: transitive
+    description:
+      name: flutter_quill_delta_from_html
+      sha256: fd6e18af21d35277524302d95e24cd3ebedc59b976ddb4605aaf775d38892d40
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.4.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -850,6 +898,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.2-main.4"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      sha256: ef2a1298144e3f985cc736b22e0ccdaf188b5b3970648f2d9dc13efd1d9df051
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "7.2.2"
   matcher:
     dependency: transitive
     description:
@@ -1090,6 +1146,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
+  quill_native_bridge:
+    dependency: transitive
+    description:
+      name: quill_native_bridge
+      sha256: a36013831441d995bbaf2d571ebbd1208ee05ff59cf9a0a6946ad007f9f96eec
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "10.6.1"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.2.2"
   rxdart:
     dependency: transitive
     description:
@@ -1616,5 +1688,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.5.0 <4.0.0"
+  dart: ">=3.5.1 <4.0.0"
   flutter: ">=3.24.0"

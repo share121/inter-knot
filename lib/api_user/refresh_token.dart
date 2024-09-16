@@ -15,6 +15,7 @@ Future<bool> refreshToken() async {
         'https://github.com/login/oauth/access_token',
         queryParameters: {
           'client_id': clientId,
+          'client_secret': clientSecret,
           'grant_type	': 'refresh_token',
           'refresh_token': c.getRefreshToken(),
         });
