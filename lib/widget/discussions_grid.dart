@@ -60,7 +60,7 @@ class DiscussionGrid extends StatelessWidget {
               if (snaphost.hasData) {
                 return DiscussionCard(
                   discussion: snaphost.data!,
-                  isPin: item.isPin,
+                  hData: item,
                   onTap: () {
                     showGeneralDialog(
                       context: context,
@@ -69,7 +69,7 @@ class DiscussionGrid extends StatelessWidget {
                       pageBuilder: (context, animation, secondaryAnimation) {
                         return DiscussionPage(
                           discussion: snaphost.data!,
-                          isPin: item.isPin,
+                          hData: item,
                         );
                       },
                       transitionDuration: 300.ms,

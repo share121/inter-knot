@@ -173,13 +173,14 @@ class Reply {
   int get hashCode => Object.hash(author, bodyHTML, createdAt, lastEditedAt);
 }
 
-final authorInfoCache = <String, Future<({String? name, int? totalCount})>>{};
-
 class Author {
   final String login;
   final String avatar;
   late final name = login.obs;
   final level = 0.obs;
+
+  static final authorInfoCache =
+      <String, Future<({String? name, int? totalCount})>>{};
 
   late final url = 'https://github.com/$login';
 
@@ -201,26 +202,39 @@ class Author {
   int get hashCode => login.hashCode;
 }
 
-final hDataCache = <int, Future<Discussion?>>{};
-
 class HData {
-  final int number;
-  final bool isPin;
+  late final int number;
+  late final bool isPin;
+  late final DateTime updatedAt;
+
+  static final hDataCache = <String, Future<Discussion?>>{};
+
   Future<Discussion?> get discussion {
-    var t = hDataCache[number];
+    var t = hDataCache['$number,$updatedAt'];
     if (t != null) return t;
     t = c.isLogin()
         ? api_user.getDiscussion(number)
         : api_root.getDiscussion(number);
-    hDataCache[number] = t;
+    hDataCache['$number,$updatedAt'] = t;
     return t;
   }
 
   late final url = 'https://github.com/$owner/$repo/discussions/$number';
 
-  HData(this.number, {this.isPin = false});
-  HData.fromStr(String number) : this(int.parse(number));
-  HData.fromDiscussion(Discussion discussion) : this(discussion.number);
+  HData(this.number, this.updatedAt, {this.isPin = false});
+  HData.fromStr(String data) {
+    final s = data.split(',');
+    if (s.length == 2) {
+      number = int.parse(s[0]);
+      updatedAt = DateTime.parse(s[1]);
+    } else {
+      number = int.parse(s[0]);
+      updatedAt = DateTime.fromMillisecondsSinceEpoch(0);
+    }
+    isPin = false;
+  }
+  HData.fromDiscussion(Discussion discussion, DateTime updatedAt)
+      : this(discussion.number, updatedAt);
 
   @override
   operator ==(Object other) => other is HData && other.number == number;

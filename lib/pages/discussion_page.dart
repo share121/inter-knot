@@ -19,11 +19,14 @@ import '../widget/my_chip.dart';
 import '../widget/report_discussion_comment.dart';
 
 class DiscussionPage extends StatefulWidget {
-  const DiscussionPage(
-      {super.key, required this.discussion, required this.isPin});
+  const DiscussionPage({
+    super.key,
+    required this.discussion,
+    required this.hData,
+  });
 
   final Discussion discussion;
-  final bool isPin;
+  final HData hData;
 
   @override
   State<DiscussionPage> createState() => _DiscussionPageState();
@@ -36,7 +39,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
   void initState() {
     super.initState();
     Future(() {
-      c.history({HData.fromDiscussion(widget.discussion), ...c.history});
+      c.history({widget.hData, ...c.history});
     });
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -193,7 +196,10 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                     width: double.infinity,
                                     child: Cover(discussion: widget.discussion),
                                   ),
-                                  RightBox(discussion: widget.discussion),
+                                  RightBox(
+                                    discussion: widget.discussion,
+                                    hData: widget.hData,
+                                  ),
                                 ],
                               );
                             }
@@ -238,7 +244,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                     child: SingleChildScrollView(
                                       controller: scrollController,
                                       child: RightBox(
-                                          discussion: widget.discussion),
+                                        discussion: widget.discussion,
+                                        hData: widget.hData,
+                                      ),
                                     ),
                                   ),
                                 )
@@ -246,53 +254,6 @@ class _DiscussionPageState extends State<DiscussionPage> {
                             );
                           }),
                         ),
-                      ],
-                    ),
-                    floatingActionButton: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (canReport(widget.discussion, widget.isPin)) ...[
-                          const SizedBox(height: 8),
-                          FloatingActionButton(
-                            heroTag: null,
-                            onPressed: () {
-                              Future.delayed(3.s).then((_) => launchUrlString(
-                                  'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
-                              copyText(
-                                '违规讨论：#${widget.discussion.number}\n举报原因：',
-                                title: 'Report template copied'.tr,
-                                msg: 'Jump to the report page after 3 seconds'
-                                    .tr,
-                              );
-                            },
-                            tooltip: 'Report'.tr,
-                            child: const Icon(Icons.report_outlined),
-                          ),
-                        ],
-                        const SizedBox(height: 8),
-                        Obx(() {
-                          final isLiked = c.bookmarks
-                              .map((e) => e.number)
-                              .contains(widget.discussion.number);
-                          return FloatingActionButton(
-                            heroTag: null,
-                            onPressed: () {
-                              if (isLiked) {
-                                c.bookmarks.removeWhere((e) =>
-                                    e.number == widget.discussion.number);
-                              } else {
-                                c.bookmarks({
-                                  HData.fromDiscussion(widget.discussion),
-                                  ...c.bookmarks
-                                });
-                              }
-                            },
-                            tooltip: isLiked ? 'Dislike'.tr : 'Like'.tr,
-                            child: Icon(isLiked
-                                ? Icons.favorite
-                                : Icons.favorite_outline),
-                          );
-                        }),
                       ],
                     ),
                   ),
@@ -307,9 +268,10 @@ class _DiscussionPageState extends State<DiscussionPage> {
 }
 
 class RightBox extends StatelessWidget {
-  const RightBox({super.key, required this.discussion});
+  const RightBox({super.key, required this.discussion, required this.hData});
 
   final Discussion discussion;
+  final HData hData;
 
   @override
   Widget build(BuildContext context) {
@@ -344,28 +306,92 @@ class RightBox extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          ClickRegion(
-            onTap: () => launchUrlString('${discussion.url}#new_comment_form'),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xff222222),
-                borderRadius: BorderRadius.circular(maxRadius),
-                border: Border.all(color: const Color(0xff2D2D2D), width: 4),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.add_comment_outlined),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Write a review'.tr,
-                    style: const TextStyle(fontSize: 16),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff222222),
+                    borderRadius: BorderRadius.circular(maxRadius),
+                    border:
+                        Border.all(color: const Color(0xff2D2D2D), width: 4),
                   ),
-                ],
+                  child: ClickRegion(
+                    onTap: () =>
+                        launchUrlString('${discussion.url}#new_comment_form'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.add_comment_outlined),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Write a review'.tr,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+              if (canReport(discussion, hData.isPin)) ...[
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: 'Report'.tr,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff222222),
+                      borderRadius: BorderRadius.circular(maxRadius),
+                      border:
+                          Border.all(color: const Color(0xff2D2D2D), width: 4),
+                    ),
+                    child: ClickRegion(
+                      onTap: () {
+                        Future.delayed(3.s).then((_) => launchUrlString(
+                            'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
+                        copyText(
+                          '违规讨论：#${discussion.number}\n举报原因：',
+                          title: 'Report template copied'.tr,
+                          msg: 'Jump to the report page after 3 seconds'.tr,
+                        );
+                      },
+                      child: const Icon(Icons.report_outlined),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(width: 8),
+              Obx(() {
+                final isLiked = c.bookmarks
+                    .map((e) => e.number)
+                    .contains(discussion.number);
+                return Tooltip(
+                  message: isLiked ? 'Dislike'.tr : 'Like'.tr,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff222222),
+                      borderRadius: BorderRadius.circular(maxRadius),
+                      border:
+                          Border.all(color: const Color(0xff2D2D2D), width: 4),
+                    ),
+                    child: ClickRegion(
+                      onTap: () {
+                        if (isLiked) {
+                          c.bookmarks.removeWhere(
+                              (e) => e.number == discussion.number);
+                        } else {
+                          c.bookmarks({hData, ...c.bookmarks});
+                        }
+                      },
+                      child: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_outline),
+                    ),
+                  ),
+                );
+              }),
+            ],
           ),
           const SizedBox(height: 16),
           const Divider(),

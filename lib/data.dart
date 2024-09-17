@@ -89,10 +89,11 @@ class Controller extends GetxController {
     history.addAll(pref.getStringList('history')?.map(HData.fromStr) ?? []);
     ever(bookmarks, (v) {
       pref.setStringList(
-          'bookmarks', v.map((e) => e.number.toString()).toList());
+          'bookmarks', v.map((e) => '${e.number},${e.updatedAt}').toList());
     });
     ever(history, (v) {
-      pref.setStringList('history', v.map((e) => e.number.toString()).toList());
+      pref.setStringList(
+          'history', v.map((e) => '${e.number},${e.updatedAt}').toList());
     });
     if (c.isLogin()) {
       api_user.getAllReports(reportDiscussionNumber).then(report.call);

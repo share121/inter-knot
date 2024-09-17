@@ -2,7 +2,7 @@ part of 'api_user.dart';
 
 Future<Nodes<HData>> getPinnedDiscussions(String? after) async {
   final res = await graphql(
-      '{ repository(owner: "$owner", name: "$repo") { pinnedDiscussions(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { discussion { number } } } } }');
+      '{ repository(owner: "$owner", name: "$repo") { pinnedDiscussions(first: 100, after: ${after == null ? null : '"$after"'}) { pageInfo { endCursor hasNextPage } nodes { discussion { number updatedAt } } } } }');
   if (res.data
       case {
         'data': {
@@ -24,9 +24,10 @@ Future<Nodes<HData>> getPinnedDiscussions(String? after) async {
                 case {
                   'discussion': {
                     'number': final int number,
+                    'updatedAt': final String updatedAt,
                   }
                 }) {
-              return HData(number, isPin: true);
+              return HData(number, DateTime.parse(updatedAt), isPin: true);
             }
           })
           .whereType<HData>()
