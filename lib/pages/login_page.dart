@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -188,7 +189,43 @@ class _LoginPageState extends State<LoginPage> {
             return Padding(
               padding: const EdgeInsets.all(16),
               child: Center(
-                child: SelectableText(error.toString()),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SelectableText(error.toString()),
+                    if (kIsWeb) ...[
+                      const SizedBox(height: 16),
+                      Text('You May Need to Allow CORS Extensions'.tr),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton(
+                            onPressed: () => launchUrlString(
+                                'https://microsoftedge.microsoft.com/addons/detail/allow-cors-accesscontro/bhjepjpgngghppolkjdhckmnfphffdag'),
+                            child: Text('Edge Extension'.tr),
+                          ),
+                          FilledButton(
+                            onPressed: () => launchUrlString(
+                                'https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf'),
+                            child: Text('Chrome Extension'.tr),
+                          ),
+                          FilledButton(
+                            onPressed: () => launchUrlString(
+                                'https://addons.mozilla.org/en-US/firefox/addon/access-control-allow-origin/'),
+                            child: Text('Firefox Extension'.tr),
+                          ),
+                          FilledButton(
+                            onPressed: () => launchUrlString(
+                                'https://www.crxsoso.com/webstore/detail/lhobafahddgcelffkeicbaginigeejlf'),
+                            child: Text('Crx Soso'.tr),
+                          ),
+                        ],
+                      ),
+                    ]
+                  ],
+                ),
               ),
             );
           }

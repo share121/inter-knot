@@ -109,10 +109,7 @@ class DiscussionGrid extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   color: const Color(0xff222222),
                   child: InkWell(
-                    onTap: () => launchUrlString(
-                      item.url,
-                      mode: LaunchMode.inAppWebView,
-                    ),
+                    onTap: () => launchUrlString(item.url),
                     child: AspectRatio(
                       aspectRatio: 5 / 6,
                       child: Padding(
@@ -127,10 +124,7 @@ class DiscussionGrid extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 color: const Color(0xff222222),
                 child: InkWell(
-                  onTap: () => launchUrlString(
-                    item.url,
-                    mode: LaunchMode.inAppWebView,
-                  ),
+                  onTap: () => launchUrlString(item.url),
                   child: const AspectRatio(
                     aspectRatio: 5 / 6,
                     child: Padding(

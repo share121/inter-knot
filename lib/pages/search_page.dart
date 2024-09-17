@@ -78,12 +78,10 @@ class _SearchPageState extends State<SearchPage>
             iconSize: 32,
             padding: const EdgeInsets.all(12),
             onPressed: () => launchUrlString(
-              'https://github.com/share121/inter-knot/discussions/new/choose',
-              mode: LaunchMode.inAppWebView,
-            ),
+                'https://github.com/share121/inter-knot/discussions/new/choose'),
             icon: Icon(MdiIcons.pen),
           ),
-        )
+        ),
       ],
     );
   }

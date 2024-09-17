@@ -36,10 +36,7 @@ class _DiscussionCardState extends State<DiscussionCard>
           return AspectRatio(
             aspectRatio: 5 / 6,
             child: InkWell(
-              onTap: () => launchUrlString(
-                widget.discussion.url,
-                mode: LaunchMode.inAppWebView,
-              ),
+              onTap: () => launchUrlString(widget.discussion.url),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(

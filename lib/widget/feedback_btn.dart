@@ -14,10 +14,7 @@ class FeedbackBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        Future.delayed(3.s).then((_) => launchUrlString(
-              issuesLink,
-              mode: LaunchMode.inAppWebView,
-            ));
+        Future.delayed(3.s).then((_) => launchUrlString(issuesLink));
         await copyText(
           error,
           title: 'The error message has been copied.'.tr,

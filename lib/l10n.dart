@@ -96,7 +96,12 @@ class Messages extends Translations {
           'Home': '我的',
           'Advanced Search Tips': '高级搜索技巧',
           'A total of @count items': '共 @count 项',
-          'Accelerator': '加速源'
+          'Accelerator': '加速源',
+          'You May Need to Allow CORS Extensions': '你可能需要安装 Allow CORS 扩展',
+          'Edge Extension': 'Edge 扩展',
+          'Firefox Extension': 'Firefox 扩展',
+          'Chrome Extension': 'Chrome 扩展',
+          'Crx Soso': 'Crx 搜搜',
         },
       };
 }

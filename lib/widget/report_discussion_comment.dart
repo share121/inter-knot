@@ -25,9 +25,7 @@ class ReportDiscussionComment extends StatelessWidget {
                     text: '#$key',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => launchUrlString(
-                            'https://github.com/share121/inter-knot/discussions/$key',
-                            mode: LaunchMode.inAppWebView,
-                          ),
+                          'https://github.com/share121/inter-knot/discussions/$key'),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                       color: Theme.of(context).colorScheme.primary,
@@ -50,10 +48,7 @@ class ReportDiscussionComment extends StatelessWidget {
                         children: [
                           Flexible(
                             child: InkWell(
-                              onTap: () => launchUrlString(
-                                comment.url,
-                                mode: LaunchMode.inAppWebView,
-                              ),
+                              onTap: () => launchUrlString(comment.url),
                               child: Text(comment.login),
                             ),
                           ),
