@@ -1,14 +1,17 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api/api.dart';
+import 'package:inter_knot/components/feedback_btn.dart';
+import 'package:inter_knot/helpers/box.dart';
+import 'package:inter_knot/helpers/copy_text.dart';
+import 'package:inter_knot/helpers/logger.dart';
+import 'package:inter_knot/helpers/num2dur.dart';
+import 'package:inter_knot/helpers/throttle.dart';
+import 'package:inter_knot/models/device_login.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../api_user/api_user.dart';
-import '../common.dart';
-import '../widget/feedback_btn.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,23 +21,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  DeviceLogin? deviceLogin;
+  final loginApi = Get.find<LoginApi>();
+
+  DeviceLoginModel? deviceLogin;
   Object? error;
-  var count = 0;
+  int count = 0;
 
   Future<void> poll() async {
     if (deviceLogin == null) return;
     try {
-      final r = await getAccessToken(deviceLogin!);
+      final r = await loginApi.getAccessToken(deviceLogin!);
       switch (r.status) {
         case DeviceLoginStatus.expiredToken:
         case DeviceLoginStatus.accessDenied:
           return refresh();
         case DeviceLoginStatus.finished:
-          await c.setToken(r.accessToken!);
-          await c.setRefreshToken(r.refreshToken!);
+          await box.write('access_token', r.accessToken);
+          await box.write('refresh_token', r.refreshToken);
           Get.back();
-          break;
         case DeviceLoginStatus.authorizationPending:
       }
     } catch (e) {
@@ -49,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
               TextButton(
                 onPressed: () => Get.back(),
                 child: Text('OK'.tr),
-              )
+              ),
             ],
           );
         },
@@ -63,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       deviceLogin = null;
     });
     try {
-      final data = await getDeviceLogin();
+      final data = await loginApi.getDeviceLogin();
       if (mounted) {
         Timer.run(() async {
           final inner = count;
@@ -130,23 +134,28 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 8),
                         Text.rich(
-                          TextSpan(children: [
-                            TextSpan(text: 'Open'.tr),
-                            const TextSpan(text: ' '),
-                            TextSpan(
-                              text: deviceLogin!.verificationUri,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => launchUrlString(
-                                    deviceLogin!.verificationUri),
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                decoration: TextDecoration.underline,
-                                decorationColor:
-                                    Theme.of(context).colorScheme.primary,
+                          TextSpan(
+                            children: [
+                              TextSpan(text: 'Open'.tr),
+                              const TextSpan(text: ' '),
+                              TextSpan(
+                                text: deviceLogin!.verificationUri,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => launchUrlString(
+                                        deviceLogin!.verificationUri,
+                                      ),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor:
+                                      Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                            ),
-                            TextSpan(text: ' . Then enter the 「user code」'.tr),
-                          ]),
+                              TextSpan(
+                                text: ' . Then enter the 「user code」'.tr,
+                              ),
+                            ],
+                          ),
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 8),
@@ -158,8 +167,9 @@ class _LoginPageState extends State<LoginPage> {
                             if (v == 0) {
                               return Text('User code has expired'.tr);
                             }
-                            return Text('@s seconds left'
-                                .trParams({'s': v.toString()}));
+                            return Text(
+                              '@s seconds left'.trParams({'s': v.toString()}),
+                            );
                           },
                         ),
                         const SizedBox(height: 16),
@@ -169,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                             Future.delayed(3.s)
                                 .then((_) => launchUrlString(url));
                             copyText(
-                              deviceLogin!.userCode.toString(),
+                              deviceLogin!.userCode,
                               title: 'User code has been copied'.tr,
                               msg:
                                   'Jump to the authorization page after 3 seconds'
@@ -177,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           },
                           child: Text('Copy and open'.tr),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -203,27 +213,31 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           FilledButton(
                             onPressed: () => launchUrlString(
-                                'https://microsoftedge.microsoft.com/addons/detail/allow-cors-accesscontro/bhjepjpgngghppolkjdhckmnfphffdag'),
+                              'https://microsoftedge.microsoft.com/addons/detail/allow-cors-accesscontro/bhjepjpgngghppolkjdhckmnfphffdag',
+                            ),
                             child: Text('Edge Extension'.tr),
                           ),
                           FilledButton(
                             onPressed: () => launchUrlString(
-                                'https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf'),
+                              'https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf',
+                            ),
                             child: Text('Chrome Extension'.tr),
                           ),
                           FilledButton(
                             onPressed: () => launchUrlString(
-                                'https://addons.mozilla.org/en-US/firefox/addon/access-control-allow-origin/'),
+                              'https://addons.mozilla.org/en-US/firefox/addon/access-control-allow-origin/',
+                            ),
                             child: Text('Firefox Extension'.tr),
                           ),
                           FilledButton(
                             onPressed: () => launchUrlString(
-                                'https://www.crxsoso.com/webstore/detail/lhobafahddgcelffkeicbaginigeejlf'),
+                              'https://www.crxsoso.com/webstore/detail/lhobafahddgcelffkeicbaginigeejlf',
+                            ),
                             child: Text('Crx Soso'.tr),
                           ),
                         ],
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),

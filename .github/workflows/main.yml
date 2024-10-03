@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 env:
-  PWD: ${{ secrets.PWD }}
   PEM: ${{ secrets.PEM }}
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -89,7 +88,7 @@ jobs:
 
       - run: mv build/ios/iphoneos/Runner.app Payload/inter_knot_ios.app
 
-      - run: zip -r inter_knot_ios.ipa Payload
+      - run: zip -r9 inter_knot_ios.ipa Payload
 
       - uses: actions/upload-artifact@v4
         with:
@@ -138,10 +137,12 @@ jobs:
 
       - run: flutter build linux
 
+      - run: zip -r9 inter_knot_linux.zip build/linux/x64/release/bundle
+
       - uses: actions/upload-artifact@v4
         with:
           name: inter_knot_linux
-          path: build/linux/x64/release/bundle
+          path: inter_knot_linux.zip
 
   build_web:
     name: Web Client
@@ -214,7 +215,6 @@ jobs:
         with:
           name: inter_knot_linux
           path: inter_knot_linux
-      - run: zip -r inter_knot_linux.zip inter_knot_linux
 
       - uses: actions/download-artifact@v4
         with:
@@ -233,6 +233,6 @@ jobs:
           files: |
             inter_knot_windows_x64_boxed/inter_knot_windows_x64_boxed.exe
             inter_knot_apk/inter_knot_android.apk
-            inter_knot_linux.zip
+            inter_knot_linux/inter_knot_linux.zip
             inter_knot_macos/inter_knot_macos.dmg
             inter_knot_ios/inter_knot_ios.ipa

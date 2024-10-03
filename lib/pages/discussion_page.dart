@@ -1,22 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/components/avatar.dart';
+import 'package:inter_knot/components/click_region.dart';
+import 'package:inter_knot/components/comment_count.dart';
+import 'package:inter_knot/components/comment.dart';
+import 'package:inter_knot/components/my_chip.dart';
+import 'package:inter_knot/components/report_discussion_comment.dart';
+import 'package:inter_knot/constants/globals.dart';
+import 'package:inter_knot/controllers/data.dart';
+import 'package:inter_knot/gen/assets.gen.dart';
+import 'package:inter_knot/models/discussion.dart';
+import 'package:inter_knot/models/h_data.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../common.dart';
-import '../interface.dart';
-import '../main.dart';
-import '../widget/avatar.dart';
-import '../widget/click_region.dart';
-import '../widget/comment_count.dart';
-import '../gen/assets.gen.dart';
-import '../data.dart';
-import '../widget/comments.dart';
-import '../widget/my_chip.dart';
-import '../widget/report_discussion_comment.dart';
 
 class DiscussionPage extends StatefulWidget {
   const DiscussionPage({
@@ -25,8 +23,8 @@ class DiscussionPage extends StatefulWidget {
     required this.hData,
   });
 
-  final Discussion discussion;
-  final HData hData;
+  final DiscussionModel discussion;
+  final HDataModel hData;
 
   @override
   State<DiscussionPage> createState() => _DiscussionPageState();
@@ -34,6 +32,7 @@ class DiscussionPage extends StatefulWidget {
 
 class _DiscussionPageState extends State<DiscussionPage> {
   final scrollController = ScrollController();
+  final c = Get.find<Controller>();
 
   @override
   void initState() {
@@ -114,7 +113,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: Assets.images.discussionPageBgPoint
@@ -145,16 +146,18 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Obx(() => Text(
-                                          widget.discussion.author.name(),
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Color(0xff808080),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
+                                    Obx(
+                                      () => Text(
+                                        widget.discussion.author.name(),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xff808080),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
                                     SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
@@ -167,9 +170,11 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                               owner)
                                             MyChip('Founder of Inter-Knot'.tr),
                                           if (collaborators.contains(
-                                              widget.discussion.author.login))
+                                            widget.discussion.author.login,
+                                          ))
                                             MyChip(
-                                                'Inter-Knot collaborator'.tr),
+                                              'Inter-Knot collaborator'.tr,
+                                            ),
                                         ],
                                       ),
                                     ),
@@ -180,79 +185,85 @@ class _DiscussionPageState extends State<DiscussionPage> {
                               ClickRegion(
                                 child: Assets.images.closeBtn.image(),
                                 onTap: () => Get.back(),
-                              )
+                              ),
                             ],
                           ),
                         ),
                         Expanded(
-                          child: LayoutBuilder(builder: (context, con) {
-                            if (con.maxWidth < 600) {
-                              return ListView(
-                                controller: scrollController,
-                                children: [
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(maxHeight: 500),
-                                    width: double.infinity,
-                                    child: Cover(discussion: widget.discussion),
-                                  ),
-                                  RightBox(
-                                    discussion: widget.discussion,
-                                    hData: widget.hData,
-                                  ),
-                                ],
-                              );
-                            }
-                            return Row(
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 16,
-                                        left: 16,
-                                        right: 8,
-                                        bottom: 16),
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: const Color(0xff313132),
-                                        width: 4,
-                                      ),
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
+                          child: LayoutBuilder(
+                            builder: (context, con) {
+                              if (con.maxWidth < 600) {
+                                return ListView(
+                                  controller: scrollController,
+                                  children: [
+                                    Container(
+                                      constraints:
+                                          const BoxConstraints(maxHeight: 500),
+                                      width: double.infinity,
                                       child:
                                           Cover(discussion: widget.discussion),
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 16,
-                                        left: 8,
-                                        right: 16,
-                                        bottom: 16),
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff070707),
-                                      borderRadius: BorderRadius.circular(16),
+                                    RightBox(
+                                      discussion: widget.discussion,
+                                      hData: widget.hData,
                                     ),
-                                    child: SingleChildScrollView(
-                                      controller: scrollController,
-                                      child: RightBox(
-                                        discussion: widget.discussion,
-                                        hData: widget.hData,
+                                  ],
+                                );
+                              }
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 16,
+                                        left: 16,
+                                        right: 8,
+                                        bottom: 16,
+                                      ),
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xff313132),
+                                          width: 4,
+                                        ),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Cover(
+                                          discussion: widget.discussion,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                )
-                              ],
-                            );
-                          }),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 16,
+                                        left: 8,
+                                        right: 16,
+                                        bottom: 16,
+                                      ),
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xff070707),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: SingleChildScrollView(
+                                        controller: scrollController,
+                                        child: RightBox(
+                                          discussion: widget.discussion,
+                                          hData: widget.hData,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -270,8 +281,8 @@ class _DiscussionPageState extends State<DiscussionPage> {
 class RightBox extends StatelessWidget {
   const RightBox({super.key, required this.discussion, required this.hData});
 
-  final Discussion discussion;
-  final HData hData;
+  final DiscussionModel discussion;
+  final HDataModel hData;
 
   @override
   Widget build(BuildContext context) {
@@ -291,11 +302,14 @@ class RightBox extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 8),
-              Text('Published on: '.tr +
-                  discussion.createdAt.toLocal().toString()),
+              Text(
+                'Published on: '.tr + discussion.createdAt.toLocal().toString(),
+              ),
               if (discussion.lastEditedAt != null)
-                Text('Last edited on: '.tr +
-                    discussion.lastEditedAt!.toLocal().toString()),
+                Text(
+                  'Last edited on: '.tr +
+                      discussion.lastEditedAt!.toLocal().toString(),
+                ),
               const SizedBox(height: 16),
               SelectionArea(
                 child: HtmlWidget(
@@ -348,8 +362,11 @@ class RightBox extends StatelessWidget {
                     ),
                     child: ClickRegion(
                       onTap: () {
-                        Future.delayed(3.s).then((_) => launchUrlString(
-                            'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form'));
+                        Future.delayed(3.s).then(
+                          (_) => launchUrlString(
+                            'https://github.com/share121/inter-knot/discussions/$reportDiscussionNumber#new_comment_form',
+                          ),
+                        );
                         copyText(
                           '违规讨论：#${discussion.number}\n举报原因：',
                           title: 'Report template copied'.tr,
@@ -380,13 +397,15 @@ class RightBox extends StatelessWidget {
                       onTap: () {
                         if (isLiked) {
                           c.bookmarks.removeWhere(
-                              (e) => e.number == discussion.number);
+                            (e) => e.number == discussion.number,
+                          );
                         } else {
                           c.bookmarks({hData, ...c.bookmarks});
                         }
                       },
                       child: Icon(
-                          isLiked ? Icons.favorite : Icons.favorite_outline),
+                        isLiked ? Icons.favorite : Icons.favorite_outline,
+                      ),
                     ),
                   ),
                 );
@@ -398,7 +417,7 @@ class RightBox extends StatelessWidget {
           if (discussion.number == reportDiscussionNumber)
             const ReportDiscussionComment()
           else
-            Comments(discussion: discussion),
+            Comment(discussion: discussion),
         ],
       ),
     );
@@ -408,7 +427,7 @@ class RightBox extends StatelessWidget {
 class Cover extends StatelessWidget {
   const Cover({super.key, required this.discussion});
 
-  final Discussion discussion;
+  final DiscussionModel discussion;
 
   @override
   Widget build(BuildContext context) {

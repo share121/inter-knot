@@ -19,7 +19,6 @@ jobs:
 
       - run: dart gen_secrets.dart
         env:
-          PWD: ${{ secrets.PWD }}
           PEM: ${{ secrets.PEM }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

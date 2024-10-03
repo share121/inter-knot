@@ -1,28 +1,25 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
-#
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+# This file configures the analyzer to use the lint rule set from `package:lint`
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+include: package:lint/strict.yaml # For production apps
+# include: package:lint/casual.yaml # For code samples, hackathons and other non-production code
+# include: package:lint/package.yaml # Use this for packages with public API
 
+# You might want to exclude auto-generated files from dart analysis
+analyzer:
+  exclude:
+    #- '**.freezed.dart'
+    #- '**.g.dart'
+
+# You can customize the lint rules set to your own liking. A list of all rules
+# can be found at https://dart-lang.github.io/linter/lints/options/options.html
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
+    # Util classes are awesome!
+    # avoid_classes_with_only_static_members: false
+
+    # Make constructors the first thing in every class
+    # sort_constructors_first: true
+
+    # Choose wisely, but you don't have to
+    # prefer_double_quotes: true
     prefer_single_quotes: true
-    avoid_dynamic_calls: true
-    prefer_relative_imports: true
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options

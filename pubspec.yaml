@@ -8,37 +8,35 @@ environment:
   sdk: ">=3.4.4 <4.0.0"
 
 dependencies:
+  dart_jsonwebtoken: ^2.14.0
   flutter:
     sdk: flutter
-  get: ^4.6.6
-  url_launcher: ^6.3.0
+  flutter_gen: ^5.6.0
+  flutter_keyboard_visibility: ^6.0.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
-  waterfall_flow: ^3.0.3
-  dio: ^5.6.0
-  shared_preferences: ^2.3.2
-  dart_jsonwebtoken: ^2.14.0
-  flutter_gen: ^5.6.0
-  html: ^0.15.4
   flutter_widget_from_html: ^0.15.2
   fwfh_svg: ^0.8.3
   fwfh_url_launcher: ^0.9.1
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  html: ^0.15.4
+  intl: ^0.19.0
   logger: ^2.4.0
+  material_design_icons_flutter: ^7.0.7296
   package_info_plus: ^8.0.2
   pub_semver: ^2.1.4
-  flutter_keyboard_visibility: ^6.0.0
-  material_design_icons_flutter: ^7.0.7296
+  url_launcher: ^6.3.0
+  waterfall_flow: ^3.0.3
 
 dev_dependencies:
+  build_runner: ^2.4.12
+  flutter_gen_runner: ^5.6.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  flutter_gen_runner: ^5.6.0
-  build_runner: ^2.4.12
-  flutter_launcher_icons: ^0.13.1
-  path: ^1.9.0
-  dcli: ^6.0.5
+  lint: ^2.0.0
 
 flutter_launcher_icons:
   android: true

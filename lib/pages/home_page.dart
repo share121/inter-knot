@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/api_user/api_user.dart' as api_user;
+import 'package:inter_knot/pages/history_page.dart';
+import 'package:inter_knot/pages/liked_page.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../common.dart';
-import '../data.dart';
-import 'history_page.dart';
-import 'liked_page.dart';
-import '../api_root/api_root.dart' as api_root;
-import '../api_user/api_user.dart' as api_user;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -19,20 +15,28 @@ class HomePage extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Obx(() => ListTile(
-                leading: const Icon(Icons.favorite),
-                title: Text('Like'.tr),
-                onTap: () => Get.to(() => const LikedPage()),
-                subtitle: Text('A total of @count items'
-                    .trParams({'count': c.bookmarks.length.toString()})),
-              )),
-          Obx(() => ListTile(
-                leading: const Icon(Icons.history),
-                title: Text('History'.tr),
-                onTap: () => Get.to(() => const HistoryPage()),
-                subtitle: Text('A total of @count items'
-                    .trParams({'count': c.history.length.toString()})),
-              )),
+          Obx(
+            () => ListTile(
+              leading: const Icon(Icons.favorite),
+              title: Text('Like'.tr),
+              onTap: () => Get.to(() => const LikedPage()),
+              subtitle: Text(
+                'A total of @count items'
+                    .trParams({'count': c.bookmarks.length.toString()}),
+              ),
+            ),
+          ),
+          Obx(
+            () => ListTile(
+              leading: const Icon(Icons.history),
+              title: Text('History'.tr),
+              onTap: () => Get.to(() => const HistoryPage()),
+              subtitle: Text(
+                'A total of @count items'
+                    .trParams({'count': c.history.length.toString()}),
+              ),
+            ),
+          ),
           FutureBuilder(
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {

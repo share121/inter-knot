@@ -22,7 +22,7 @@ class ToolkitPage extends StatelessWidget {
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

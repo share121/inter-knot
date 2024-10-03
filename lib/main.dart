@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:inter_knot/api/api.dart';
+import 'package:inter_knot/components/my_app_bar.dart';
+import 'package:inter_knot/controllers/data.dart';
+import 'package:inter_knot/l10n.dart';
+import 'package:inter_knot/pages/home_page.dart';
+import 'package:inter_knot/pages/search_page.dart';
+import 'package:inter_knot/pages/toolkit_page.dart';
 
-import 'common.dart';
-import 'data.dart';
-import 'l10n.dart';
-import 'pages/home_page.dart';
-import 'pages/search_page.dart';
-import 'pages/toolkit_page.dart';
-import 'widget/my_app_bar.dart';
-
-const maxRadius = 100.0;
-
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  await GetStorage.init();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.put(LoginApi());
+    Get.put(Api());
     Get.put(Controller());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return GetMaterialApp(
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends GetView<Controller> {
   const MyHomePage({super.key});
 
   @override
@@ -65,7 +67,7 @@ class MyHomePage extends StatelessWidget {
           const SizedBox(height: 16),
           Expanded(
             child: PageView(
-              controller: c.pageController,
+              controller: controller.pageController,
               children: const [
                 SearchPage(),
                 ToolkitPage(),

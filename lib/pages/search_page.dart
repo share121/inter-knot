@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:get/get.dart';
+import 'package:inter_knot/components/discussions_grid.dart';
+import 'package:inter_knot/controllers/data.dart';
+import 'package:inter_knot/helpers/throttle.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../widget/discussions_grid.dart';
-import '../common.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -18,17 +16,13 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
-  late StreamSubscription<bool> keyboardSubscription;
+  final c = Get.find<Controller>();
 
-  @override
-  void initState() {
-    super.initState();
-    final keyboardVisibilityController = KeyboardVisibilityController();
-    keyboardSubscription =
-        keyboardVisibilityController.onChange.listen((visible) {
-      if (!visible) FocusManager.instance.primaryFocus?.unfocus();
-    });
-  }
+  final keyboardVisibilityController = KeyboardVisibilityController();
+  late final keyboardSubscription =
+      keyboardVisibilityController.onChange.listen((visible) {
+    if (!visible) FocusManager.instance.primaryFocus?.unfocus();
+  });
 
   @override
   void dispose() {
@@ -36,7 +30,7 @@ class _SearchPageState extends State<SearchPage>
     super.dispose();
   }
 
-  final fetchData = retryThrottle(c.searchData);
+  late final fetchData = retryThrottle(c.searchData);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +72,8 @@ class _SearchPageState extends State<SearchPage>
             iconSize: 32,
             padding: const EdgeInsets.all(12),
             onPressed: () => launchUrlString(
-                'https://github.com/share121/inter-knot/discussions/new/choose'),
+              'https://github.com/share121/inter-knot/discussions/new/choose',
+            ),
             icon: Icon(MdiIcons.pen),
           ),
         ),

@@ -1,0 +1,25 @@
+{
+  "files.exclude": {
+    // ".idea": true,
+    // "android": true,
+    // "ios": true,
+    // "linux": true,
+    // "macos": true,
+    // "web": true,
+    // "windows": true,
+    // ".dart_tool": true,
+    // "enigmavbconsole.exe": true,
+    // "upload-keystore.jks": true,
+    // "pubspec.lock": true,
+    // "inter_knot.iml": true,
+    // ".flutter-plugins": true,
+    // ".flutter-plugins-dependencies": true,
+    // ".metadata": true,
+    // "icon.webp": true,
+    // "mac-installer-bg.png": true,
+    // "devtools_options.yaml": true,
+    // ".vscode": true,
+    // "build": true,
+    // "lib/gen": true
+  }
+}
