@@ -11,3 +11,5 @@
 - 修复 bug（感谢 [@容小狸](https://github.com/rong-xiaoli)）
 - 修复 bug（感谢 [@Dave_12138](https://github.com/Dave-12138)）
 - 修复 bug（感谢 [@自由的世界人](https://github.com/Pleasurecruise)）
+- 写 role（感谢 [@天辰zzR](https://github.com/nostalgiatan)）
+- 写教程（感谢 [@纳西妲 · Nahida](https://github.com/Buer-Nahida)）
