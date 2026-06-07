@@ -1,5 +1,4 @@
 import 'package:inter_knot/helpers/parse_html.dart';
-import 'package:inter_knot/helpers/use.dart';
 import 'package:inter_knot/models/author.dart';
 
 class CommentModel {
@@ -24,17 +23,30 @@ class CommentModel {
   }
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
-    final (:cover, :html) = parseHtml(json['bodyHTML'] as String, true);
+    final parsed = parseHtml(json['bodyHTML'] as String, true);
+    final repliesJson = json['replies'];
+    final repliesNodes = switch (repliesJson) {
+      {'nodes': final List nodes} => nodes,
+      List _ => repliesJson,
+      _ => const [],
+    };
+    final authorJson = json['author'] as Map<String, dynamic>?;
+    final createdAtRaw = json['createdAt'] as String?;
+    final lastEditedRaw = json['lastEditedAt'] as String?;
     return CommentModel(
-      author: AuthorModel.fromJson(json['author'] as Map<String, dynamic>),
-      bodyHTML: html,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      author: authorJson == null
+          ? AuthorModel.deleted()
+          : AuthorModel.fromJson(authorJson),
+      bodyHTML: parsed.html,
+      createdAt:
+          DateTime.tryParse(createdAtRaw ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0),
       lastEditedAt:
-          (json['lastEditedAt'] as String?).use((v) => DateTime.parse(v)),
-      replies: (json['replies'] as List<Map<String, dynamic>>)
+          lastEditedRaw == null ? null : DateTime.tryParse(lastEditedRaw),
+      replies: repliesNodes
+          .whereType<Map<String, dynamic>>()
           .map((e) => CommentModel.fromJson(e)),
-      id: json['id'] as String,
-      url: json['url'] as String,
+      id: (json['id'] as String?) ?? '',
+      url: (json['url'] as String?) ?? '',
     );
   }
 

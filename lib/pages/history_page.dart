@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inter_knot/components/discussions_grid.dart';
+import 'package:inter_knot/controllers/data.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -11,13 +12,14 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage>
     with AutomaticKeepAliveClientMixin {
+  final c = Get.find<Controller>();
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       backgroundColor: const Color(0xff121212),
       appBar: AppBar(title: Text('History'.tr)),
-      body: Obx(() => DiscussionGrid(list: c.history(), hasNextPage: false)),
+      body: Obx(() => DiscussionGrid(list: c.history().toList(), hasNextPage: false)),
     );
   }
 

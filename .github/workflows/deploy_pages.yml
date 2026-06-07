@@ -1,0 +1,24 @@
+name: Deploy Pages (manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: dart run gen_secrets.dart
+        env:
+          CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID_BASE64 }}
+      - run: flutter pub get
+      - run: flutter build web --pwa-strategy=none
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.0.0'
+          command: 'pages deploy build/web --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ github.ref_name }} --commit-message="Deploy via GitHub Actions" --commit-dirty=true'

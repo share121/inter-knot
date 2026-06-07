@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+**/.DS_Store
 .atom/
 .build/
 .buildlog/
@@ -33,6 +34,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+构建后产物测试/
 /build/
 
 # Symbolication related
@@ -45,5 +47,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-lib/secret.dart
+AI审核/响应示例.json
+AI审核/.env
+AI审核/另一种思路/完成以下任务.md
+GraphQL API View LLMs/
+/ZZZ-2.1/

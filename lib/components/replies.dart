@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:inter_knot/components/avatar.dart';
 import 'package:inter_knot/components/my_chip.dart';
+import 'package:inter_knot/components/my_html_widget.dart';
+import 'package:inter_knot/constants/globals.dart';
 import 'package:inter_knot/models/comment.dart';
 import 'package:inter_knot/models/discussion.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -32,37 +33,26 @@ class Replies extends StatelessWidget {
                     ),
                   )
                 : null,
-            title: Row(
-              children: [
-                Flexible(
-                  child: InkWell(
-                    onTap: () => launchUrlString(reply.url),
-                    child: Obx(
-                      () => Text(
-                        reply.author.name(),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Offstage(
+                    child: InkWell(
+                      onTap: () => launchUrlString(reply.url),
+                      child: const Text(''),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      if (reply.author.login == discussion.author.login)
-                        MyChip('landlord'.tr),
-                      if (reply.author.login == comment.author.login)
-                        MyChip('layer master'.tr),
-                      if (reply.author.login == owner)
-                        MyChip('Founder of Inter-Knot'.tr),
-                      if (collaborators.contains(reply.author.login))
-                        MyChip('Inter-Knot collaborator'.tr),
-                    ],
-                  ),
-                ),
-              ],
+                  if (reply.author.login == discussion.author.login)
+                    MyChip('landlord'.tr),
+                  if (reply.author.login == comment.author.login)
+                    MyChip('layer master'.tr),
+                  if (reply.author.login == owner)
+                    MyChip('Founder of Inter-Knot'.tr),
+                  if (collaborators.contains(reply.author.login))
+                    MyChip('Inter-Knot collaborator'.tr),
+                ],
+              ),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,11 +66,27 @@ class Replies extends StatelessWidget {
                         reply.lastEditedAt!.toLocal().toString(),
                   ),
                 const SizedBox(height: 8),
-                SelectionArea(
-                  child: HtmlWidget(
-                    reply.bodyHTML,
-                    textStyle: const TextStyle(fontSize: 16),
-                  ),
+                Builder(
+                  builder: (context) {
+                    final hasIframe = RegExp(
+                      r'<\s*iframe\b',
+                      caseSensitive: false,
+                    ).hasMatch(reply.bodyHTML);
+                    if (hasIframe) {
+                      return MyHtmlWidget(
+                        html: reply.bodyHTML,
+                        textStyle: const TextStyle(fontSize: 16),
+                        inDiscussionDetail: true,
+                      );
+                    }
+                    return SelectionArea(
+                      child: MyHtmlWidget(
+                        html: reply.bodyHTML,
+                        textStyle: const TextStyle(fontSize: 16),
+                        inDiscussionDetail: true,
+                      ),
+                    );
+                  },
                 ),
                 const Divider(),
               ],

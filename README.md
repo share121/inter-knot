@@ -1,7 +1,7 @@
 # 绳网
 
 绳网是一个游戏、技术交流平台
-
+** [点此进入](https://inter-knot-dit.pages.dev/) **
 ## 感谢 🙏
 
 - 感谢 [@VacuolePaoo](https://github.com/VacuolePaoo)，如果没有他，这个项目就不会开始开发

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:inter_knot/components/avatar.dart';
 import 'package:inter_knot/components/my_chip.dart';
+import 'package:inter_knot/components/my_html_widget.dart';
 import 'package:inter_knot/components/replies.dart';
 import 'package:inter_knot/constants/globals.dart';
 import 'package:inter_knot/helpers/flatten.dart';
@@ -35,35 +35,24 @@ class Comment extends StatelessWidget {
                     child: Avatar(comment.author.avatar),
                   ),
                 ),
-                title: Row(
-                  children: [
-                    Flexible(
-                      child: InkWell(
-                        onTap: () => launchUrlString(comment.url),
-                        child: Obx(
-                          () => Text(
-                            comment.author.name(),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                title: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Offstage(
+                        child: InkWell(
+                          onTap: () => launchUrlString(comment.url),
+                          child: const Text(''),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          if (comment.author.login == discussion.author.login)
-                            MyChip('landlord'.tr),
-                          if (comment.author.login == owner)
-                            MyChip('Founder of Inter-Knot'.tr),
-                          if (collaborators.contains(comment.author.login))
-                            MyChip('Inter-Knot collaborator'.tr),
-                        ],
-                      ),
-                    ),
-                  ],
+                      if (comment.author.login == discussion.author.login)
+                        MyChip('landlord'.tr),
+                      if (comment.author.login == owner)
+                        MyChip('Founder of Inter-Knot'.tr),
+                      if (collaborators.contains(comment.author.login))
+                        MyChip('Inter-Knot collaborator'.tr),
+                    ],
+                  ),
                 ),
                 trailing: MyChip('F${index + 1}'),
                 subtitle: Column(
@@ -79,11 +68,27 @@ class Comment extends StatelessWidget {
                             comment.lastEditedAt!.toLocal().toString(),
                       ),
                     const SizedBox(height: 8),
-                    SelectionArea(
-                      child: HtmlWidget(
-                        comment.bodyHTML,
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final hasIframe = RegExp(
+                          r'<\s*iframe\b',
+                          caseSensitive: false,
+                        ).hasMatch(comment.bodyHTML);
+                        if (hasIframe) {
+                          return MyHtmlWidget(
+                            html: comment.bodyHTML,
+                            textStyle: const TextStyle(fontSize: 16),
+                            inDiscussionDetail: true,
+                          );
+                        }
+                        return SelectionArea(
+                          child: MyHtmlWidget(
+                            html: comment.bodyHTML,
+                            textStyle: const TextStyle(fontSize: 16),
+                            inDiscussionDetail: true,
+                          ),
+                        );
+                      },
                     ),
                     const Divider(),
                     Replies(comment: comment, discussion: discussion),
@@ -91,7 +96,7 @@ class Comment extends StatelessWidget {
                 ),
               ),
             Obx(() {
-              if (discussion.comments.last.hasNextPage.isTrue) {
+              if (discussion.comments.last.hasNextPage) {
                 return const Padding(
                   padding: EdgeInsets.all(16),
                   child: Center(child: CircularProgressIndicator()),

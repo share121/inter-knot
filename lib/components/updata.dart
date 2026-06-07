@@ -1,6 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/components/my_html_widget.dart';
+import 'package:inter_knot/controllers/data.dart';
+import 'package:inter_knot/helpers/copy_text.dart';
+import 'package:inter_knot/models/release.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Updata extends StatefulWidget {
@@ -17,7 +22,7 @@ class Updata extends StatefulWidget {
   final String curFullVer;
   final String descriptionHTML;
   final bool mustUpdate;
-  final Release release;
+  final ReleaseModel release;
 
   @override
   State<Updata> createState() => _UpdataState();
@@ -32,6 +37,8 @@ const f = [
 ];
 
 class _UpdataState extends State<Updata> {
+  final c = Get.find<Controller>();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -57,7 +64,7 @@ class _UpdataState extends State<Updata> {
                     title: Text('Update content'.tr),
                     subtitle: widget.descriptionHTML.trim().isEmpty
                         ? Text('Empty'.tr)
-                        : HtmlWidget(widget.descriptionHTML),
+                        : MyHtmlWidget(html: widget.descriptionHTML),
                   ),
                   const Divider(),
                   for (final item in widget.release.releaseAssets)

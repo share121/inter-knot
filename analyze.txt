@@ -1,0 +1,12 @@
+﻿Analyzing inter-knot...                                         
+
+   info - Dependencies not sorted alphabetically - pubspec.yaml:21:3 - sort_pub_dependencies
+
+flutter : 1 issue found. (ran in 6.0s)
+At line:1 char:1
++ flutter analyze 2>&1 | Out-File analyze.txt -Encoding UTF8; Get-Conte ...
++ ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (1 issue found. (ran in 6.0s):String) [], Remote 
+   Exception
+    + FullyQualifiedErrorId : NativeCommandError
+ 

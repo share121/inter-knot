@@ -7,9 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  PEM: ${{ secrets.PEM }}
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
 jobs:
   build_windows:
@@ -23,6 +21,27 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
 
       - run: dart gen_secrets.dart
 
@@ -57,6 +76,27 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
+
       - run: echo -e "storePassword=${{ secrets.PWD }}\nkeyPassword=${{ secrets.PWD }}\nkeyAlias=upload\nstoreFile=../../upload-keystore.jks" > android/key.properties
       - run: dart gen_secrets.dart
 
@@ -72,6 +112,9 @@ jobs:
   build_iOS:
     name: iOS Client
     runs-on: macos-latest
+    continue-on-error: true
+    outputs:
+      ios_ipa_uploaded: ${{ steps.ios_result.outputs.uploaded }}
     steps:
       - uses: actions/checkout@v4
 
@@ -80,20 +123,65 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
+
       - run: dart gen_secrets.dart
 
-      - run: flutter build ios --release --no-codesign
+      - name: Build iOS
+        id: ios_build
+        continue-on-error: true
+        run: flutter build ios --release --no-codesign
 
-      - run: mkdir Payload
+      - name: Package IPA
+        id: ios_package
+        if: steps.ios_build.outcome == 'success'
+        continue-on-error: true
+        run: |
+          mkdir Payload
+          mv build/ios/iphoneos/Runner.app Payload/inter_knot_ios.app
+          zip -r9 inter_knot_ios.ipa Payload
 
-      - run: mv build/ios/iphoneos/Runner.app Payload/inter_knot_ios.app
-
-      - run: zip -r9 inter_knot_ios.ipa Payload
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload iOS artifact
+        id: ios_upload
+        if: steps.ios_build.outcome == 'success' && steps.ios_package.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
         with:
           name: inter_knot_ios
           path: inter_knot_ios.ipa
+
+      - name: Set iOS upload result
+        id: ios_result
+        if: always()
+        run: |
+          build="${{ steps.ios_build.outcome }}"
+          package="${{ steps.ios_package.outcome }}"
+          upload="${{ steps.ios_upload.outcome }}"
+          if [[ "$build" == "success" && "$package" == "success" && "$upload" == "success" ]]; then
+            echo "uploaded=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "uploaded=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::iOS artifact skipped (build=$build, package=$package, upload=$upload)"
+          fi
 
   build_macOS:
     name: MacOS Client
@@ -105,6 +193,27 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
 
       - run: dart gen_secrets.dart
 
@@ -128,6 +237,27 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
 
       - run: |
           sudo apt-get update -y
@@ -155,9 +285,30 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Set pubspec version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION_TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION_TAG" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG="${VERSION_TAG}.0"
+          fi
+          VERSION="$VERSION_TAG"
+          export VERSION
+          python - <<'PY'
+          import os, re
+          path = 'pubspec.yaml'
+          version = os.environ['VERSION']
+          with open(path, 'r', encoding='utf-8') as f:
+            data = f.read()
+          data = re.sub(r'^version:.*$', f'version: {version}', data, flags=re.M)
+          with open(path, 'w', encoding='utf-8') as f:
+            f.write(data)
+          PY
+
       - run: dart gen_secrets.dart
 
-      - run: flutter build web --web-renderer html
+      - run: flutter build web
 
       - run: echo "db97e0128d9a02eef17b05a3c3ff8691742e6ab3" > build/web/12e2a2a7bc7f973a3f3720dcd9bb923b.txt
 
@@ -185,7 +336,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          cname: www.inot.top
 
   release:
     name: Release
@@ -200,6 +350,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v4
         with:
@@ -222,17 +374,143 @@ jobs:
           path: inter_knot_macos
 
       - uses: actions/download-artifact@v4
+        if: needs.build_iOS.outputs.ios_ipa_uploaded == 'true'
         with:
           name: inter_knot_ios
           path: inter_knot_ios
+
+      - name: Build release file list
+        id: release_files
+        run: |
+          echo 'files<<EOF' >> "$GITHUB_OUTPUT"
+          echo 'inter_knot_windows_x64_boxed/inter_knot_windows_x64_boxed.exe' >> "$GITHUB_OUTPUT"
+          echo 'inter_knot_apk/inter_knot_android.apk' >> "$GITHUB_OUTPUT"
+          echo 'inter_knot_linux/inter_knot_linux.zip' >> "$GITHUB_OUTPUT"
+          echo 'inter_knot_macos/inter_knot_macos.dmg' >> "$GITHUB_OUTPUT"
+          if [ "${{ needs.build_iOS.outputs.ios_ipa_uploaded }}" = "true" ]; then
+            echo 'inter_knot_ios/inter_knot_ios.ipa' >> "$GITHUB_OUTPUT"
+          fi
+          echo 'EOF' >> "$GITHUB_OUTPUT"
+
+      - name: Generate release notes
+        shell: bash
+        env:
+          IOS_IPA_UPLOADED: ${{ needs.build_iOS.outputs.ios_ipa_uploaded }}
+        run: |
+          python3 << 'PY'
+          import os
+          import subprocess
+
+          current = os.environ['GITHUB_REF_NAME']
+
+          def run_git(args, check=True):
+              p = subprocess.run(
+                  ['git', *args],
+                  capture_output=True,
+                  text=True,
+              )
+              if check and p.returncode != 0:
+                  raise SystemExit(
+                      f"git {' '.join(args)} failed: {p.stderr.strip() or p.stdout.strip()}"
+                  )
+              return p
+
+          def describe_prev():
+              p = run_git(
+                  ['describe', '--tags', '--abbrev=0', f'{current}^'],
+                  check=False,
+              )
+              if p.returncode != 0 or not p.stdout.strip():
+                  return None
+              t = p.stdout.strip()
+              return None if t == current else t
+
+          def prev_from_merged_tags():
+              p = run_git(
+                  ['tag', '--sort=-creatordate', '--merged', current],
+                  check=False,
+              )
+              if p.returncode != 0:
+                  return None
+              for line in p.stdout.splitlines():
+                  t = line.strip()
+                  if t and t != current:
+                      return t
+              return None
+
+          def root_commit():
+              p = run_git(['rev-list', '--max-parents=0', current])
+              lines = [x for x in p.stdout.strip().splitlines() if x]
+              return lines[-1] if lines else None
+
+          lines_out = []
+          lines_out.append(f'# Release `{current}`\n\n')
+
+          prev = describe_prev() or prev_from_merged_tags()
+          root = root_commit()
+
+          fmt = '%h\t%s\t%an\t%ad'
+          if prev:
+              log_range = f'{prev}..{current}'
+              lines_out.append(f'**区间:** `{log_range}`\n\n')
+              log_args = ['log', f'--pretty=format:{fmt}', '--date=short', log_range]
+          elif root:
+              lines_out.append(
+                  '**区间:** 未找到上一发布 tag（首次发布或历史异常）；'
+                  f'以下列出截至 `{current}` 的全部提交（`git log`，含根提交；'
+                  '未使用 `root..tag`，以免 `A..B` 排除根提交）。\n\n'
+              )
+              log_args = ['log', f'--pretty=format:{fmt}', '--date=short', current]
+          else:
+              lines_out.append(
+                  '**区间:** 无法解析根提交；以下仅列出当前 tag 对应提交。\n\n'
+              )
+              log_args = ['log', '-1', f'--pretty=format:{fmt}', '--date=short', current]
+
+          print(
+              'release-notes self-check:',
+              f'current={current!r}',
+              f'prev={prev!r}',
+              'log_args=' + ' '.join(log_args),
+              flush=True,
+          )
+
+          lp = run_git(log_args, check=False)
+          raw = lp.stdout.strip() if lp.returncode == 0 else ''
+
+          lines_out.append('## 提交列表\n\n')
+          if not raw:
+              lines_out.append(
+                  '_（该区间内无提交记录，可能为重打 tag 或区间为空。）_\n'
+              )
+          else:
+              for row in raw.splitlines():
+                  parts = row.split('\t', 3)
+                  if len(parts) < 4:
+                      lines_out.append(f'- {row}\n')
+                      continue
+                  short_sha, subject, author, date_s = parts
+                  lines_out.append(
+                      f'- `{short_sha}` {subject} — {author}，{date_s}\n'
+                  )
+
+          ios_uploaded = os.environ.get('IOS_IPA_UPLOADED') == 'true'
+          lines_out.append('## iOS\n\n')
+          if ios_uploaded:
+              lines_out.append(
+                  '本版本包含 iOS IPA 安装包（`inter_knot_ios.ipa`）。\n\n'
+              )
+          else:
+              lines_out.append(
+                  '_本版本未提供 iOS IPA（构建、打包或上传未成功）。_\n\n'
+              )
+
+          with open('release-content.md', 'w', encoding='utf-8') as f:
+              f.write(''.join(lines_out))
+          PY
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body_path: release-content.md
-          files: |
-            inter_knot_windows_x64_boxed/inter_knot_windows_x64_boxed.exe
-            inter_knot_apk/inter_knot_android.apk
-            inter_knot_linux/inter_knot_linux.zip
-            inter_knot_macos/inter_knot_macos.dmg
-            inter_knot_ios/inter_knot_ios.ipa
+          files: ${{ steps.release_files.outputs.files }}

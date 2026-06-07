@@ -19,9 +19,7 @@ jobs:
 
       - run: dart gen_secrets.dart
         env:
-          PEM: ${{ secrets.PEM }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
       - name: Install dependencies
         run: flutter pub get
@@ -31,9 +29,6 @@ jobs:
 
       - name: Run analysis
         run: flutter analyze
-
-      - name: Verify package health
-        run: flutter pub publish --dry-run
 
       # - name: Run tests
       #   run: flutter test

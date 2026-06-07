@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:inter_knot/components/my_html_widget.dart';
+import 'package:inter_knot/constants/globals.dart';
+import 'package:inter_knot/controllers/data.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ReportDiscussionComment extends StatelessWidget {
@@ -9,6 +11,7 @@ class ReportDiscussionComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = Get.find<Controller>();
     return Obx(() {
       return Column(
         children: [
@@ -23,7 +26,7 @@ class ReportDiscussionComment extends StatelessWidget {
                       text: '#$key',
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => launchUrlString(
-                              'https://github.com/share121/inter-knot/discussions/$key',
+                              '$discussionsLink/$key',
                             ),
                       style: TextStyle(
                         decoration: TextDecoration.underline,
@@ -56,8 +59,25 @@ class ReportDiscussionComment extends StatelessWidget {
                       ),
                       subtitle: Column(
                         children: [
-                          SelectionArea(
-                            child: HtmlWidget(comment.bodyHTML),
+                          Builder(
+                            builder: (context) {
+                              final hasIframe = RegExp(
+                                r'<\s*iframe\b',
+                                caseSensitive: false,
+                              ).hasMatch(comment.bodyHTML);
+                              if (hasIframe) {
+                                return MyHtmlWidget(
+                                  html: comment.bodyHTML,
+                                  inDiscussionDetail: true,
+                                );
+                              }
+                              return SelectionArea(
+                                child: MyHtmlWidget(
+                                  html: comment.bodyHTML,
+                                  inDiscussionDetail: true,
+                                ),
+                              );
+                            },
                           ),
                           if (index != value.length - 1) const Divider(),
                         ],

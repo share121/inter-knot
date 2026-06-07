@@ -13,13 +13,14 @@ class PaginationModel<T> {
     Map<String, dynamic> json,
     T Function(Map<String, dynamic>) map,
   ) {
+    final pageInfo = json['pageInfo'] as Map<String, dynamic>?;
+    final rawHasNextPage = pageInfo?['hasNextPage'] ?? json['hasNextPage'];
+    final rawEndCursor = pageInfo?['endCursor'] ?? json['endCursor'];
+    final nodesJson = (json['nodes'] as List?) ?? const [];
     return PaginationModel(
-      nodes: (json['nodes'] as List)
-          .cast<Map<String, dynamic>>()
-          .map(map)
-          .toList(),
-      hasNextPage: json['hasNextPage'] as bool,
-      endCursor: json['endCursor'] as String?,
+      nodes: nodesJson.whereType<Map<String, dynamic>>().map(map).toList(),
+      hasNextPage: (rawHasNextPage as bool?) ?? false,
+      endCursor: rawEndCursor as String?,
     );
   }
 }
